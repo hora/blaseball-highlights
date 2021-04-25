@@ -1,3 +1,5 @@
+const grandSlalami = require('grand-slalami');
+
 let gameEvents = {};
 let highlights = {};
 
@@ -17,10 +19,13 @@ const generateHighlights = () => {
     highlights[id] = {
       id: id,
       gameEvent: gameEvents[id],
-      commentary: '',
+      commentary: grandSlalami.getComment({
+        gameEvent: gameEvents[id].data,
+      }),
     };
   });
-  console.log(highlights);
+
+  console.debug('generateHighlights:', highlights);
 };
 
 const renderGameEv = (gameEv) => {
@@ -67,6 +72,9 @@ const renderGameEv = (gameEv) => {
 };
 
 const renderGameEvs = () => {
+  stopLoading();
+  $('#game-events-select').removeClass('d-none');
+
   const $container = $('#game-events-select__select');
 
   // gotta render some general stuff too (home vs away, s#d#, weather)
@@ -83,6 +91,8 @@ const getGameEvents = async (gameId, nextPage) => {
     gamesURL += `&page=${nextPage}`;
   }
 
+  startLoading();
+
   const resp = await fetch(gamesURL);
 
   if (resp.ok) {
@@ -90,7 +100,6 @@ const getGameEvents = async (gameId, nextPage) => {
 
     for (let gameEv of data.data) {
       gameEvents[gameEv.hash] = gameEv;
-      //gameEvents.push(gameEv);
     }
 
     if (data.nextPage) {
@@ -102,6 +111,20 @@ const getGameEvents = async (gameId, nextPage) => {
     }
 
   }
+};
+
+const startLoading = () => {
+  const $gameEvForm = $('#game-event-form');
+
+  $gameEvForm.find('button').addClass('d-none');
+  $gameEvForm.find('.spinner-border').removeClass('d-none');
+};
+
+const stopLoading = () => {
+  const $gameEvForm = $('#game-event-form');
+
+  $gameEvForm.find('button').removeClass('d-none');
+  $gameEvForm.find('.spinner-border').addClass('d-none');
 };
 
 const initApp = () => {

@@ -1,0 +1,12 @@
+#game-events-select__select {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  padding-left: 1rem;
+  font-size: 1.25rem;
+}
+
+#game-events-select__select option {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+}
+

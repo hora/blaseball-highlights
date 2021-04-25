@@ -1,0 +1,16 @@
+{
+  "name": "untitled-blaseball-project",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify src/main.js -o www/app.js",
+    "watch": "watchify src/main.js -o www/app.js --debug --verbose"
+  },
+  "author": "Horațiu Halmaghi",
+  "license": "MIT",
+  "dependencies": {
+    "grand-slalami": "^1.0.0"
+  }
+}
