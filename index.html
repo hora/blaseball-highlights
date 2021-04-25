@@ -27,10 +27,18 @@
   <form id="game-event-form">
     <label for="game-id">game id</label>
     <input id="game-id" type="text"></input>
+    <input type="submit" value="get game events"></input>
   </form>
 
-  <div id="game-events">
-  </div>
+  <form id="game-events-select__form">
+    <label for="game-events-select__select">
+      Choose game events to highlight.
+    </label>
+    <select id="game-events-select__select" name="game-events-select__select"
+      multiple=true>
+    </select>
+    <input type="submit" value="generate highlights!"></input>
+  </form>
 
   <script src="js/jquery-3.6.0.slim.min.js"></script>
   <script src="js/app.js"></script>
