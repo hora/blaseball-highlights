@@ -10,3 +10,21 @@
   padding-bottom: .5rem;
 }
 
+.game-event__container {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  margin-bottom: .5rem;
+  font-size: 1.1rem;
+}
+.game-event__container:hover {
+  background-color: #eee;
+}
+
+.game-event__container .form-check {
+  padding-left: 2em;
+}
+
+/*.game-event__container span {*/
+  /*margin-left: .5rem;*/
+/*}*/
+

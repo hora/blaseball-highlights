@@ -31,56 +31,93 @@ const generateHighlights = () => {
 const renderGameEv = (gameEv) => {
   const data = gameEv.data;
 
-  const $option = $('<option>');
+  if (!data.lastUpdate) {
+    return;
+  }
+
+  const $gameEv = $('<div>');
+
+  // form stuff
+  const $chContainer = $('<div>');
+  const $check = $('<input>');
+  const $label = $('<label>');
+
+  let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
+
+  $check
+    .addClass('form-check-input')
+    .attr('id', gameEv.hash)
+    .attr('type', 'checkbox')
+    .attr('name', 'game event')
+    .val('');
+
+  $label
+    .addClass('form-check-label')
+    .attr('for', gameEv.hash)
+    .text(update);
+
+  $chContainer
+    .addClass('form-check col-7')
+    .append($check)
+    .append($label);
+
+  // game event info
+  const $gameEvInfo = $('<div>');
   const $score = $('<span>');
-  const $update = $('<span>');
+  //const $update = $('<span>');
   const $bases = $('<span>');
-  const $balls = $('<span>');
-  const $strikes = $('<span>');
-  const $outs = $('<span>');
+  const $count = $('<span>');
+
+  let homeEmoji = data.homeTeamEmoji ? String.fromCodePoint(data.homeTeamEmoji) : '';
+  let awayEmoji = data.awayTeamEmoji ? String.fromCodePoint(data.awayTeamEmoji) : '';
+  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore} | `;
+  let bases = `R: | `;
+  let balls = `B: ${data.atBatBalls}`;
+  let strikes = `S: ${data.atBatStrikes}`;
+  let outs = `O: ${data.halfInningOuts}`;
+  let count = `${balls} ${strikes} ${outs}`;
 
   $score
-    .text(`${data.homeScore} - ${data.awayScore}`)
-    .addClass('game-event__score');
-  $update
-    .text(`${data.lastUpdate} ${data.scoreUpdate || ''}`)
-    .addClass('game-event__update');
+    .text(score);
+  //$update
+    //.text(update);
   $bases
-    .text(`Bases occ: `)
-    .addClass('game-event__bases');
-  $balls
-    .text(`B: ${data.atBatBalls}`)
-    .addClass('game-event__balls');
-  $strikes
-    .text(`S: ${data.atBatStrikes}`)
-    .addClass('game-event__strikes');
-  $outs
-    .text(`O: ${data.halfInningOuts}`)
-    .addClass('game-event__outs');
+    .text(bases);
+  $count
+    .text(count);
 
-  $option
-    .val(`${gameEv.hash}`)
-    .addClass('game-event-select__option')
+  $gameEvInfo
+    .addClass('col-5')
     .append($score)
-    .append($update)
+    //.append($update)
     .append($bases)
-    .append($balls)
-    .append($strikes)
-    .append($outs);
+    .append($count);
 
-  return $option;
+
+
+  $gameEv
+    //.val(`${gameEv.hash}`)
+    .addClass('game-event__container row border')
+    .append($chContainer)
+    .append($gameEvInfo);
+
+  return $gameEv;
 };
 
 const renderGameEvs = () => {
   stopLoading();
   $('#game-events-select').removeClass('d-none');
 
-  const $container = $('#game-events-select__select');
+  const $container = $('#game-events-choose__container');
 
   // gotta render some general stuff too (home vs away, s#d#, weather)
   // also: label for the select, and the select itself
   for (let id in gameEvents) {
-    $container.append(renderGameEv(gameEvents[id]));
+    let $gameEv = renderGameEv(gameEvents[id]);
+
+    if ($gameEv) {
+      $container.append($gameEv);
+    }
   }
 };
 
