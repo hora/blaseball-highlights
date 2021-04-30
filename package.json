@@ -11,6 +11,7 @@
   "author": "Horațiu Halmaghi",
   "license": "MIT",
   "dependencies": {
-    "grand-slalami": "^1.0.0"
+    "grand-slalami": "^1.0.0",
+    "mlustard": "^1.4.0"
   }
 }

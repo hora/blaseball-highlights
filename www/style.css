@@ -24,6 +24,50 @@
   padding-left: 2em;
 }
 
+.circle {
+  height: 12px;
+  width: 12px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 2px;
+}
+
+.circle.full {
+  background-color: #000;
+}
+
+.circle.empty {
+  border: 2px solid black;
+}
+
+.balls-count,
+.strikes-count {
+  margin-right: 4px;
+}
+
+.bases-occupied {
+  margin-left: 6px;
+  margin-right: 8px;
+}
+
+.diamond {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px solid black;
+  transform: translate(2px, 2px) rotate(45deg);
+}
+
+.diamond:nth-child(2) {
+  transform: translate(3px, -9px) rotate(45deg);
+  margin-left: -3px;
+  margin-right: -1px;
+}
+
+.diamond.filled {
+  background-color: #000;
+}
+
 /*.game-event__container span {*/
   /*margin-left: .5rem;*/
 /*}*/

@@ -1,3 +1,4 @@
+const mlustard = require('mlustard');
 const grandSlalami = require('grand-slalami');
 
 let gameEvents = {};
@@ -18,9 +19,10 @@ const generateHighlights = () => {
 
     highlights[id] = {
       id: id,
-      gameEvent: gameEvents[id],
+      gameEvent: gameEvents[id].ev,
       commentary: grandSlalami.getComment({
-        gameEvent: gameEvents[id].data,
+        gameEvent: gameEvents[id].ev.data,
+        mlustard: gameEvents[id].mlustard,
       }),
     };
   });
@@ -28,8 +30,22 @@ const generateHighlights = () => {
   console.debug('generateHighlights:', highlights);
 };
 
+const makeCountCircle = (classes) => {
+  return $('<span>').addClass(classes);
+};
+
+const makeBaseDiamond = (occ) => {
+  const $diamond = $('<span>').addClass('diamond');
+
+  if (occ) {
+    $diamond.addClass('filled');
+  }
+
+  return $diamond;
+};
+
 const renderGameEv = (gameEv) => {
-  const data = gameEv.data;
+  const data = gameEv.ev.data;
 
   if (!data.lastUpdate) {
     return;
@@ -46,14 +62,14 @@ const renderGameEv = (gameEv) => {
 
   $check
     .addClass('form-check-input')
-    .attr('id', gameEv.hash)
+    .attr('id', gameEv.ev.hash)
     .attr('type', 'checkbox')
     .attr('name', 'game event')
     .val('');
 
   $label
     .addClass('form-check-label')
-    .attr('for', gameEv.hash)
+    .attr('for', gameEv.ev.hash)
     .text(update);
 
   $chContainer
@@ -64,39 +80,74 @@ const renderGameEv = (gameEv) => {
   // game event info
   const $gameEvInfo = $('<div>');
   const $score = $('<span>');
-  //const $update = $('<span>');
   const $bases = $('<span>');
-  const $count = $('<span>');
+  const $balls = $('<span>');
+  const $strikes = $('<span>');
+  const $outs = $('<span>');
 
   let homeEmoji = data.homeTeamEmoji ? String.fromCodePoint(data.homeTeamEmoji) : '';
   let awayEmoji = data.awayTeamEmoji ? String.fromCodePoint(data.awayTeamEmoji) : '';
-  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore} | `;
-  let bases = `R: | `;
-  let balls = `B: ${data.atBatBalls}`;
-  let strikes = `S: ${data.atBatStrikes}`;
-  let outs = `O: ${data.halfInningOuts}`;
-  let count = `${balls} ${strikes} ${outs}`;
+  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
+  let bases = '';
+
+  // fill in balls count
+  for (let ball = 0; ball < data.atBatBalls; ball++) {
+    $balls.append(makeCountCircle('circle full'));
+  }
+
+  for (let ball = 3; ball > data.atBatBalls; ball--) {
+    $balls.append(makeCountCircle('circle empty'));
+  }
+
+  // fill in strikes count
+  for (let strike = 0; strike < data.atBatStrikes; strike++) {
+    $strikes.append(makeCountCircle('circle full'));
+  }
+
+  for (let strike = 2; strike > data.atBatStrikes; strike--) {
+    $strikes.append(makeCountCircle('circle empty'));
+  }
+
+  // fill in outs count
+  for (let out = 0; out < data.halfInningOuts; out++) {
+    $outs.append(makeCountCircle('circle full'));
+  }
+
+  for (let out = 2; out > data.halfInningOuts; out--) {
+    $outs.append(makeCountCircle('circle empty'));
+  }
+
+  // fill in base diamonds
+  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
+  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
+  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
+  // todo: deal with 4 bases
+  //$bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
 
   $score
     .text(score);
-  //$update
-    //.text(update);
+  $balls
+    .attr('title', 'Balls')
+    .addClass('balls-count');
+  $strikes
+    .attr('title', 'Strikes')
+    .addClass('strikes-count');
+  $outs
+    .attr('title', 'Outs')
+    .addClass('outs-count');
   $bases
-    .text(bases);
-  $count
-    .text(count);
+    .attr('title', 'Bases occupied')
+    .addClass('bases-occupied');
 
   $gameEvInfo
     .addClass('col-5')
     .append($score)
-    //.append($update)
     .append($bases)
-    .append($count);
-
-
+    .append($balls)
+    .append($strikes)
+    .append($outs);
 
   $gameEv
-    //.val(`${gameEv.hash}`)
     .addClass('game-event__container row border')
     .append($chContainer)
     .append($gameEvInfo);
@@ -136,7 +187,10 @@ const getGameEvents = async (gameId, nextPage) => {
     const data = await resp.json();
 
     for (let gameEv of data.data) {
-      gameEvents[gameEv.hash] = gameEv;
+      gameEvents[gameEv.hash] = {
+        ev: gameEv,
+        mlustard: mlustard.analyzeGameEvent(gameEv.data),
+      };
     }
 
     if (data.nextPage) {
