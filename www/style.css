@@ -1,13 +1,8 @@
-#game-events-select__select {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
-  padding-left: 1rem;
-  font-size: 1.25rem;
-}
-
-#game-events-select__select option {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
+#game-events-choose__container {
+  height: 330px;
+  overflow: scroll;
+  padding: 20px;
+  border: 1px solid #ccc;
 }
 
 .game-event__container {
