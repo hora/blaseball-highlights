@@ -63,7 +63,49 @@
   background-color: #000;
 }
 
-/*.game-event__container span {*/
-  /*margin-left: .5rem;*/
-/*}*/
+#highlights-dialog__text {
+  height: 146px;
+  font-family: 'Exo', sans-serif;
+  font-size: 26pt;
+  position: relative;
+}
+
+#highlights-dialog__text p {
+  width: 0;
+}
+
+#highlights-dialog__text p.animate {
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  /*letter-spacing: .001em;*/
+  animation: typing 1.5s steps(40, end);
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+#highlights-dialog__text p.animation-finished {
+  width: 100%;
+}
+
+#highlights-dialog__next {
+  width: 0;
+  height: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #555;
+  position: absolute;
+  right: 0.8em;
+  bottom: 0.4em;
+
+  opacity: 0;
+}
+
+#highlights-dialog__next.show {
+  transition: opacity 0.5s ease-in-out;
+  opacity: 100;
+}
 
