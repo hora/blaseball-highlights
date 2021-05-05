@@ -1,7 +1,6 @@
 const util = require('./util');
 
 let maxLen = 0;
-//let spillover = false;
 let ready = false;
 
 let $dialogs;
@@ -16,7 +15,6 @@ let highlight = {};
 
 const init = () => {
   maxLen = 40; // calculate this based on window size?
-  ready = true;
 
   $dialogs = $('#highlights-dialog__text p');
   $one = $dialogs.first();
@@ -29,135 +27,135 @@ const init = () => {
 
   highlight = {
     comment: '',
-
-    textParts: [],
-    partsPos: 0,
-
-    partParts: [],
-    partPartsPos: 0,
-    started: false,
+    parts: [],
+    curPart: 0,
   };
-};
 
-const onAnimEnd = () => {
-  if (oneAnimating) {
-    $one
-      .removeClass('animate')
-      .addClass('animation-finished');
-    oneAnimating = false;
-  }
-
-  if (twoAnimating) {
-    $two
-      .removeClass('animate')
-      .addClass('animation-finished');
-    twoAnimating = false;
-  }
-
-  //if (!spillover) {
-    //$next.addClass('show');
-  //}
+  ready = true;
 };
 
 const startHighlight = (text) => {
   if (!ready) init();
-
-  if (highlight.started) { return; }
-  highlight.started = true;
 
   // todo: check if animation is ready, otherwise return or .. ?
   $one.empty().removeClass('animate');
   $two.empty().removeClass('animate');
   $next.removeClass('show');
 
-  // split into parts by newlines
-  highlight.textParts = text.split('\n');
+  // split by newlines (enforced pacing)
+  const pacingParts = text.split('\n');
 
-    partParts: [],
-    partPartsPos: 0,
-
-  highlight.textParts.forEach((part) => {
-    let len = 0;
-    let partArr = [];
-
-    part.split(' ').forEach((word) => {
-      let wordLen = word.length;
-
-      // todo: if there's more words than we can put in the two lines, what to
-      // do??
-      if ((len + wordLen) > maxLen) {
-        len = 0;
-        active = words2;
-      }
-
-      if ((len + wordLen) <= maxLen) {
-        //active.push(word);
-
-        len += wordLen + 1;
-      }
-    });
+  pacingParts.forEach((p) => {
+    breakIntoParts(p);
   });
 
-  // split each part into 2 (one for each p)
-
-  drawHighlight();
-};
-
-const drawHighlight = () => {
-  if (!highlight.textParts.length) {
-    return;
-  }
-
-  let curPart = highlight.textParts[highlight.curPos];
-  let len = 0;
-  let words1 = [];
-  let words2 = [];
-  let active = words1;
-
-  curPart.split(' ').forEach((word) => {
-    let wordLen = word.length;
-
-    // todo: if there's more words than we can put in the two lines, what to
-    // do??
-    if ((len + wordLen) > maxLen) {
-      len = 0;
-      active = words2;
-    }
-
-    if ((len + wordLen) <= maxLen) {
-      active.push(word);
-      len += wordLen + 1;
-    }
-  });
-
-  if (words1.length) {
-    highlight.curText = words1.join(' ');
-  }
-
-  if (words2.length) {
-    highlight.nextText = words1.join(' ');
-  }
+  console.debug('startHighlight: created highlight parts', highlight);
 
   startAnimation();
 };
 
-const startAnimation = () => {
-  animate(highlight.curEl, highlight.curText);
+// split each part into its animation parts by line length
+const breakIntoParts = (text) => {
+  let parts = [[], []];
+  let unfilled = 0;
+  let len = 0;
+
+  text.split(' ').forEach((word) => {
+    let wordLen = word.length;
+
+    if ((len + wordLen) > maxLen) {
+      len = 0;
+
+      if (unfilled === 1) {
+        addParts(parts);
+        parts = [[], []]
+        unfilled = 0;
+      } else {
+        unfilled = 1;
+      }
+    }
+
+    if ((len + wordLen) <= maxLen) {
+      parts[unfilled].push(word);
+      len += wordLen + 1;
+    }
+  });
+
+  addParts(parts);
 };
 
-const animate = ($el, text) => {
-  $el
-    .addClass('animate')
-    .text(text);
+const addParts = (parts) => {
+  highlight.parts.push(parts.map((words) => {
+    return words.join(' ');
+  }));
+};
 
-  if ($el.attr('id') === 'highlights-dialog__text-one') {
-    oneAnimating = true;
+const startAnimation = () => {
+  if (!highlight.parts.length) {
+    return;
   }
 
-  if ($el.attr('id') === 'highlights-dialog__text-two') {
+  // todo: figure out what the state is and what needs to be shown + animated next
+
+  animate('first');
+
+  //$one
+    //.addClass('animate')
+    //.text(highlight.parts[highlight.curPart][0]);
+  //$two
+    //.addClass('animate')
+    //.text(highlight.parts[highlight.curPart][1]);
+
+
+  //startAnimation();
+};
+
+//const startAnimation = () => {
+  //animate(highlight.curEl, highlight.curText);
+//};
+
+const animate = (line) => {
+  let $el;
+  let i;
+
+  if (line === 'first') {
+    $el = $one;
+    i = 0;
+    oneAnimating = true;
+  } else if (line === 'second') {
+    $el = $two;
+    i = 1;
     twoAnimating = true;
   }
+
+  $el
+    .addClass('animate')
+    .text(highlight.parts[highlight.curPart][i]);
 };
+
+const onAnimEnd = () => {
+  // check for the second animation first so the second animation
+  // doesn't get triggered then immediately ended inside this func
+  if (twoAnimating) {
+    $two
+      .removeClass('animate')
+      .addClass('animation-finished');
+    twoAnimating = false;
+
+    // todo: show next arrow if:
+    // there are parts left to this highlight
+    // there are highlights left to the story
+  }
+
+  if (oneAnimating) {
+    $one
+      .removeClass('animate')
+      .addClass('animation-finished');
+    oneAnimating = false;
+    animate('second');
+  }
+};
+
 
 module.exports = {
   init,
