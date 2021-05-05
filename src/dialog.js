@@ -110,10 +110,6 @@ const startAnimation = () => {
   //startAnimation();
 };
 
-//const startAnimation = () => {
-  //animate(highlight.curEl, highlight.curText);
-//};
-
 const animate = (line) => {
   let $el;
   let i;
