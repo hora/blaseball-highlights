@@ -109,3 +109,10 @@
   opacity: 100;
 }
 
+#diamond {
+  width: 600px;
+  height: 460px;
+  background-image: url('./diamond.svg');
+  background-size: 600px auto;
+}
+
