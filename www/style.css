@@ -112,7 +112,7 @@
 #diamond {
   width: 600px;
   height: 460px;
-  background-image: url('./diamond.svg');
+  background-image: url('./images/diamond.svg');
   background-size: 600px auto;
   position: relative;
 }
@@ -155,5 +155,14 @@
 .player-on-diamond.mound {
   left: 250px;
   top: 220px;
+}
+
+.vs-logo {
+  height: 300px;
+  width: 300px;
+}
+
+.vs-text {
+  margin: 0 20px;
 }
 

@@ -58,13 +58,40 @@ const handleAction = (evt) => {
   }
 };
 
-const onHighlightsReady = (hls) => {
-  $(document).on('keyup', handleAction);
-  $('#highlights-dialog__container').on('click', handleAction);
+const setupIntro = () => {
+  // grab game info from first highlight
+  const gameEv = highlights[0].gameEvent.data;
+  const $home = $('#intro .vs-logo__home');
+  const $away = $('#intro .vs-logo__away');
 
+  let hNick = gameEv.homeTeamNickname.split(' ').pop().toLowerCase();
+  let aNick = gameEv.awayTeamNickname.split(' ').pop().toLowerCase();
+
+  if (aNick === 'mechanics') {
+    aNick += '-away';
+  }
+
+  $('#intro .game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
+  $home.attr('src', `./images/logo-${hNick}.png`);
+  $away.attr('src', `./images/logo-${aNick}.png`);
+
+  // georgias don't have a standard size logo
+  if (hNick === 'georgias') {
+    $home.css('height', 'auto');
+  }
+
+  if (aNick === 'georgias') {
+    $away.css('height', 'auto');
+  }
+};
+
+const onHighlightsReady = (hls) => {
   highlights = hls;
 
-  // todo: intro
+  setupIntro();
+
+  $(document).on('keyup', handleAction);
+  $('#highlights-dialog__container').on('click', handleAction);
 };
 
 const initApp = () => {

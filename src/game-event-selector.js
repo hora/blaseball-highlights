@@ -77,8 +77,21 @@ const renderGameEv = (gameEv) => {
   const $strikes = $('<span>');
   const $outs = $('<span>');
 
-  let homeEmoji = data.homeTeamEmoji ? String.fromCodePoint(data.homeTeamEmoji) : '';
-  let awayEmoji = data.awayTeamEmoji ? String.fromCodePoint(data.awayTeamEmoji) : '';
+  let homeEmoji = '';
+  let awayEmoji = '';
+
+  try {
+    homeEmoji = data.homeTeamEmoji ? String.fromCodePoint(data.homeTeamEmoji) : '';
+  } catch (err) {
+    homeEmoji = data.homeTeamEmoji;
+  }
+
+  try {
+    awayEmoji = data.awayTeamEmoji ? String.fromCodePoint(data.awayTeamEmoji) : '';
+  } catch (err) {
+    awayEmoji = data.awayTeamEmoji;
+  }
+
   let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
   let bases = '';
 
@@ -216,7 +229,7 @@ const init = (highlightsReadyCb) => {
   $gameEvForm.on('submit', (ev) => {
     ev.preventDefault();
 
-    const gameId = $gameEvForm.find('#game-id').val();
+    const gameId = $gameEvForm .find('#game-id').val() .split('/').pop();
     getGameEvents(gameId);
   });
 
