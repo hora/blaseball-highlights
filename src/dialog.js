@@ -136,8 +136,16 @@ const continueHighlight = (highlights) => {
   return true;
 };
 
+const setIntro = (one, two) => {
+  if (!ready) init();
+
+  $lineOne.text(one);
+  $lineTwo.text(two);
+};
+
 module.exports = {
   startHighlight,
   continueHighlight,
+  setIntro,
 };
 

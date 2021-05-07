@@ -38,6 +38,8 @@ const handleAction = (evt) => {
   // if we're in the intro, start at the first highlight
   if (intro) {
     intro = false;
+    $('#intro').addClass('d-none');
+    $('#diamond').removeClass('d-none');
 
     nextHighlight();
     return;
@@ -83,6 +85,12 @@ const setupIntro = () => {
   if (aNick === 'georgias') {
     $away.css('height', 'auto');
   }
+  
+  // add intro text to dialog
+  $('#highlights-dialog__text-one')
+    .text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}. ${gameEv.homeTeamName}`);
+  $('#highlights-dialog__text-two')
+    .text(`vs. the ${gameEv.awayTeamName}.`);
 };
 
 const onHighlightsReady = (hls) => {

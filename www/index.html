@@ -68,50 +68,51 @@
     </div>
   </div>
 
-  <div id="intro">
-  <div class="container">
-    <div class="row">
-    <div class="col"></div>
+  <div id="visuals">
+    <div id="intro" class="container">
+      <div class="row">
+      <div class="col"></div>
 
-    <div class="col-7">
-        <h2 class="game-name text-center"></h2>
-    </div>
+      <div class="col-7">
+          <h2 class="game-name text-center"></h2>
+      </div>
 
-    <div class="col"></div>
-    </div>
+      <div class="col"></div>
+      </div>
 
-    <div class="row text-center">
-    <div class="col"></div>
-    
-    <div class="col-8">
-      <img class="vs-logo vs-logo__home" src="">
-      <!--<img class="vs-logo" src="./images/logo-tigers.png">-->
-      <span class="vs-text fs-3">vs.</span>
-      <img class="vs-logo vs-logo__away" src="">
-    </div>
+      <div class="row text-center">
+      <div class="col"></div>
 
-    <div class="col"></div>
-    </div>
-  </div>
-  </div>
+      <div class="col-8">
+        <img class="vs-logo vs-logo__home" src="">
+        <!--<img class="vs-logo" src="./images/logo-tigers.png">-->
+        <span class="vs-text fs-3">vs.</span>
+        <img class="vs-logo vs-logo__away" src="">
+      </div>
 
-  <div class="container">
-    <div class="row">
-    <div class="col"></div>
-    
-    <div class="col-7">
-      <div id="diamond">
-        <p class="player-on-diamond batting"></p>
-        <p class="player-on-diamond second"></p>
-        <p class="player-on-diamond third"></p>
-        <p class="player-on-diamond first"></p>
-        <p class="player-on-diamond mound"></p>
+      <div class="col"></div>
       </div>
     </div>
 
-    <div class="col"></div>
+    <div id="diamond" class="container d-none">
+      <div class="row">
+      <div class="col"></div>
+
+      <div class="col-7">
+        <div id="diamond__image">
+          <p class="player-on-diamond batting"></p>
+          <p class="player-on-diamond second"></p>
+          <p class="player-on-diamond third"></p>
+          <p class="player-on-diamond first"></p>
+          <p class="player-on-diamond mound"></p>
+        </div>
+      </div>
+
+      <div class="col"></div>
+      </div>
     </div>
   </div>
+
 
   <div id="highlights-dialog__container" class="container">
     <div class="row">
@@ -119,9 +120,9 @@
 
     <div id="highlights-dialog__text"
       class="col-8 border border-dark border-2 rounded p-3">
-      <p id="highlights-dialog__text-one"></p>
-      <p id="highlights-dialog__text-two"></p>
-      <div id="highlights-dialog__next"></div>
+      <p id="highlights-dialog__text-one" class="animation-finished"></p>
+      <p id="highlights-dialog__text-two" class="animation-finished"></p>
+      <div id="highlights-dialog__next" class="show"></div>
     </div>
 
     <div class="col"></div>
