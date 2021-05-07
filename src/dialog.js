@@ -29,12 +29,15 @@ const init = () => {
   ready = true;
 };
 
-const startHighlight = (highlight) => {
+const startHighlight = (highlight) => {;
   if (!ready) init();
 
   // reset dialog
-  highlight.curDialogPart = 0;
+  //highlight.curDialogPart = 0;
+  $lineOne.removeClass('animation-finished animate');
+  $lineTwo.removeClass('animation-finished animate');
 
+  highlight.started = true;
   animateHighlight(highlight);
 };
 
@@ -48,11 +51,11 @@ const animateHighlight = (highlight) => {
 
 const animate = (line) => {
   if (line === 'one') {
-    stopAnimate('two');
+    //stopAnimate('two');
     $lineOne.addClass('animate');
     lineOneAnimating = true;
   } else if (line === 'two') {
-    stopAnimate('one');
+    //stopAnimate('one');
     $lineTwo.addClass('animate');
     lineTwoAnimating = true;
   }
@@ -103,58 +106,23 @@ const hideNext = () => {
   $next.removeClass('show');
 };
 
-//const startHighlight = (text) => {
-  //if (!ready) init();
+const continueHighlight = (highlight) => {
+  debugger
+  if (!highlight.started) { return false; }
 
-  // todo: check if animation is ready, otherwise return or .. ?
-  //$one.empty().removeClass('animate');
-  //$two.empty().removeClass('animate');
-  //$next.removeClass('show');
+  highlight.curDialogPart++;
 
-//};
+  // no more text to this highlight
+  if (highlight.curDialogPart === highlight.dialogParts.length) {
+    return false;
+  }
 
-
-//const startAnimation = () => {
-  //if (!highlight.parts.length) {
-    //return;
-  //}
-
-  // todo: figure out what the state is and what needs to be shown + animated next
-
-  //animate('first');
-
-  //$one
-    //.addClass('animate')
-    //.text(highlight.parts[highlight.curPart][0]);
-  //$two
-    //.addClass('animate')
-    //.text(highlight.parts[highlight.curPart][1]);
-
-
-  //startAnimation();
-//};
-
-//const animate = (line) => {
-  //let $el;
-  //let i;
-
-  //if (line === 'first') {
-    //$el = $one;
-    //i = 0;
-    //oneAnimating = true;
-  //} else if (line === 'second') {
-    //$el = $two;
-    //i = 1;
-    //twoAnimating = true;
-  //}
-
-  //$el
-    //.addClass('animate')
-    //.text(highlight.parts[highlight.curPart][i]);
-//};
-
+  animateHighlight(highlight);
+  return true;
+};
 
 module.exports = {
   startHighlight,
+  continueHighlight,
 };
 

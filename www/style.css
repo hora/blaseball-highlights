@@ -72,12 +72,12 @@
 
 #highlights-dialog__text p {
   width: 0;
+  overflow: hidden;
+  margin: 0;
+  white-space: nowrap;
 }
 
 #highlights-dialog__text p.animate {
-  margin: 0;
-  overflow: hidden;
-  white-space: nowrap;
   /*letter-spacing: .001em;*/
   animation: typing 1.5s steps(40, end);
 }

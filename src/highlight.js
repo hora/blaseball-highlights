@@ -30,7 +30,7 @@ const makeHighlight = (settings) => {
       commentary,
       dialogParts,
       curDialogPart,
-      startHighlight,
+      incrementCurDialogPart,
     };
   };
 
@@ -89,6 +89,10 @@ const makeHighlight = (settings) => {
     return parts.map((words) => {
       return words.join(' ');
     });
+  };
+
+  const incrementCurDialogPart = () => {
+    curDialogPart++;
   };
 
   return init();
