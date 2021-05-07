@@ -30,7 +30,7 @@ const makeHighlight = (settings) => {
       commentary,
       dialogParts,
       curDialogPart,
-      incrementCurDialogPart,
+      hasDialogLeft,
     };
   };
 
@@ -91,8 +91,8 @@ const makeHighlight = (settings) => {
     });
   };
 
-  const incrementCurDialogPart = () => {
-    curDialogPart++;
+  const hasDialogLeft = () => {
+    return !((curDialogPart + 1) === dialogParts.length);
   };
 
   return init();

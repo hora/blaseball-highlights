@@ -6,9 +6,21 @@ let highlights = [];
 let curHighlight = 0;
 let intro = true;
 
+const getHighlights = () => {
+  return {
+    prev: highlights[curHighlight - 1],
+    cur: highlights[curHighlight],
+    next: highlights[curHighlight + 1],
+  };
+};
+
 const nextHighlight = () => {
-  visual.updateDiamond(highlights[curHighlight]);
-  dialog.startHighlight(highlights[curHighlight]);
+  visual.updateDiamond(getHighlights());
+  dialog.startHighlight(getHighlights());
+};
+
+const continueHighlight = () => {
+  return dialog.continueHighlight(getHighlights());
 };
 
 const handleAction = (evt) => {
@@ -32,7 +44,7 @@ const handleAction = (evt) => {
   }
 
   // try to advance the highlight, if there's more text to animate
-  if (!dialog.continueHighlight(highlights[curHighlight])) {
+  if (!continueHighlight()) {
     curHighlight++;
 
     // if there are no more highlights, move into outro

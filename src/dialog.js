@@ -10,6 +10,10 @@ let $next;
 let lineOneAnimating;
 let lineTwoAnimating;
 
+let cur;
+let prev;
+let next;
+
 
 const init = () => {
   console.debug('Dialog.init()');
@@ -29,7 +33,11 @@ const init = () => {
   ready = true;
 };
 
-const startHighlight = (highlight) => {;
+const startHighlight = (highlights) => {;
+  cur = highlights.cur;
+  prev = highlights.prev;
+  next = highlights.next;
+
   if (!ready) init();
 
   // reset dialog
@@ -37,8 +45,8 @@ const startHighlight = (highlight) => {;
   $lineOne.removeClass('animation-finished animate');
   $lineTwo.removeClass('animation-finished animate');
 
-  highlight.started = true;
-  animateHighlight(highlight);
+  cur.started = true;
+  animateHighlight(cur);
 };
 
 const animateHighlight = (highlight) => {
@@ -81,9 +89,7 @@ const onAnimEnd = () => {
   if (lineTwoAnimating) {
     stopAnimate('two');
 
-    // todo: show next arrow if:
-    // there are parts left to this highlight
-    // there are highlights left to the story
+    showNext();
   }
 
   if (lineOneAnimating) {
@@ -98,26 +104,35 @@ const onAnimEnd = () => {
   }
 };
 
+// show next arrow if:
+// there are parts left to this highlight
+// there are highlights left to the story
 const showNext = () => {
-  $next.addClass('show');
+  // todo: show arrow if next, but move into outro
+  if (cur.hasDialogLeft() || next) {
+    $next.addClass('show');
+  }
 };
 
 const hideNext = () => {
   $next.removeClass('show');
 };
 
-const continueHighlight = (highlight) => {
-  debugger
-  if (!highlight.started) { return false; }
+const continueHighlight = (highlights) => {
+  cur = highlights.cur;
+  prev = highlights.prev;
+  next = highlights.next;
 
-  highlight.curDialogPart++;
+  if (!cur.started) { return false; }
+
+  cur.curDialogPart++;
 
   // no more text to this highlight
-  if (highlight.curDialogPart === highlight.dialogParts.length) {
+  if (cur.curDialogPart === cur.dialogParts.length) {
     return false;
   }
 
-  animateHighlight(highlight);
+  animateHighlight(cur);
   return true;
 };
 

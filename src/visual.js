@@ -9,22 +9,25 @@ const diamondLocations = {
 
 const BASES = ['first', 'second', 'third']; // todo: 'fourth', 'secret'?
 
-const drawBatter = (highlight) => {
+const drawBatter = (highlights) => {
   //const ml = highlight.mlustard;
-  const ge = highlight.gameEvent.data;
+  const cur = highlights.cur;
+  const ge = cur.gameEvent.data;
 
   diamondLocations['$batting'].text(ge.topOfInning ? ge.awayBatterName : ge.homeBatterName);
 };
 
-const drawPitcher = (highlight) => {
+const drawPitcher = (highlights) => {
   //const ml = highlight.mlustard;
-  const ge = highlight.gameEvent.data;
+  const cur = highlights.cur;
+  const ge = cur.gameEvent.data;
 
   diamondLocations['$mound'].text(ge.topOfInning ? ge.homePitcherName : ge.awayPitcherName);
 };
 
-const drawBaserunners = (highlight) => {
-  const ml = highlight.mlustard;
+const drawBaserunners = (highlights) => {
+  const cur = highlights.cur;
+  const ml = cur.mlustard;
 
   if (ml && ml.baseRunners) {
     for (let base of BASES) {
@@ -35,10 +38,10 @@ const drawBaserunners = (highlight) => {
   }
 };
 
-const updateDiamond = (highlight) => {
-  drawBatter(highlight);
-  drawPitcher(highlight);
-  drawBaserunners(highlight);
+const updateDiamond = (highlights) => {
+  drawBatter(highlights);
+  drawPitcher(highlights);
+  drawBaserunners(highlights);
 
 };
 
