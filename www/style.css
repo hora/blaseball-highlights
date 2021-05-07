@@ -123,22 +123,22 @@
   padding: 0;
   padding-left: 3px;
   padding-right: 3px;
+  /* should be overwritten by team colour */
   color: #142c61;
   font-size: 1.2rem;
-  background-color: rgba(1, 1, 1, 0.25);
+  background-color: rgba(255, 255, 255, 0.5);
   border-radius: 5px;
   transition: all 0.5s ease-in-out;
+  font-weight: 600;
 }
 
 .player-on-diamond.first {
-  /*bottom: 30px;*/
   top: 400px;
   left: 330px;
 }
 
 .player-on-diamond.second {
   top: 220px;
-  /*right: -30px;*/
   left: 430px;
 }
 
