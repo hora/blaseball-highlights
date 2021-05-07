@@ -114,5 +114,46 @@
   height: 460px;
   background-image: url('./diamond.svg');
   background-size: 600px auto;
+  position: relative;
+}
+
+.player-on-diamond {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  padding-left: 3px;
+  padding-right: 3px;
+  color: #142c61;
+  font-size: 1.2rem;
+  background-color: rgba(1, 1, 1, 0.25);
+  border-radius: 5px;
+  transition: all 0.5s ease-in-out;
+}
+
+.player-on-diamond.first {
+  /*bottom: 30px;*/
+  top: 400px;
+  left: 330px;
+}
+
+.player-on-diamond.second {
+  top: 220px;
+  /*right: -30px;*/
+  left: 430px;
+}
+
+.player-on-diamond.third {
+  top: 30px;
+  left: 330px;
+}
+
+.player-on-diamond.batting {
+  top: 220px;
+  left: 30px;
+}
+
+.player-on-diamond.mound {
+  left: 250px;
+  top: 220px;
 }
 

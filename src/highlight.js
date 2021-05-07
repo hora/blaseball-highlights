@@ -30,6 +30,7 @@ const makeHighlight = (settings) => {
       commentary,
       dialogParts,
       curDialogPart,
+      startHighlight,
     };
   };
 

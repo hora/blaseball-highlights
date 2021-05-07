@@ -5,7 +5,7 @@ const highlight = require('./highlight');
 let gameEvents = {};
 let highlights = [];
 
-const generateHighlights = () => {
+const generateHighlights = (cb) => {
   $('.game-event__container input:checked').each((_, checked) => {
     const id = $(checked).attr('id');
 
@@ -19,6 +19,7 @@ const generateHighlights = () => {
   });
 
   console.debug('generateHighlights:', highlights);
+  cb(highlights);
 };
 
 const makeCountCircle = (classes) => {
@@ -209,7 +210,7 @@ const stopLoading = () => {
   $gameEvForm.find('.spinner-border').addClass('d-none');
 };
 
-const init = () => {
+const init = (highlightsReadyCb) => {
   const $gameEvForm = $('#game-event-form');
 
   $gameEvForm.on('submit', (ev) => {
@@ -223,7 +224,7 @@ const init = () => {
 
   $highlightsSelectForm.on('submit', (ev) => {
     ev.preventDefault();
-    generateHighlights();
+    generateHighlights(highlightsReadyCb);
   });
 
 };
