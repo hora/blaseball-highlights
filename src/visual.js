@@ -46,6 +46,9 @@ const drawBaserunners = (highlights) => {
         diamondLocations[`$${base}`]
           .css('color', ge[`${team}TeamColor`])
           .text(ml.baseRunners[base].playerName);
+      } else {
+        diamondLocations[`$${base}`]
+          .text('');
       }
     }
   }

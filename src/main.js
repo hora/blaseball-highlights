@@ -85,7 +85,7 @@ const setupIntro = () => {
   if (aNick === 'georgias') {
     $away.css('height', 'auto');
   }
-  
+
   // add intro text to dialog
   $('#highlights-dialog__text-one')
     .text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}. ${gameEv.homeTeamName}`);
