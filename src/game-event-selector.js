@@ -5,14 +5,24 @@ const highlight = require('./highlight');
 let gameEvents = {};
 let highlights = [];
 
+const isPlayBall = (gameEv) => {
+  return gameEv.lastUpdate.indexOf('Play ball') >= 0;
+};
+
 const generateHighlights = (cb) => {
   $('.game-event__container input:checked').each((_, checked) => {
     const id = $(checked).attr('id');
+    let visual = 'diamond';
+
+    if (isPlayBall(gameEvents[id].ev.data)) {
+      visual = 'intro';
+    }
 
     const hl = highlight.makeHighlight({
       id: id,
       gameEvent: gameEvents[id].ev,
       mlustard: gameEvents[id].mlustard,
+      visual,
     });
 
     highlights.push(hl);
@@ -58,6 +68,12 @@ const renderGameEv = (gameEv) => {
     .attr('type', 'checkbox')
     .attr('name', 'game event')
     .val('');
+
+  if (isPlayBall(data)) {
+    $check
+      .attr('checked', true)
+      .attr('disabled', true);
+  }
 
   $label
     .addClass('form-check-label')

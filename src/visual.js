@@ -58,10 +58,25 @@ const updateDiamond = (highlights) => {
   drawBatter(highlights);
   drawPitcher(highlights);
   drawBaserunners(highlights);
+};
 
+const showVisual = (visual) => {
+  switch (visual) {
+    case 'intro':
+      $('#intro').removeClass('d-none');
+      $('#diamond').addClass('d-none');
+      break;
+
+    case 'diamond':
+    default:
+      $('#intro').addClass('d-none');
+      $('#diamond').removeClass('d-none');
+      break;
+  }
 };
 
 module.exports = {
   updateDiamond,
+  showVisual,
 };
 

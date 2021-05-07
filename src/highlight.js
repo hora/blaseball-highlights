@@ -12,11 +12,13 @@ const makeHighlight = (settings) => {
   let maxDialogLen;
   let dialogParts;
   let curDialogPart;
+  let visual;
 
   const init = () => {
     id = settings.id;
     gameEvent = settings.gameEvent;
     mlustard = settings.mlustard;
+    visual = settings.visual;
     commentary = generateCommentary();
     maxDialogLen = setMaxDialogLen();
     dialogParts = [];
@@ -31,6 +33,7 @@ const makeHighlight = (settings) => {
       dialogParts,
       curDialogPart,
       hasDialogLeft,
+      visual,
     };
   };
 

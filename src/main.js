@@ -15,35 +15,30 @@ const getHighlights = () => {
 };
 
 const nextHighlight = () => {
-  visual.updateDiamond(getHighlights());
-  dialog.startHighlight(getHighlights());
+  const hls = getHighlights();
+
+  visual.showVisual(hls.cur.visual);
+  visual.updateDiamond(hls);
+  dialog.startHighlight(hls);
 };
 
 const continueHighlight = () => {
   return dialog.continueHighlight(getHighlights());
 };
 
-const handleAction = (evt) => {
-  if (evt.type === 'keyup' && !(
-    evt.keyCode === 32 || // space
-    evt.keyCode === 39 || // arrow right
-    evt.keyCode === 40    // arrow down
-  )) {
-    return;
-  }
-
+const playHighlight = () => {
   // do nothing if there's no more highlights
   if (highlights.length === curHighlight) { return };
 
   // if we're in the intro, start at the first highlight
-  if (intro) {
-    intro = false;
-    $('#intro').addClass('d-none');
-    $('#diamond').removeClass('d-none');
+  //if (intro) {
+    //intro = false;
+    //$('#intro').addClass('d-none');
+    //$('#diamond').removeClass('d-none');
 
-    nextHighlight();
-    return;
-  }
+    //nextHighlight();
+    //return;
+  //}
 
   // try to advance the highlight, if there's more text to animate
   if (!continueHighlight()) {
@@ -58,6 +53,18 @@ const handleAction = (evt) => {
     // otherwise, show the next highlight
     nextHighlight();
   }
+};
+
+const handleAction = (evt) => {
+  if (evt.type === 'keyup' && !(
+    evt.keyCode === 32 || // space
+    evt.keyCode === 39 || // arrow right
+    evt.keyCode === 40    // arrow down
+  )) {
+    return;
+  }
+
+  playHighlight();
 };
 
 const setupIntro = () => {
@@ -86,11 +93,13 @@ const setupIntro = () => {
     $away.css('height', 'auto');
   }
 
+  nextHighlight();
+
   // add intro text to dialog
-  $('#highlights-dialog__text-one')
-    .text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}. ${gameEv.homeTeamName}`);
-  $('#highlights-dialog__text-two')
-    .text(`vs. the ${gameEv.awayTeamName}.`);
+  //$('#highlights-dialog__text-one')
+    //.text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}. ${gameEv.homeTeamName}`);
+  //$('#highlights-dialog__text-two')
+    //.text(`vs. the ${gameEv.awayTeamName}.`);
 };
 
 const onHighlightsReady = (hls) => {
