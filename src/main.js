@@ -1,8 +1,9 @@
 const gameEventSelector = require('./game-event-selector');
 const dialog = require('./dialog');
 const visual = require('./visual');
+const downloader = require('./downloader');
 
-let highlights = [];
+global.highlights = [];
 let curHighlight = 0;
 let intro = true;
 
@@ -112,10 +113,10 @@ const onHighlightsReady = (hls) => {
 };
 
 const initApp = () => {
+  // todo: skip first steps and go straight to showing the reel
+  // if it's a published story
   gameEventSelector.init(onHighlightsReady);
-
-  window.startHighlight = dialog.startHighlight;
-
+  downloader.init();
 };
 
 initApp();
