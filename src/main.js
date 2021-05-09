@@ -113,10 +113,17 @@ const onHighlightsReady = (hls) => {
 };
 
 const initApp = () => {
-  // todo: skip first steps and go straight to showing the reel
-  // if it's a published story
-  gameEventSelector.init(onHighlightsReady);
-  downloader.init();
+  const highlightsData = $('#highlights-json').attr('data');
+
+  // skip first steps and go straight to showing the reel if it's a published
+  // story
+  if (highlightsData.length) {
+    onHighlightsReady(JSON.parse(highlightsData));
+    //highlights = JSON.parse(highlightsData);
+  } else {
+    gameEventSelector.init(onHighlightsReady);
+    downloader.init();
+  }
 };
 
 initApp();

@@ -94,14 +94,20 @@ const makeHighlight = (settings) => {
     });
   };
 
-  const hasDialogLeft = () => {
-    return !((curDialogPart + 1) === dialogParts.length);
-  };
+  //const hasDialogLeft = () => {
+    //return !((curDialogPart + 1) === dialogParts.length);
+  //};
 
   return init();
 };
 
+// utilities
+const hasDialogLeft = (highlight) => {
+    return !((highlight.curDialogPart + 1) === highlight.dialogParts.length);
+};
+
 module.exports = {
   makeHighlight,
+  hasDialogLeft,
 };
 

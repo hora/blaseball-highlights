@@ -1,4 +1,5 @@
 const util = require('./util');
+const highlight = require('./highlight');
 
 let ready = false;
 
@@ -109,7 +110,7 @@ const onAnimEnd = () => {
 // there are highlights left to the story
 const showNext = () => {
   // todo: show arrow if next, but move into outro
-  if (cur.hasDialogLeft() || next) {
+  if (highlight.hasDialogLeft(cur) || next) {
     $next.addClass('show');
   }
 };
