@@ -46,7 +46,7 @@ const makeHighlight = (settings) => {
 
   // todo: do i wanna support mobile? then update this accordingly
   const setMaxDialogLen = () => {
-    return 40;
+    return 35;
   };
 
   const breakIntoDialogParts = () => {

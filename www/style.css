@@ -1,3 +1,45 @@
+body {
+  font-family: "Open Sans";
+  background-color: #003049;
+  color: white;
+  font-size: 20px;
+  margin: 0;
+  font-weight: 300;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+}
+
+.main-container {
+  max-width: 750px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.container {
+  padding-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.vs-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#highlights-dialog__container {
+}
+
+h2 {
+  font-size: 28px;
+}
+
 #game-events-choose__container {
   height: 330px;
   overflow: scroll;
@@ -63,11 +105,21 @@
   background-color: #000;
 }
 
+#highlights-dialog__container {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+}
+
 #highlights-dialog__text {
-  height: 146px;
+  background-color: pink;
+  color: #003049;
   font-family: 'Exo', sans-serif;
-  font-size: 26pt;
+  font-size: 40px;
   position: relative;
+  padding: 15px 20px;
+  height: 110px;
 }
 
 #highlights-dialog__text p {
@@ -94,12 +146,12 @@
 #highlights-dialog__next {
   width: 0;
   height: 0;
-  border-top: 15px solid transparent;
-  border-bottom: 15px solid transparent;
-  border-left: 20px solid #555;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  border-top: 20px solid #003049;
   position: absolute;
-  right: 0.8em;
-  bottom: 0.4em;
+  right: 20px;
+  bottom: 20px;
 
   opacity: 0;
 }
@@ -121,13 +173,13 @@
   position: absolute;
   margin: 0;
   padding: 0;
-  padding-left: 3px;
-  padding-right: 3px;
+  padding-left: 5px;
+  padding-right: 5px;
   /* should be overwritten by team colour */
   color: #142c61;
-  font-size: 1.2rem;
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 5px;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
   transition: all 0.5s ease-in-out;
   font-weight: 600;
 }
@@ -158,11 +210,14 @@
 }
 
 .vs-logo {
-  height: 300px;
-  width: 300px;
+  width: 200px;
 }
 
 .vs-text {
   margin: 0 20px;
+}
+
+.d-none {
+  display: none;
 }
 

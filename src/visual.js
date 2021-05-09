@@ -17,7 +17,7 @@ const drawBatter = (highlights) => {
   const team = ge.topOfInning ? 'away' : 'home';
 
   diamondLocations['$batting']
-    .css('color', ge[`${team}TeamColor`])
+    //.css('color', ge[`${team}TeamColor`])
     .text(ge[`${team}BatterName`]);
 };
 
@@ -29,7 +29,7 @@ const drawPitcher = (highlights) => {
   const team = ge.topOfInning ? 'home' : 'away';
 
   diamondLocations['$mound']
-    .css('color', ge[`${team}TeamColor`])
+    //.css('color', ge[`${team}TeamColor`])
     .text(ge[`${team}PitcherName`]);
 };
 
@@ -44,7 +44,7 @@ const drawBaserunners = (highlights) => {
     for (let base of BASES) {
       if (ml.baseRunners[base].playerName) {
         diamondLocations[`$${base}`]
-          .css('color', ge[`${team}TeamColor`])
+          //.css('color', ge[`${team}TeamColor`])
           .text(ml.baseRunners[base].playerName);
       } else {
         diamondLocations[`$${base}`]
