@@ -3,6 +3,7 @@
 ## Installation
 
 > npm install -g browserify
+> 
 > npm install
 
 ## Running locally
