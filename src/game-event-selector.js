@@ -60,11 +60,11 @@ const renderGameEv = (gameEv) => {
     .attr('name', 'game event')
     .val('');
 
-  if (isPlayBall(data)) {
+  //if (isPlayBall(data)) {
     $check
       .attr('checked', true)
       .attr('disabled', true);
-  }
+  //}
 
   $label
     .addClass('form-check-label')
@@ -157,7 +157,7 @@ const renderGameEv = (gameEv) => {
 
 const renderGameEvs = () => {
   stopLoading();
-  $('#game-events-select').removeClass('d-none');
+  //$('#game-events-select').removeClass('d-none');
 
   const $container = $('#game-events-choose__container');
 
@@ -170,6 +170,9 @@ const renderGameEvs = () => {
       $container.append($gameEv);
     }
   }
+
+  // hack for mvp:
+  $('#game-events-choose__form button')[0].click();
 };
 
 const getGameEvents = async (gameId, nextPage) => {
@@ -224,7 +227,7 @@ const init = (highlightsReadyCb) => {
   $gameEvForm.on('submit', (ev) => {
     ev.preventDefault();
 
-    const gameId = $gameEvForm .find('#game-id').val() .split('/').pop();
+    const gameId = $gameEvForm.find('#game-id').val().split('/').pop();
     getGameEvents(gameId);
   });
 

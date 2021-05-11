@@ -38,10 +38,25 @@ const makeHighlight = (settings) => {
   };
 
   const generateCommentary = () => {
-    return grandSlalami.getComment({
-      gameEvent: gameEvent.data,
-      mlustard: mlustard,
-    });
+    // for mvp: skip grand slalami, just return original lastUpdate +
+    // scoreUpdate if present
+
+    let ret = '';
+
+    if (gameEvent.data.lastUpdate) {
+      ret += gameEvent.data.lastUpdate;
+    }
+    
+    if (gameEvent.data.scoreUpdate) {
+      ret += `\n${gameEvent.data.scoreUpdate}`;
+    }
+
+    return ret;
+
+    //return grandSlalami.getComment({
+      //gameEvent: gameEvent.data,
+      //mlustard: mlustard,
+    //});
   };
 
   // todo: do i wanna support mobile? then update this accordingly

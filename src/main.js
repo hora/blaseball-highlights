@@ -122,6 +122,11 @@ const setupIntro = () => {
 };
 
 const onHighlightsReady = (hls) => {
+
+  $('#game-event-form').addClass('d-none');
+  $('#visuals').removeClass('d-none');
+  $('#highlights-dialog__container').removeClass('d-none');
+
   highlights = hls;
 
   setupIntro();
