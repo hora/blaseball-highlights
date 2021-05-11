@@ -32,16 +32,6 @@ const playHighlight = () => {
   // do nothing if there's no more highlights
   if (highlights.length === curHighlight) { return };
 
-  // if we're in the intro, start at the first highlight
-  //if (intro) {
-    //intro = false;
-    //$('#intro').addClass('d-none');
-    //$('#diamond').removeClass('d-none');
-
-    //nextHighlight();
-    //return;
-  //}
-
   // try to advance the highlight, if there's more text to animate
   if (!continueHighlight()) {
     curHighlight++;
@@ -72,8 +62,8 @@ const handleAction = (evt) => {
 const setupIntro = () => {
   // grab game info from first highlight
   const gameEv = highlights[0].gameEvent.data;
-  const $home = $('#intro .vs-logo__home');
-  const $away = $('#intro .vs-logo__away');
+  const $home = $('.vs-logo__home');
+  const $away = $('.vs-logo__away');
 
   let hNick = gameEv.homeTeamNickname.split(' ').pop().toLowerCase();
   let aNick = gameEv.awayTeamNickname.split(' ').pop().toLowerCase();
@@ -82,9 +72,10 @@ const setupIntro = () => {
     aNick += '-away';
   }
 
-  $('#intro .game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
+  $('.game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
   $home.attr('src', `./images/logo-${hNick}.png`);
   $away.attr('src', `./images/logo-${aNick}.png`);
+  $('.diamond-header .matchup').text(`${gameEv.homeTeamName} vs. ${gameEv.awayTeamName}`);
 
   // georgias don't have a standard size logo
   if (hNick === 'georgias') {
@@ -128,12 +119,6 @@ const setupIntro = () => {
   $('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
 
   nextHighlight();
-
-  // add intro text to dialog
-  //$('#highlights-dialog__text-one')
-    //.text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}. ${gameEv.homeTeamName}`);
-  //$('#highlights-dialog__text-two')
-    //.text(`vs. the ${gameEv.awayTeamName}.`);
 };
 
 const onHighlightsReady = (hls) => {
