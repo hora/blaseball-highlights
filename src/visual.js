@@ -1,4 +1,6 @@
 const util = require('./util');
+const teamsData = require('../lib/teams-data');
+const weather = require('../lib/weather');
 
 const $diamond = $('#diamond');
 const diamondLocations = {
@@ -68,10 +70,54 @@ const drawBaserunners = (highlights) => {
   }
 };
 
+const drawScoreboard = (highlights) => {
+  const cur = highlights.cur;
+  const ml = cur.mlustard;
+  const ge = cur.gameEvent.data;
+
+  const $scoreboard = $('#diamond__scoreboard');
+
+  // score
+  const $home = $scoreboard.find('.scoreboard-teams__home span');
+  $home.first().text(teamsData[ge.homeTeam].shorthand);
+  $home.last().text(ge.homeScore);
+
+  const $away = $scoreboard.find('.scoreboard-teams__away span');
+  $away.first().text(teamsData[ge.awayTeam].shorthand);
+  $away.last().text(ge.awayScore);
+
+  // bases
+  const $bases = $scoreboard.find('.scoreboard-bases');
+  $bases.empty();
+  $bases.append(util.makeBaseDiamond(ml.baseRunners.third.playerName));
+  $bases.append(util.makeBaseDiamond(ml.baseRunners.second.playerName));
+  $bases.append(util.makeBaseDiamond(ml.baseRunners.first.playerName));
+
+  // count
+  const $count = $scoreboard.find('.scoreboard-count__count span');
+  $count.first().text(ge.atBatBalls);
+  $count.last().text(ge.atBatStrikes);
+  const $outs = $scoreboard.find('.scoreboard-count__outs span');
+  $outs.text(ge.halfInningOuts);
+
+  // inning
+  const $inning = $scoreboard.find('.scoreboard-other__inning span');
+  $inning.first().text(ge.topOfInning ? 'TOP' : 'BOT');
+  $inning.last().text(util.getInningText(ge.inning + 1));
+
+  // weather
+  const $weather = $scoreboard.find('.scoreboard-other__weather span');
+  $weather
+    .text(weather[ge.weather].icon || weather[ge.weather].name)
+    .attr('title', weather[ge.weather].name);
+};
+
 const updateDiamond = (highlights) => {
   drawBatter(highlights);
   drawPitcher(highlights);
   drawBaserunners(highlights);
+
+  drawScoreboard(highlights);
 };
 
 const showVisual = (visual) => {

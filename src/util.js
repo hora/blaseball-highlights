@@ -38,9 +38,44 @@ const getPlayerNameWithInitial = (name) => {
   return ret;
 };
 
+const getInningText = (inning) => {
+  let ret = `${inning}`;
+
+  switch (inning) {
+
+    case 1:
+      ret += 'st';
+      break;
+    case 2:
+      ret += 'nd';
+      break;
+    case 3:
+      ret += 'rd';
+      break;
+    default:
+      ret += 'th';
+      break;
+  }
+
+  return ret;
+};
+
+const makeBaseDiamond = (occ) => {
+  const $diamond = $('<span>').addClass('diamond');
+
+  if (occ) {
+    $diamond.addClass('filled');
+  }
+
+  return $diamond;
+};
+
+
 module.exports = {
   prefixedOn,
   getEmoji,
   getPlayerNameWithInitial ,
+  getInningText,
+  makeBaseDiamond,
 };
 

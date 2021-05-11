@@ -96,7 +96,7 @@ const setupIntro = () => {
   }
 
   // set the diamond colours and add the diamond css
-  const homeTeam = teamsData.data[gameEv.homeTeam];
+  const homeTeam = teamsData[gameEv.homeTeam];
   const $diamond = $('#diamond-svg');
   const $grass = $diamond.find('.grass');
   const $dirt = $diamond.find('.dirt');

@@ -37,16 +37,6 @@ const makeCountCircle = (classes) => {
   return $('<span>').addClass(classes);
 };
 
-const makeBaseDiamond = (occ) => {
-  const $diamond = $('<span>').addClass('diamond');
-
-  if (occ) {
-    $diamond.addClass('filled');
-  }
-
-  return $diamond;
-};
-
 const renderGameEv = (gameEv) => {
   const data = gameEv.ev.data;
 
@@ -128,9 +118,9 @@ const renderGameEv = (gameEv) => {
   }
 
   // fill in base diamonds
-  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
-  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
-  $bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
   // todo: deal with 4 bases
   //$bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
 
