@@ -2,6 +2,7 @@ const gameEventSelector = require('./game-event-selector');
 const dialog = require('./dialog');
 const visual = require('./visual');
 const downloader = require('./downloader');
+const teamsData = require('../lib/teams-data');
 
 global.highlights = [];
 let curHighlight = 0;
@@ -93,6 +94,36 @@ const setupIntro = () => {
   if (aNick === 'georgias') {
     $away.css('height', 'auto');
   }
+
+  // set the diamond colours and add the diamond css
+  const homeTeam = teamsData.data[gameEv.homeTeam];
+  const $diamond = $('#diamond-svg');
+  const $grass = $diamond.find('.grass');
+  const $dirt = $diamond.find('.dirt');
+  const $neutral = $diamond.find('.neutral');
+  const $mound = $diamond.find('.mound');
+
+  $grass.first()
+    .attr('fill', `#${homeTeam.colours.grass}`);
+  $grass.last()
+    .attr('fill', `#${homeTeam.colours.grass}`)
+    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+
+  $dirt
+    .attr('fill', `#${homeTeam.colours.dirt}`)
+    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+
+  $mound
+    .attr('fill', `#${homeTeam.colours.main}`)
+    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+
+  $neutral
+    .attr('fill', `#${homeTeam.colours.neutral}`);
+
+  $('#diamond__image')
+    .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');
+
+  $('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
 
   nextHighlight();
 

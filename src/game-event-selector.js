@@ -1,6 +1,7 @@
 const mlustard = require('mlustard');
 
 const highlight = require('./highlight');
+const util = require('./util');
 
 let gameEvents = {};
 let highlights = [];
@@ -93,20 +94,8 @@ const renderGameEv = (gameEv) => {
   const $strikes = $('<span>');
   const $outs = $('<span>');
 
-  let homeEmoji = '';
-  let awayEmoji = '';
-
-  try {
-    homeEmoji = data.homeTeamEmoji ? String.fromCodePoint(data.homeTeamEmoji) : '';
-  } catch (err) {
-    homeEmoji = data.homeTeamEmoji;
-  }
-
-  try {
-    awayEmoji = data.awayTeamEmoji ? String.fromCodePoint(data.awayTeamEmoji) : '';
-  } catch (err) {
-    awayEmoji = data.awayTeamEmoji;
-  }
+  let homeEmoji = util.getEmoji('home', data);
+  let awayEmoji = util.getEmoji('away', data);
 
   let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
   let bases = '';

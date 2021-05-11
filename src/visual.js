@@ -1,3 +1,5 @@
+const util = require('./util');
+
 const $diamond = $('#diamond');
 const diamondLocations = {
   $mound: $diamond.find('.mound'),
@@ -15,10 +17,15 @@ const drawBatter = (highlights) => {
   const ge = cur.gameEvent.data;
 
   const team = ge.topOfInning ? 'away' : 'home';
+  let nameWithEmoji = '';
+
+  if (ge[`${team}BatterName`]) {
+    const name = util.getPlayerNameWithInitial(ge[`${team}BatterName`]);
+    nameWithEmoji = `${util.getEmoji(team, ge)} ${name}`;
+  }
 
   diamondLocations['$batting']
-    //.css('color', ge[`${team}TeamColor`])
-    .text(ge[`${team}BatterName`]);
+    .text(nameWithEmoji);
 };
 
 const drawPitcher = (highlights) => {
@@ -27,10 +34,15 @@ const drawPitcher = (highlights) => {
   const ge = cur.gameEvent.data;
 
   const team = ge.topOfInning ? 'home' : 'away';
+  let nameWithEmoji = '';
+
+  if (ge[`${team}PitcherName`]) {
+    const name = util.getPlayerNameWithInitial(ge[`${team}PitcherName`]);
+    nameWithEmoji = `${util.getEmoji(team, ge)} ${name}`;
+  }
 
   diamondLocations['$mound']
-    //.css('color', ge[`${team}TeamColor`])
-    .text(ge[`${team}PitcherName`]);
+    .text(nameWithEmoji);
 };
 
 const drawBaserunners = (highlights) => {
@@ -42,10 +54,12 @@ const drawBaserunners = (highlights) => {
 
   if (ml && ml.baseRunners) {
     for (let base of BASES) {
-      if (ml.baseRunners[base].playerName) {
+      let name = ml.baseRunners[base].playerName;
+
+      if (name) {
+        let nameWithEmoji = `${util.getEmoji(team, ge)} ${util.getPlayerNameWithInitial(name)}`;
         diamondLocations[`$${base}`]
-          //.css('color', ge[`${team}TeamColor`])
-          .text(ml.baseRunners[base].playerName);
+          .text(nameWithEmoji);
       } else {
         diamondLocations[`$${base}`]
           .text('');
