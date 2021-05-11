@@ -5,10 +5,15 @@ body {
   font-size: 20px;
   margin: 0;
   font-weight: 300;
+  line-height: 1.4;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
+}
+
+ul {
+  list-style: none;
 }
 
 .main-container {
@@ -92,7 +97,7 @@ h2 {
   width: 12px;
   height: 12px;
   display: inline-block;
-  border: 1px solid black;
+  border: 1px solid #003049;
   transform: translate(2px, 2px) rotate(45deg);
 }
 
@@ -103,7 +108,7 @@ h2 {
 }
 
 .diamond.filled {
-  background-color: #000;
+  background-color: #003049;
 }
 
 #highlights-dialog__container {
@@ -197,8 +202,8 @@ h2 {
 }
 
 .player-on-diamond.third {
-  top: 30px;
-  left: 330px;
+  top: 72px;
+  left: 240px;
 }
 
 .player-on-diamond.batting {
@@ -245,9 +250,40 @@ h2 {
   border-radius: 5px;
   padding: 4px 8px;
   font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.scoreboard > div {
-  display: inline-block;
+.scoreboard li {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.scoreboard-teams > div {
+  min-width: 60px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.scoreboard-teams span:last-child {
+  background-color: #ff9770;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.scoreboard-teams__away {
+  margin-top: 2px;
+}
+
+.scoreboard-count__outs {
+  text-transform: uppercase;
+}
+
+.scoreboard li.scoreboard-bases {
+  padding-right: 8px;
 }
 
