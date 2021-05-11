@@ -163,10 +163,10 @@ h2 {
 }
 
 #diamond__image {
-  width: 600px;
+  width: 720px;
   height: 460px;
   /*background-image: url('./images/diamond.svg');*/
-  background-size: 600px auto;
+  background-size: 720px auto;
   position: relative;
 }
 

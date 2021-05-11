@@ -104,7 +104,8 @@ const setupIntro = () => {
   const $mound = $diamond.find('.mound');
 
   $grass.first()
-    .attr('fill', `#${homeTeam.colours.grass}`);
+    .attr('fill', `#${homeTeam.colours.grass}`)
+    .attr('stroke', `#${homeTeam.colours.grass}`);
   $grass.last()
     .attr('fill', `#${homeTeam.colours.grass}`)
     .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
@@ -118,7 +119,8 @@ const setupIntro = () => {
     .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
 
   $neutral
-    .attr('fill', `#${homeTeam.colours.neutral}`);
+    .attr('fill', `#${homeTeam.colours.neutral}`)
+    .attr('stroke', `#${homeTeam.colours.neutral}`);
 
   $('#diamond__image')
     .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');
