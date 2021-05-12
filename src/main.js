@@ -142,14 +142,16 @@ const setupIntro = () => {
   if (homeTeam.colours.dirt) {
     $dirt.attr('fill', `#${homeTeam.colours.dirt}`);
   }
-  
+
   if (homeTeam.colours.dirtOutline) {
     $dirt.attr('stroke', `#${homeTeam.colours.dirtOutline}`);
   }
 
-  $mound
-    .attr('fill', `#${homeTeam.colours.main}`)
-    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  $mound.attr('fill', `#${homeTeam.colours.main}`);
+
+  if (homeTeam.colours.dirtOutline) {
+    $mound.attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  }
 
   if (homeTeam.colours.neutral) {
     $neutral
