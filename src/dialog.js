@@ -34,7 +34,7 @@ const init = () => {
   ready = true;
 };
 
-const startHighlight = (highlights) => {;
+const startHighlight = (highlights, skipAnimation) => {;
   cur = highlights.cur;
   prev = highlights.prev;
   next = highlights.next;
@@ -47,7 +47,11 @@ const startHighlight = (highlights) => {;
   $lineTwo.removeClass('animation-finished animate');
 
   cur.started = true;
-  animateHighlight(cur);
+  if (skipAnimation) {
+    showHighlight(cur);
+  } else {
+    animateHighlight(cur);
+  }
 };
 
 const animateHighlight = (highlight) => {
@@ -59,6 +63,19 @@ const animateHighlight = (highlight) => {
 
   hideControl();
   animate('one');
+};
+
+const showHighlight = (highlight) => {
+  $lineOne.removeClass('animate');
+  $lineTwo.removeClass('animate');
+
+  $lineOne.text(highlight.dialogParts[highlight.curDialogPart][0] || '');
+  $lineTwo.text(highlight.dialogParts[highlight.curDialogPart][1] || '');
+
+  $lineOne.addClass('animation-finished');
+  $lineTwo.addClass('animation-finished');
+
+  showControl();
 };
 
 const animate = (line) => {
@@ -145,15 +162,39 @@ const continueHighlight = (highlights) => {
   if (!cur) { return false; }
   if (!cur.started) { return false; }
 
-  cur.curDialogPart++;
+  // if currently animating, simply end the animation
+  if (lineOneAnimating) {
 
-  // no more text to this highlight
-  if (cur.curDialogPart === cur.dialogParts.length) {
-    cur.curDialogPart = 0;
-    return false;
+    $lineOne
+      .removeClass('animate')
+      .addClass('animation-finished');
+    lineOneAnimating = false;
+    $lineTwo
+      .removeClass('animate')
+      .addClass('animation-finished');
+    lineTwoAnimating = false;
+    showControl();
+
+  } else if (lineTwoAnimating) {
+
+    $lineTwo
+      .removeClass('animate')
+      .addClass('animation-finished');
+    lineTwoAnimating = false;
+    showControl();
+
+  } else {
+    cur.curDialogPart++;
+
+    // no more text to this highlight
+    if (cur.curDialogPart === cur.dialogParts.length) {
+      cur.curDialogPart = 0;
+      return false;
+    }
+
+    animateHighlight(cur);
   }
 
-  animateHighlight(cur);
   return true;
 };
 
@@ -173,7 +214,7 @@ const reverseHighlight = (highlights) => {
     return false;
   }
 
-  animateHighlight(cur);
+  showHighlight(cur);
   return true;
 };
 

@@ -16,12 +16,12 @@ const getHighlights = () => {
   };
 };
 
-const nextHighlight = () => {
+const nextHighlight = (skipAnimation) => {
   const hls = getHighlights();
 
   visual.showVisual(hls.cur.visual);
   visual.updateDiamond(hls);
-  dialog.startHighlight(hls);
+  dialog.startHighlight(hls, skipAnimation);
 };
 
 const continueHighlight = () => {
@@ -66,7 +66,7 @@ const playHighlight = (direction) => {
       }
 
       // todo: fix the naming, oh gods this is cursed
-      nextHighlight();
+      nextHighlight(true);
     }
   }
 };
