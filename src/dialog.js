@@ -6,7 +6,7 @@ let ready = false;
 let $dialogs;
 let $lineOne;
 let $lineTwo;
-let $next;
+let $control;
 
 let lineOneAnimating;
 let lineTwoAnimating;
@@ -22,7 +22,7 @@ const init = () => {
   $dialogs = $('#highlights-dialog__text p');
   $lineOne = $dialogs.first();
   $lineTwo = $dialogs.last();
-  $next = $('#highlights-dialog__next');
+  $control = $('.dialog-control');
 
   lineOneAnimating = false;
   lineTwoAnimating = false;
@@ -51,10 +51,13 @@ const startHighlight = (highlights) => {;
 };
 
 const animateHighlight = (highlight) => {
+  $lineOne.removeClass('animation-finished animate');
+  $lineTwo.removeClass('animation-finished animate');
+
   $lineOne.text(highlight.dialogParts[highlight.curDialogPart][0] || '');
   $lineTwo.text(highlight.dialogParts[highlight.curDialogPart][1] || '');
 
-  hideNext();
+  hideControl();
   animate('one');
 };
 
@@ -90,7 +93,7 @@ const onAnimEnd = () => {
   if (lineTwoAnimating) {
     stopAnimate('two');
 
-    showNext();
+    showControl();
   }
 
   if (lineOneAnimating) {
@@ -100,9 +103,14 @@ const onAnimEnd = () => {
     if ($lineTwo.text().length) {
       animate('two');
     } else {
-      showNext();
+      showControl();
     }
   }
+};
+
+const showControl = () => {
+  showPrev();
+  showNext();
 };
 
 // show next arrow if:
@@ -111,12 +119,22 @@ const onAnimEnd = () => {
 const showNext = () => {
   // todo: show arrow if next, but move into outro
   if (highlight.hasDialogLeft(cur) || next) {
-    $next.addClass('show');
+    $control.last().addClass('show');
   }
 };
 
-const hideNext = () => {
-  $next.removeClass('show');
+// show pre arrow if:
+// there are parts before this highlight
+// there are highlights earlier in the story
+const showPrev = () => {
+  // todo: show arrow if next, but move into outro
+  if (highlight.hasDialogPrev(cur) || prev) {
+    $control.first().addClass('show');
+  }
+};
+
+const hideControl = () => {
+  $control.removeClass('show');
 };
 
 const continueHighlight = (highlights) => {
@@ -124,12 +142,34 @@ const continueHighlight = (highlights) => {
   prev = highlights.prev;
   next = highlights.next;
 
+  if (!cur) { return false; }
   if (!cur.started) { return false; }
 
   cur.curDialogPart++;
 
   // no more text to this highlight
   if (cur.curDialogPart === cur.dialogParts.length) {
+    cur.curDialogPart = 0;
+    return false;
+  }
+
+  animateHighlight(cur);
+  return true;
+};
+
+const reverseHighlight = (highlights) => {
+  cur = highlights.cur;
+  prev = highlights.prev;
+  next = highlights.next;
+
+  if (!cur) { return false; }
+  if (!cur.started) { return false; }
+
+  cur.curDialogPart--;
+
+  // no more text to this highlight
+  if (cur.curDialogPart === -1) {
+    cur.curDialogPart = 0;
     return false;
   }
 
@@ -147,6 +187,7 @@ const setIntro = (one, two) => {
 module.exports = {
   startHighlight,
   continueHighlight,
+  reverseHighlight,
   setIntro,
 };
 

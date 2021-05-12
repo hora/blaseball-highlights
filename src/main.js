@@ -28,35 +28,70 @@ const continueHighlight = () => {
   return dialog.continueHighlight(getHighlights());
 };
 
-const playHighlight = () => {
-  // do nothing if there's no more highlights
-  if (highlights.length === curHighlight) { return };
+const reverseHighlight = () => {
+  return dialog.reverseHighlight(getHighlights());
+};
 
-  // try to advance the highlight, if there's more text to animate
-  if (!continueHighlight()) {
-    curHighlight++;
+const playHighlight = (direction) => {
 
-    // if there are no more highlights, move into outro
-    if (highlights.length === curHighlight) {
-      // todo: outro
-      return;
+  if (direction === 'next') {
+    // try to advance the highlight, if there's more text to animate
+    if (!continueHighlight()) {
+
+      // do nothing if there's no more highlights
+      if (highlights.length - 1 === curHighlight) { return };
+
+      curHighlight++;
+
+      // if there are no more highlights, don't advance
+      if (highlights.length === curHighlight) {
+        return;
+      }
+
+      // otherwise, show the next highlight
+      nextHighlight();
     }
+  } else {
+    // try to reverse highlight, if there was previous text to animate
+    if (!reverseHighlight()) {
 
-    // otherwise, show the next highlight
-    nextHighlight();
+      // do nothing if there's no previous highlights
+      if (curHighlight === 0) { return };
+
+      curHighlight--;
+
+      // if there are no previous highlights, don't reverse
+      if (curHighlight < 0) {
+        return;
+      }
+
+      // todo: fix the naming, oh gods this is cursed
+      nextHighlight();
+    }
   }
 };
 
 const handleAction = (evt) => {
-  if (evt.type === 'keyup' && !(
-    evt.keyCode === 32 || // space
-    evt.keyCode === 39 || // arrow right
-    evt.keyCode === 40    // arrow down
-  )) {
-    return;
+  let direction;
+
+  if (evt.type === 'keyup') {
+    if (evt.keyCode === 37) { // arrow left
+      direction = 'prev';
+    } else if (evt.keyCode === 39) {
+      direction = 'next';
+    } else {
+      return;
+    }
+  } else { // click
+    // todo: fix this, this is cursed:
+    if ($(evt.target).attr('id').indexOf('next') >= 0) {
+      direction = 'next';
+    } else if ($(evt.target).attr('id').indexOf('next') >= 0) {
+      direction = 'prev';
+    }
   }
 
-  playHighlight();
+  playHighlight(direction);
 };
 
 const setupIntro = () => {
@@ -127,7 +162,7 @@ const onHighlightsReady = (hls) => {
   setupIntro();
 
   $(document).on('keyup', handleAction);
-  $('#highlights-dialog__container').on('click', handleAction);
+  $('.dialog-control').on('click', handleAction);
 };
 
 const initApp = () => {
