@@ -121,8 +121,13 @@ const hasDialogLeft = (highlight) => {
     return !((highlight.curDialogPart + 1) === highlight.dialogParts.length);
 };
 
+const hasDialogPrev = (highlight) => {
+    return !((highlight.curDialogPart - 1) === -1);
+};
+
 module.exports = {
   makeHighlight,
   hasDialogLeft,
+  hasDialogPrev,
 };
 
