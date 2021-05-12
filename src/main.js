@@ -128,25 +128,41 @@ const setupIntro = () => {
   const $dirt = $diamond.find('.dirt');
   const $neutral = $diamond.find('.neutral');
   const $mound = $diamond.find('.mound');
+  const $bases = $diamond.find('.base');
 
-  $grass.first()
-    .attr('fill', `#${homeTeam.colours.grass}`)
-    .attr('stroke', `#${homeTeam.colours.grass}`);
-  $grass.last()
-    .attr('fill', `#${homeTeam.colours.grass}`)
-    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  if (homeTeam.colours.grass) {
+    $grass.first()
+      .attr('fill', `#${homeTeam.colours.grass}`)
+      .attr('stroke', `#${homeTeam.colours.grass}`);
+    $grass.last()
+      .attr('fill', `#${homeTeam.colours.grass}`)
+      .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  }
 
-  $dirt
-    .attr('fill', `#${homeTeam.colours.dirt}`)
-    .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  if (homeTeam.colours.dirt) {
+    $dirt.attr('fill', `#${homeTeam.colours.dirt}`);
+  }
+  
+  if (homeTeam.colours.dirtOutline) {
+    $dirt.attr('stroke', `#${homeTeam.colours.dirtOutline}`);
+  }
 
   $mound
     .attr('fill', `#${homeTeam.colours.main}`)
     .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
 
-  $neutral
-    .attr('fill', `#${homeTeam.colours.neutral}`)
-    .attr('stroke', `#${homeTeam.colours.neutral}`);
+  if (homeTeam.colours.neutral) {
+    $neutral
+      .attr('fill', `#${homeTeam.colours.neutral}`)
+      .attr('stroke', `#${homeTeam.colours.neutral}`);
+  }
+
+  if (homeTeam.colours.bases) {
+    $bases
+      .attr('fill', `#${homeTeam.colours.bases}`)
+      .attr('stroke', `#${homeTeam.colours.basesOutline}`);
+  }
+
 
   $('#diamond__image')
     .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');

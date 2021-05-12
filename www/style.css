@@ -273,7 +273,7 @@ h2 {
 }
 
 .scoreboard-teams > div {
-  min-width: 60px;
+  min-width: 65px;
   display: flex;
   justify-content: space-between;
   font-size: 16px;
