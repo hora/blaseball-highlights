@@ -226,12 +226,15 @@ h2 {
   top: 164px;
 }
 
-.mound-logo {
+.diamond-logo {
   top: 202px;
   left: 2px;
   height: 55px;
   position: absolute;
   transform: rotate(90deg);
+}
+
+.diamond-logo.m-outline {
   border: 1px solid black;
   border-radius: 50%;
   padding: 1px;

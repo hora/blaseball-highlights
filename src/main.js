@@ -8,6 +8,18 @@ global.highlights = [];
 let curHighlight = 0;
 let intro = true;
 
+const DIAMOND_COLOURS = {
+  mound: 'ffcf56',
+  moundOutline: '003049',
+  bases: 'ff9770',
+  basesOutline: '003049',
+  grass: '2b9348',
+  grassOutline: 'fff',
+  dirt: 'ffcf56',
+  foulZone: 'edead0',
+  foulZoneOutline: 'edead0',
+};
+
 const getHighlights = () => {
   return {
     prev: highlights[curHighlight - 1],
@@ -126,52 +138,53 @@ const setupIntro = () => {
   // set the diamond colours and add the diamond css
   const homeTeam = teamsData[gameEv.homeTeam];
   const $diamond = $('#diamond-svg');
-  const $grass = $diamond.find('.grass');
-  const $dirt = $diamond.find('.dirt');
-  const $neutral = $diamond.find('.neutral');
-  const $mound = $diamond.find('.mound');
-  const $bases = $diamond.find('.base');
+  const $grass = $diamond.find('.diamond-svg__grass');
+  const $dirt = $diamond.find('.diamond-svg__dirt');
+  const $foulZone = $diamond.find('.diamond-svg__foul-zone');
+  const $mound = $diamond.find('.diamond-svg__mound');
+  const $bases = $diamond.find('.diamond-svg__base');
+  const $logo = $('.diamond-logo');
 
-  if (homeTeam.colours.grass) {
-    $grass.first()
-      .attr('fill', `#${homeTeam.colours.grass}`)
-      .attr('stroke', `#${homeTeam.colours.grass}`);
+  // colour the mound
+  // tries mound colour, or sets official as default
+  $mound
+    .attr('fill', `#${homeTeam.colours.mound || homeTeam.colours.official}`)
+    .attr('stroke', `#${homeTeam.colours.moundOutline || DIAMOND_COLOURS.moundOutline}`);
+
+  // colour the bases
+  // tries bases colour, or sets official as default
+  $bases
+    .attr('fill', `#${homeTeam.colours.bases || homeTeam.colours.official}`)
+    .attr('stroke', `#${homeTeam.colours.basesOutline || DIAMOND_COLOURS.basesOutline}`);
+
+  // colour the grass
+  $grass.first()
+      .attr('fill', `#${homeTeam.colours.grass || DIAMOND_COLOURS.grass}`)
+      .attr('stroke', `#${homeTeam.colours.grassOutline || DIAMOND_COLOURS.grassOutline}`);
     $grass.last()
-      .attr('fill', `#${homeTeam.colours.grass}`)
-      .attr('stroke', `#${homeTeam.colours.dirtOutline}`);
-  }
+      .attr('fill', `#${homeTeam.colours.grass || DIAMOND_COLOURS.grass}`)
+      .attr('stroke', `#${homeTeam.colours.dirtOutline || DIAMOND_COLOURS.grassOutline}`);
 
-  if (homeTeam.colours.dirt) {
-    $dirt.attr('fill', `#${homeTeam.colours.dirt}`);
-  }
+  // colour the dirt
+  $dirt
+    .attr('fill', `#${homeTeam.colours.dirt || DIAMOND_COLOURS.dirt}`)
+    .attr('stroke', `#${homeTeam.colours.dirtOutline || DIAMOND_COLOURS.dirtOutline}`);
 
-  if (homeTeam.colours.dirtOutline) {
-    $dirt.attr('stroke', `#${homeTeam.colours.dirtOutline}`);
-  }
+  // colour the foul zone
+  $foulZone
+      .attr('fill', `#${homeTeam.colours.foulZone || DIAMOND_COLOURS.foulZone}`)
+      .attr('stroke', `#${homeTeam.colours.foulZoneOutline || DIAMOND_COLOURS.foulZoneOutline}`);
 
-  $mound.attr('fill', `#${homeTeam.colours.main}`);
-
-  if (homeTeam.colours.dirtOutline) {
-    $mound.attr('stroke', `#${homeTeam.colours.dirtOutline}`);
-  }
-
-  if (homeTeam.colours.neutral) {
-    $neutral
-      .attr('fill', `#${homeTeam.colours.neutral}`)
-      .attr('stroke', `#${homeTeam.colours.neutral}`);
-  }
-
-  if (homeTeam.colours.bases) {
-    $bases
-      .attr('fill', `#${homeTeam.colours.bases}`)
-      .attr('stroke', `#${homeTeam.colours.basesOutline}`);
-  }
-
-
+  // update the diamond svg
   $('#diamond__image')
     .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');
 
-  $('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
+  // draw home logo behind home plate
+  $logo
+    .attr('src', homeTeam.stadiumLogoURL || homeTeam.homeLogoURL)
+    .toggleClass('m-outline', homeTeam.stadiumLogoOutline);
+
+  //$('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
 
   // focus on the body so arrow keyups can be registered
   $('body').focus();
