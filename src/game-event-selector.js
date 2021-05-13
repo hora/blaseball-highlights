@@ -224,6 +224,9 @@ const stopLoading = () => {
 const init = (highlightsReadyCb) => {
   const $gameEvForm = $('#game-event-form');
 
+  // focus on game input
+  $('#game-id').focus();
+
   $gameEvForm.on('submit', (ev) => {
     ev.preventDefault();
 

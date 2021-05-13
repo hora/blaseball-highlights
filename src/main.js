@@ -76,8 +76,10 @@ const handleAction = (evt) => {
 
   if (evt.type === 'keyup') {
     if (evt.keyCode === 37) { // arrow left
+      evt.preventDefault();
       direction = 'prev';
     } else if (evt.keyCode === 39) {
+      evt.preventDefault();
       direction = 'next';
     } else {
       return;
@@ -170,6 +172,9 @@ const setupIntro = () => {
     .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');
 
   $('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
+
+  // focus on the body so arrow keyups can be registered
+  $('body').focus();
 
   nextHighlight();
 };
