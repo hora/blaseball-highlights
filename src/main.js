@@ -14,8 +14,9 @@ const DIAMOND_COLOURS = {
   bases: 'ff9770',
   basesOutline: '003049',
   grass: '2b9348',
-  grassOutline: 'fff',
+  grassOutline: '2b9348',
   dirt: 'ffcf56',
+  dirtOutline: 'fff',
   foulZone: 'edead0',
   foulZoneOutline: 'edead0',
 };
