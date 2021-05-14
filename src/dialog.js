@@ -192,7 +192,9 @@ const continueHighlight = (highlights) => {
       return false;
     }
 
-    animateHighlight(cur);
+    // skip animations for now
+    showHighlight(cur);
+    //animateHighlight(cur);
   }
 
   return true;

@@ -62,7 +62,7 @@ const playHighlight = (direction) => {
       }
 
       // otherwise, show the next highlight
-      nextHighlight();
+      nextHighlight(true);
     }
   } else {
     // try to reverse highlight, if there was previous text to animate
@@ -190,7 +190,7 @@ const setupIntro = () => {
   // focus on the body so arrow keyups can be registered
   $('body').focus();
 
-  nextHighlight();
+  nextHighlight(true);
 };
 
 const onHighlightsReady = (hls) => {
