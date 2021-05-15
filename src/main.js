@@ -123,8 +123,12 @@ const setupIntro = () => {
   }
 
   $('.game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
-  $home.attr('src', `./images/logo-${hNick}.png`);
-  $away.attr('src', `./images/logo-${aNick}.png`);
+  $home
+    .attr('src', `./images/logo-${hNick}.png`)
+    .attr('alt', `${gameEv.homeTeamName}`);
+  $away
+    .attr('src', `./images/logo-${aNick}.png`)
+    .attr('alt', `${gameEv.awayTeamName}`);
   $('.diamond-header .matchup').text(`${gameEv.homeTeamName} vs. ${gameEv.awayTeamName}`);
 
   // georgias don't have a standard size logo

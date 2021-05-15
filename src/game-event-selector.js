@@ -223,8 +223,6 @@ const getGameEvents = async (gameId, nextPage) => {
       return resp.json();
     })
     .then((data) => {
-      //if (resp.ok) {
-      //resp.json().then((data) => {
       for (let gameEv of data.data) {
         gameEvents[gameEv.hash] = {
           ev: gameEv,
@@ -239,10 +237,6 @@ const getGameEvents = async (gameId, nextPage) => {
         renderGameEvs();
         console.debug('getGameEvents done:', gameEvents);
       }
-      //});
-        //const data = await resp.json();
-
-      //}
     })
     .catch((err) => {
       console.error(err);
@@ -250,11 +244,6 @@ const getGameEvents = async (gameId, nextPage) => {
       stopLoading();
     });
 
-  //} else {
-    // todo: add error handling
-    //$('#game-event-form error-msg').removeClass('d-none');
-    //stopLoading();
-  //}
 };
 
 const startLoading = () => {
