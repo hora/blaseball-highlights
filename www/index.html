@@ -31,28 +31,26 @@
 
   <div class="main-container centered">
 
-  <div id="game-event-form" class="container">
-    <div class="row">
-    <div class="col"></div>
+  <div id="game-event-form" class="container game-chooser">
 
-    <div class="col-8">
+    <h2>Choose a game</h2>
     <form id="game-event-form">
-      <div class="mb-3">
-        <label for="game-id" class="form-label">Game ID, or, link to game page
-          on <a href="https://reblase.sibr.dev/">Reblase</a></label>
-        <input id="game-id" type="text" class="form-control"></input>
-      </div>
-      <button type="submit" class="btn btn-primary">Start Replay</button>
+        <label for="game-id" class="">
+          Enter a game ID, or, the game's
+          <a href="https://reblase.sibr.dev/">Reblase</a>
+          link
+        </label>
+        <p class="error-msg d-none">Oops! Something went wrong. Check the game
+        ID/URL and try again.</p>
+        <input id="game-id" type="text" class="" placeholder=""></input>
+      <button type="submit" class="">Start Replay</button>
 
-      <div class="d-none" role="status">
+      <div class="loading d-none" role="status">
         <span class="">Loading...</span>
       </div>
 
     </form>
-    </div>
 
-    <div class="col"></div>
-    </div>
   </div>
 
   <div id="game-events-select" class="container d-none">
@@ -76,12 +74,14 @@
   <div id="visuals" class="container text-center d-none">
     <div id="intro">
 
-      <h2 class="game-name text-center"></h2>
+      <div class="game-intro">
+        <h2 class="game-name text-center"></h2>
 
-      <div class="vs-logo-container">
-        <img class="vs-logo vs-logo__home" src="">
-        <span class="vs-text">vs.</span>
-        <img class="vs-logo vs-logo__away" src="">
+        <div class="vs-logo-container">
+          <img class="vs-logo vs-logo__home" src="">
+          <span class="vs-text">vs.</span>
+          <img class="vs-logo vs-logo__away" src="">
+        </div>
       </div>
 
     </div>

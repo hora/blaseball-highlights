@@ -6,6 +6,34 @@ const util = require('./util');
 let gameEvents = {};
 let highlights = [];
 
+const getRandomGame = () => {
+  const games = [
+    // internet series championship games, starting season 2
+    'https://reblase.sibr.dev/game/97d88b9e-406d-4f31-a18f-2a3b903edc03',
+    'https://reblase.sibr.dev/game/b38e0917-43da-470c-a7bb-5712368a2492',
+    'https://reblase.sibr.dev/game/628a2ddb-f608-411b-8d2e-2768cd36d58b',
+    'https://reblase.sibr.dev/game/52f6274e-e0dc-4c23-87e8-686f6d2b2bbf',
+    'https://reblase.sibr.dev/game/10538840-1f72-4a90-98e5-724a9dc5d061',
+    'https://reblase.sibr.dev/game/9d85897e-e689-4eeb-b2ae-b69679a3ebc7',
+    'https://reblase.sibr.dev/game/ee35a868-b004-449f-a99c-6a40ca54b382',
+    'https://reblase.sibr.dev/game/06566f8d-3d14-4956-b054-36dc981fd589',
+    'https://reblase.sibr.dev/game/704ddf2f-3fe2-48b3-b674-b94765f70d01',
+    'https://reblase.sibr.dev/game/47bcac42-f651-4fc9-9f93-5567a7b10daf',
+    'https://reblase.sibr.dev/game/0f19d78d-c27d-4146-863d-b55e6dae1679',
+    'https://reblase.sibr.dev/game/1506b88f-1fea-4ba1-9256-1ebb030cdcae',
+    'https://reblase.sibr.dev/game/b2cafd20-a799-48f6-abd7-c99bd79a6bd1',
+    'https://reblase.sibr.dev/game/2bc6e86e-8d25-4e37-9026-780d8b6969c5',
+    'https://reblase.sibr.dev/game/462481f4-7f97-441c-9fc9-c3dc3c5844a4',
+    'https://reblase.sibr.dev/game/11a8a7d3-460b-4c99-a98a-b0bd1f577073',
+
+    // other games
+    // s3d100 (riv landry)
+    'https://reblase.sibr.dev/game/aa1b7fde-f077-4e4b-825f-0d1538d02822',
+  ];
+
+  return games[Math.floor(Math.random() * (games.length - 1))];
+};
+
 const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
 };
@@ -184,53 +212,86 @@ const getGameEvents = async (gameId, nextPage) => {
 
   startLoading();
 
-  const resp = await fetch(gamesURL);
+  //const resp = await fetch(gamesURL);
+  await fetch(gamesURL)
+    // catch server errors, from https://stackoverflow.com/a/54164027
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error('Bad response from server');
+      }
 
-  if (resp.ok) {
-    const data = await resp.json();
+      return resp.json();
+    })
+    .then((data) => {
+      //if (resp.ok) {
+      //resp.json().then((data) => {
+      for (let gameEv of data.data) {
+        gameEvents[gameEv.hash] = {
+          ev: gameEv,
+          mlustard: mlustard.analyzeGameEvent(gameEv.data),
+        };
+      }
 
-    for (let gameEv of data.data) {
-      gameEvents[gameEv.hash] = {
-        ev: gameEv,
-        mlustard: mlustard.analyzeGameEvent(gameEv.data),
-      };
-    }
+      if (data.nextPage) {
+        getGameEvents(gameId, data.nextPage);
+      } else {
+        // done loading all game events
+        renderGameEvs();
+        console.debug('getGameEvents done:', gameEvents);
+      }
+      //});
+        //const data = await resp.json();
 
-    if (data.nextPage) {
-      getGameEvents(gameId, data.nextPage);
-    } else {
-      // done loading all game events
-      renderGameEvs();
-      console.debug('getGameEvents done:', gameEvents);
-    }
+      //}
+    })
+    .catch((err) => {
+      console.error(err);
+      $('#game-event-form .error-msg').removeClass('d-none');
+      stopLoading();
+    });
 
-  }
+  //} else {
+    // todo: add error handling
+    //$('#game-event-form error-msg').removeClass('d-none');
+    //stopLoading();
+  //}
 };
 
 const startLoading = () => {
   const $gameEvForm = $('#game-event-form');
 
+  $gameEvForm.find('.error-msg').addClass('d-none');
   $gameEvForm.find('button').addClass('d-none');
-  $gameEvForm.find('.spinner-border').removeClass('d-none');
+  $gameEvForm.find('.loading').removeClass('d-none');
 };
 
 const stopLoading = () => {
   const $gameEvForm = $('#game-event-form');
 
   $gameEvForm.find('button').removeClass('d-none');
-  $gameEvForm.find('.spinner-border').addClass('d-none');
+  $gameEvForm.find('.loading').addClass('d-none');
 };
 
 const init = (highlightsReadyCb) => {
   const $gameEvForm = $('#game-event-form');
+  const $gameInput = $('#game-id');
 
   // focus on game input
-  $('#game-id').focus();
+  $gameInput.focus();
+
+  // pick a random interesting game as the placeholder for the input
+  $gameInput.attr('placeholder', getRandomGame());
 
   $gameEvForm.on('submit', (ev) => {
     ev.preventDefault();
 
-    const gameId = $gameEvForm.find('#game-id').val().split('/').pop();
+    let gameVal = $gameInput.val();
+
+    if (!gameVal) {
+      gameVal = $gameInput.attr('placeholder');
+    }
+
+    const gameId = gameVal.split('/').pop();
     getGameEvents(gameId);
   });
 
