@@ -1,0 +1,217 @@
+<!doctype html>
+<html lange="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Blaseball Highlights</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!--<meta property="og:title" content="">-->
+  <!--<meta property="og:type" content="">-->
+  <!--<meta property="og:url" content="">-->
+  <!--<meta property="og:image" content="">-->
+
+  <!--<link rel="manifest" href="site.webmanifest">-->
+  <!--<link rel="apple-touch-icon" href="icon.png">-->
+  <!-- Place favicon.ico in the root directory -->
+
+  <link rel="stylesheet" href="normalize.css">
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Exo:ital,wght@1,500&display=swap" rel="stylesheet">
+  <link
+  href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;600&display=swap" rel="stylesheet">
+  <!--<meta name="theme-color" content="#fafafa">-->
+
+</head>
+
+<body>
+
+  <div class="main-container centered">
+
+  <div id="game-event-form" class="container game-chooser">
+
+    <h2>Choose a game</h2>
+    <form id="game-event-form">
+        <label for="game-id" class="">
+          Enter a game ID, or, the game's
+          <a href="https://reblase.sibr.dev/">Reblase</a>
+          link
+        </label>
+        <p class="error-msg d-none">Oops! Something went wrong. Check the game
+        ID/URL and try again.</p>
+        <input id="game-id" type="text" class="" placeholder=""></input>
+      <button type="submit" class="">Start Replay</button>
+
+      <div class="loading d-none" role="status">
+        <span class="">Loading...</span>
+      </div>
+
+    </form>
+
+  </div>
+
+  <div id="game-events-select" class="container d-none">
+    <div class="row">
+    <div class="col"></div>
+
+    <div class="col-8">
+    <form id="game-events-choose__form">
+      <div id="game-events-choose__container" class="container">
+      </div>
+      <button type="submit" class="btn btn-primary">
+        Generate Highlights!
+      </button>
+    </form>
+    </div>
+
+    <div class="col"></div>
+    </div>
+  </div>
+
+  <div id="visuals" class="container text-center d-none">
+    <div id="intro">
+
+      <div class="game-intro">
+        <h2 class="game-name text-center"></h2>
+
+        <div class="vs-logo-container">
+          <img class="vs-logo vs-logo__home" src="">
+          <span class="vs-text">vs.</span>
+          <img class="vs-logo vs-logo__away" src="">
+        </div>
+      </div>
+
+    </div>
+
+    <div id="diamond" class="d-none">
+      <div class="diamond-header">
+        <span class="game-name"></span>
+        <span class="matchup"></span>
+      </div>
+
+      <div id="diamond-svg" class="d-none">
+        <svg xmlns="http://www.w3.org/2000/svg"
+          xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"
+          id="_x3C_Layer_x3E_" x="0px" y="0px" width="1149px" height="735px"
+          viewBox="0 0 1149 735" enable-background="new 0 0 1149 735" xml:space="preserve">
+        <g>
+          <polygon fill="#2b9348" stroke="#2b9348" stroke-width="15"
+          points="12.219,725.594 1139.781,725.594 1139.781,8.408 12.219,8.592
+          " class="diamond-svg__grass"/>
+          <polygon fill="#ffcf56" stroke="#fff" stroke-width="3"
+          stroke-linejoin="round" points="166.906,326.033 134.094,326.033
+                                  134.094,407.781 166.906,407.781
+                                  476.094,725.406 822.781,364.658 476.094,8.592
+                                  " class="diamond-svg__dirt"/>
+          <polygon fill="#2b9348" stroke="#fff" stroke-width="3.689"
+          stroke-linejoin="round" points="691.531,407.781 687.969,401.969
+          684.594,398.219 681.594,394.094 678.969,389.781 676.906,385.281
+          675.219,380.406 673.906,375.344 673.156,370.094    672.781,364.658
+          673.156,359.592 673.906,354.158 675.219,349.283 676.906,344.217
+          678.969,339.717 681.594,335.408    684.594,331.467 687.969,327.717
+          691.531,326.033 514.344,143.217 512.094,146.967 508.344,150.342
+          504.406,153.533    500.281,156.158 495.781,158.217 491.094,160.092
+          486.219,161.217 480.969,162.158 476.094,162.342 470.656,162.158
+          465.594,161.217 460.719,160.092 456.031,158.217 451.531,156.158
+          447.406,153.533 443.281,150.342 439.719,146.967    436.531,143.217
+          433.719,138.908 232.531,345.342 232.531,388.656 433.906,595.281
+          436.531,590.781 439.719,587.219    443.281,583.656 447.406,580.656
+          451.531,577.844 456.031,575.781 460.719,573.906 465.594,572.781
+          470.656,571.844    476.094,571.656 480.969,571.844 486.219,572.781
+          491.094,573.906 495.781,575.781 500.281,577.844 504.406,580.656
+          508.344,583.656 512.094,587.219 515.281,590.969  "
+          class="diamond-svg__grass"/>
+          <path fill="#ffcf56" stroke="#003049" stroke-width="5.5"
+          stroke-linejoin="round" d="M476.094,417.344
+                                  c28.188,0.382,51.159-25.188,51.188-52.686c0.028-27.433-23.32-52.656-51.188-52.691c-28.34-0.036-51.296,24.943-51.375,52.691
+                                  C424.64,392.454,447.597,417.82,476.094,417.344z"
+                                                                                  class="diamond-svg__mound"/>
+          <polygon fill="#f3f4f5" stroke="#f3f4f5" stroke-width="15"
+          points="401.281,8.592 91.906,326.033 91.906,407.781 401.281,725.406
+          12.219,725.406 12.219,8.592  " class="diamond-svg__foul-zone"/>
+          <polygon fill="#ff9770" stroke="#003049" stroke-width="5.5"
+          stroke-linejoin="round" points="204.406,340.658 218.656,364.658
+                                  204.406,388.656 162.219,388.656
+                                  162.406,340.658  " class="diamond-svg__base"/>
+          <polygon fill="#ff9770" stroke="#003049" stroke-width="5.5"
+          stroke-linejoin="round" points="508.906,66.158 476.094,99.908
+                                  443.281,66.158 476.094,32.592  "
+                                  class="diamond-svg__base"/>
+          <polygon fill="#ff9770" stroke="#003049" stroke-width="5.5"
+          stroke-linejoin="round" points="799.344,364.658 766.531,398.219
+                                  733.906,364.658 766.531,330.908  "
+                                                                    class="diamond-svg__base"/>
+          <polygon fill="#ff9770" stroke="#003049" stroke-width="5.5"
+          stroke-linejoin="round" points="508.906,662.781 476.094,696.531
+          443.281,662.781 476.094,629.219  " class="diamond-svg__base"/>
+        </g>
+        </svg>
+      </div>
+
+        <div id="diamond__image">
+          <img src="" class="diamond-logo">
+          <p class="player-on-diamond batting"></p>
+          <p class="player-on-diamond second"></p>
+          <p class="player-on-diamond third"></p>
+          <p class="player-on-diamond first"></p>
+          <p class="player-on-diamond mound"></p>
+
+          <ul id="diamond__scoreboard" class="scoreboard">
+            <li class="scoreboard-teams">
+              <div class="scoreboard-teams__home">
+                <span></span><span></span>
+              </div>
+              <div class="scoreboard-teams__away">
+                <span></span><span></span>
+              </div>
+            </li>
+            <li class="scoreboard-bases">
+            </li>
+            <li class="scoreboard-count">
+              <div class="scoreboard-count__count">
+                <span></span> - <span></span>
+              </div>
+              <div class="scoreboard-count__outs">
+                <span></span> out
+              </div>
+            </li>
+            <li class="scoreboard-other">
+              <div class="scoreboard-other__inning">
+                <span></span>
+                <span></span>
+              </div>
+              <div class="scoreboard-other__weather"><span></span></div>
+            </li>
+          </ul>
+      </div>
+
+    </div>
+  </div>
+
+
+
+  <button id="download-story" type="button" class="btn btn-primary d-none">
+    Download Story
+  </button>
+
+  </div> <!-- main-cotainer -->
+  <div id="highlights-dialog__container" class="d-none">
+
+    <div id="highlights-dialog__text" class="centered">
+      <p id="highlights-dialog__text-one" class="animation-finished"></p>
+      <p id="highlights-dialog__text-two" class="animation-finished"></p>
+      <div id="highlights-dialog__prev" class="dialog-control"></div>
+      <div id="highlights-dialog__next" class="dialog-control"></div>
+    </div>
+
+  </div>
+  <div id="highlights-json" class="d-none" data=""></div>
+
+  <script src="jquery-3.6.0.slim.min.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>

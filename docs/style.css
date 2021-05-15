@@ -1,0 +1,351 @@
+body {
+  font-family: "Open Sans";
+  background-color: #003049;
+  color: white;
+  font-size: 20px;
+  margin: 0;
+  font-weight: 300;
+  line-height: 1.4;
+}
+
+a {
+  color: white;
+}
+
+input {
+  border-radius: 2px;
+  border: none;
+  margin-bottom: 15px;
+}
+
+button {
+  background-color: #2a9d8f;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 2px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 300;
+}
+
+ul {
+  list-style: none;
+}
+
+.main-container {
+  margin-bottom: 50px; /* to allow for fixed dialog */
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
+.centered {
+  max-width: 720px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.container {
+  padding-bottom: 30px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.vs-logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+h2 {
+  font-size: 28px;
+}
+
+#game-events-choose__container {
+  height: 330px;
+  overflow: scroll;
+  padding: 20px;
+  border: 1px solid #ccc;
+}
+
+.game-event__container {
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  margin-bottom: .5rem;
+  font-size: 1.1rem;
+}
+.game-event__container:hover {
+  background-color: #eee;
+}
+
+.game-event__container .form-check {
+  padding-left: 2em;
+}
+
+.circle {
+  height: 12px;
+  width: 12px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-right: 2px;
+}
+
+.circle.full {
+  background-color: #000;
+}
+
+.circle.empty {
+  border: 2px solid black;
+}
+
+.balls-count,
+.strikes-count {
+  margin-right: 4px;
+}
+
+.bases-occupied {
+  margin-left: 6px;
+  margin-right: 8px;
+}
+
+.diamond {
+  width: 12px;
+  height: 12px;
+  display: inline-block;
+  border: 1px solid #003049;
+  transform: translate(2px, 2px) rotate(45deg);
+}
+
+.diamond:nth-child(2) {
+  transform: translate(3px, -9px) rotate(45deg);
+  margin-left: -3px;
+  margin-right: -1px;
+}
+
+.diamond.filled {
+  background-color: #003049;
+}
+
+#highlights-dialog__container {
+  background-color: pink;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+#highlights-dialog__text {
+  color: #003049;
+  font-family: 'Exo', sans-serif;
+  font-size: 32px;
+  position: relative;
+  padding: 15px 20px;
+  height: 90px;
+}
+
+#highlights-dialog__text p {
+  width: 0;
+  overflow: hidden;
+  margin: 0;
+  white-space: nowrap;
+}
+
+#highlights-dialog__text p.animate {
+  /*letter-spacing: .001em;*/
+  animation: typing 1.5s steps(40, end);
+}
+
+@keyframes typing {
+  from { width: 0 }
+  to { width: 100% }
+}
+
+#highlights-dialog__text p.animation-finished {
+  width: 100%;
+}
+
+.dialog-control {
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  opacity: 0;
+  cursor: pointer;
+}
+
+#highlights-dialog__prev {
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-right: 20px solid #003049;
+  margin-right: 25px;
+}
+
+#highlights-dialog__next {
+  border-top: 15px solid transparent;
+  border-bottom: 15px solid transparent;
+  border-left: 20px solid #003049;
+}
+
+.dialog-control.show {
+  transition: opacity 0.5s ease-in-out;
+  opacity: 100;
+}
+
+#diamond__image {
+  width: 720px;
+  height: 460px;
+  /*background-image: url('./images/diamond.svg');*/
+  background-size: 720px auto;
+  position: relative;
+}
+
+.player-on-diamond {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  padding-left: 5px;
+  padding-right: 5px;
+  /* should be overwritten by team colour */
+  color: #142c61;
+  font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  transition: all 0.5s ease-in-out;
+  font-weight: 600;
+  /*border: 1px solid #142c61;*/
+}
+
+.player-on-diamond.first {
+  top: 400px;
+  left: 330px;
+}
+
+.player-on-diamond.second {
+  top: 255px;
+  left: 430px;
+}
+
+.player-on-diamond.third {
+  top: 72px;
+  left: 240px;
+}
+
+.player-on-diamond.batting {
+  top: 255px;
+  left: 45px;
+}
+
+.player-on-diamond.mound {
+  left: 240px;
+  top: 164px;
+}
+
+.diamond-logo {
+  top: 202px;
+  left: 2px;
+  height: 55px;
+  position: absolute;
+  transform: rotate(90deg);
+}
+
+.diamond-logo.m-outline {
+  border: 1px solid black;
+  border-radius: 50%;
+  padding: 1px;
+}
+
+.vs-logo {
+  width: 200px;
+}
+
+.vs-text {
+  margin: 0 20px;
+}
+
+.d-none {
+  display: none;
+}
+
+.scoreboard {
+  position: absolute;
+  right: 0;
+  margin-right: 15px;
+  margin-top: 10px;
+  color: #142c61;
+  background-color: white;
+  border: 1px solid #142c61;
+  border-radius: 5px;
+  padding: 4px 8px;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.scoreboard li {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.scoreboard-teams > div {
+  min-width: 65px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 16px;
+}
+
+.scoreboard-teams span:last-child {
+  background-color: #ff9770;
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.scoreboard-teams__away {
+  margin-top: 2px;
+}
+
+.scoreboard-count__outs {
+  text-transform: uppercase;
+}
+
+.scoreboard li.scoreboard-bases {
+  padding-right: 8px;
+}
+
+.diamond-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.diamond-header .vs-logo {
+  width: 80px;
+}
+
+.game-chooser h2 {
+  text-align: center;
+}
+
+.game-chooser input {
+  display: block;
+  width: 100%;
+  line-height: 2;
+  margin-top: 10px;
+}
+
+.error-msg {
+  color: #f4a261;
+}
+
+.game-intro {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 460px;
+}
+
