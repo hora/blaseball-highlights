@@ -1,5 +1,5 @@
 const util = require('./util');
-const highlight = require('./highlight');
+//const highlight = require('./highlight');
 
 let ready = false;
 
@@ -135,7 +135,7 @@ const showControl = () => {
 // there are highlights left to the story
 const showNext = () => {
   // todo: show arrow if next, but move into outro
-  if (highlight.hasDialogLeft(cur) || next) {
+  if (cur.hasDialogNext || next) {
     $control.last().addClass('show');
   }
 };
@@ -145,7 +145,7 @@ const showNext = () => {
 // there are highlights earlier in the story
 const showPrev = () => {
   // todo: show arrow if next, but move into outro
-  if (highlight.hasDialogPrev(cur) || prev) {
+  if (cur.hasDialogPrev() || prev) {
     $control.first().addClass('show');
   }
 };

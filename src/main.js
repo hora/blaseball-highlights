@@ -221,7 +221,7 @@ const initApp = () => {
     //highlights = JSON.parse(highlightsData);
   } else {
     gameEventSelector.init(onHighlightsReady);
-    downloader.init();
+    //downloader.init();
   }
 };
 

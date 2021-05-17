@@ -1,6 +1,6 @@
 const mlustard = require('mlustard');
 
-const highlight = require('./highlight');
+const Highlight = require('./highlight');
 const util = require('./util');
 
 let gameEvents = {};
@@ -48,12 +48,19 @@ const generateHighlights = (cb) => {
       visual = 'intro';
     }
 
-    const hl = highlight.makeHighlight({
+    const hl = new Highlight({
       id: id,
       gameEvent: gameEvents[id].ev,
       mlustard: gameEvents[id].mlustard,
       visual,
     });
+
+    //const hl = highlight.makeHighlight({
+      //id: id,
+      //gameEvent: gameEvents[id].ev,
+      //mlustard: gameEvents[id].mlustard,
+      //visual,
+    //});
 
     highlights.push(hl);
   });
