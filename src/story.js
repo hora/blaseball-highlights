@@ -1,4 +1,4 @@
-const visual = require('./visual');
+const Visual = require('./visual');
 const Dialog = require('./dialog');
 const teamsData = require('../lib/teams-data');
 
@@ -22,6 +22,7 @@ class Story {
     this.dialog = new Dialog();
     this.curHighlight = 0;
     this.intro = true;
+    this.visual = new Visual();
   }
 
   start() {
@@ -152,8 +153,8 @@ class Story {
   nextHighlight(skipAnimation) {
     const hls = this.getHighlights();
 
-    visual.showVisual(hls.cur.visual);
-    visual.updateDiamond(hls);
+    this.visual.show(hls.cur.visual);
+    this.visual.updateDiamond(hls);
     this.dialog.startHighlight(hls, skipAnimation);
   }
 

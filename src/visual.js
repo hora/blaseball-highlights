@@ -112,31 +112,34 @@ const drawScoreboard = (highlights) => {
     .attr('title', weather[ge.weather].name);
 };
 
-const updateDiamond = (highlights) => {
-  drawBatter(highlights);
-  drawPitcher(highlights);
-  drawBaserunners(highlights);
 
-  drawScoreboard(highlights);
-};
-
-const showVisual = (visual) => {
-  switch (visual) {
-    case 'intro':
-      $('#intro').removeClass('d-none');
-      $('#diamond').addClass('d-none');
-      break;
-
-    case 'diamond':
-    default:
-      $('#intro').addClass('d-none');
-      $('#diamond').removeClass('d-none');
-      break;
+class Visual {
+  constructor() {
   }
-};
 
-module.exports = {
-  updateDiamond,
-  showVisual,
-};
+  show(visual) {
+    switch (visual) {
+      case 'intro':
+        $('#intro').removeClass('d-none');
+        $('#diamond').addClass('d-none');
+        break;
+
+      case 'diamond':
+      default:
+        $('#intro').addClass('d-none');
+        $('#diamond').removeClass('d-none');
+        break;
+    }
+  }
+
+  updateDiamond(highlights) {
+    drawBatter(highlights);
+    drawPitcher(highlights);
+    drawBaserunners(highlights);
+
+    drawScoreboard(highlights);
+  }
+}
+
+module.exports = Visual;
 
