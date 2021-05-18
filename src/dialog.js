@@ -90,8 +90,6 @@ class Dialog {
     this.prev = highlights.prev;
     this.next = highlights.next;
 
-    //if (!this.ready) this.init();
-
     // reset dialog
     //highlight.curDialogPart = 0;
     this.$lineOne.removeClass('animation-finished animate');

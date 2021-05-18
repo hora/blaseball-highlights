@@ -45,7 +45,7 @@ const generateHighlights = (cb) => {
     let visual = 'diamond';
 
     if (isPlayBall(gameEvents[id].ev.data)) {
-      visual = 'intro';
+      visual = 'matchup';
     }
 
     const hl = new Highlight({

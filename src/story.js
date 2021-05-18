@@ -2,20 +2,6 @@ const Visual = require('./visual');
 const Dialog = require('./dialog');
 const teamsData = require('../lib/teams-data');
 
-const DIAMOND_COLOURS = {
-  mound: 'ffcf56',
-  moundOutline: '003049',
-  bases: 'ff9770',
-  basesOutline: '003049',
-  grass: '2b9348',
-  grassOutline: '2b9348',
-  dirt: 'ffcf56',
-  dirtOutline: 'fff',
-  foulZone: 'edead0',
-  foulZoneOutline: 'edead0',
-};
-
-
 class Story {
   constructor(settings) {
     this.highlights = settings.highlights || [];
@@ -30,7 +16,8 @@ class Story {
     $('#visuals').removeClass('d-none');
     $('#highlights-dialog__container').removeClass('d-none');
 
-    this.setupIntro();
+    // focus on the body so arrow keyups can be registered
+    $('body').focus();
 
     const _this = this;
     const handleAction = (evt) => {
@@ -60,101 +47,16 @@ class Story {
 
     $(document).on('keyup', handleAction);
     $('.dialog-control').on('click', handleAction);
-  }
 
-  setupIntro() {
-    // grab game info from first highlight
-    const gameEv = this.highlights[0].gameEvent.data;
-    const $home = $('.vs-logo__home');
-    const $away = $('.vs-logo__away');
-
-    let hNick = gameEv.homeTeamNickname.split(' ').pop().toLowerCase();
-    let aNick = gameEv.awayTeamNickname.split(' ').pop().toLowerCase();
-
-    if (aNick === 'mechanics') {
-      aNick += '-away';
-    }
-
-    $('.game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
-    $home
-      .attr('src', `./images/logo-${hNick}.png`)
-      .attr('alt', `${gameEv.homeTeamName}`);
-    $away
-      .attr('src', `./images/logo-${aNick}.png`)
-      .attr('alt', `${gameEv.awayTeamName}`);
-    $('.diamond-header .matchup').text(`${gameEv.homeTeamName} vs. ${gameEv.awayTeamName}`);
-
-    // georgias don't have a standard size logo
-    if (hNick === 'georgias') {
-      $home.css('height', 'auto');
-    }
-
-    if (aNick === 'georgias') {
-      $away.css('height', 'auto');
-    }
-
-    // set the diamond colours and add the diamond css
-    const homeTeam = teamsData[gameEv.homeTeam];
-    const $diamond = $('#diamond-svg');
-    const $grass = $diamond.find('.diamond-svg__grass');
-    const $dirt = $diamond.find('.diamond-svg__dirt');
-    const $foulZone = $diamond.find('.diamond-svg__foul-zone');
-    const $mound = $diamond.find('.diamond-svg__mound');
-    const $bases = $diamond.find('.diamond-svg__base');
-    const $logo = $('.diamond-logo');
-
-    // colour the mound
-    // tries mound colour, or sets official as default
-    $mound
-      .attr('fill', `#${homeTeam.colours.mound || homeTeam.colours.official}`)
-      .attr('stroke', `#${homeTeam.colours.moundOutline || DIAMOND_COLOURS.moundOutline}`);
-
-    // colour the bases
-    // tries bases colour, or sets official as default
-    $bases
-      .attr('fill', `#${homeTeam.colours.bases || homeTeam.colours.official}`)
-      .attr('stroke', `#${homeTeam.colours.basesOutline || DIAMOND_COLOURS.basesOutline}`);
-
-    // colour the grass
-    $grass.first()
-        .attr('fill', `#${homeTeam.colours.grass || DIAMOND_COLOURS.grass}`)
-        .attr('stroke', `#${homeTeam.colours.grassOutline || DIAMOND_COLOURS.grassOutline}`);
-      $grass.last()
-        .attr('fill', `#${homeTeam.colours.grass || DIAMOND_COLOURS.grass}`)
-        .attr('stroke', `#${homeTeam.colours.dirtOutline || DIAMOND_COLOURS.grassOutline}`);
-
-    // colour the dirt
-    $dirt
-      .attr('fill', `#${homeTeam.colours.dirt || DIAMOND_COLOURS.dirt}`)
-      .attr('stroke', `#${homeTeam.colours.dirtOutline || DIAMOND_COLOURS.dirtOutline}`);
-
-    // colour the foul zone
-    $foulZone
-        .attr('fill', `#${homeTeam.colours.foulZone || DIAMOND_COLOURS.foulZone}`)
-        .attr('stroke', `#${homeTeam.colours.foulZoneOutline || DIAMOND_COLOURS.foulZoneOutline}`);
-
-    // update the diamond svg
-    $('#diamond__image')
-      .css('background-image', 'url(data:image/svg+xml;base64,'+ btoa($diamond.html()) + ')');
-
-    // draw home logo behind home plate
-    $logo
-      .attr('src', homeTeam.stadiumLogoURL || homeTeam.homeLogoURL)
-      .toggleClass('m-outline', homeTeam.stadiumLogoOutline);
-
-    //$('.mound-logo').first().attr('src', homeTeam.homeLogoURL);
-
-    // focus on the body so arrow keyups can be registered
-    $('body').focus();
-
+    // show the first highlight
     this.nextHighlight(true);
   }
 
   nextHighlight(skipAnimation) {
     const hls = this.getHighlights();
 
-    this.visual.show(hls.cur.visual);
-    this.visual.updateDiamond(hls);
+    this.visual.showFor(hls.cur);
+    //this.visual.updateDiamond(hls);
     this.dialog.startHighlight(hls, skipAnimation);
   }
 
