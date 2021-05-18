@@ -1,59 +1,6 @@
 const util = require('./util');
-//const highlight = require('./highlight');
 
-let ready = false;
-
-let $dialogs;
-let $lineOne;
-let $lineTwo;
-let $control;
-
-let lineOneAnimating;
-let lineTwoAnimating;
-
-let cur;
-let prev;
-let next;
-
-
-const init = () => {
-  console.debug('Dialog.init()');
-
-  $dialogs = $('#highlights-dialog__text p');
-  $lineOne = $dialogs.first();
-  $lineTwo = $dialogs.last();
-  $control = $('.dialog-control');
-
-  lineOneAnimating = false;
-  lineTwoAnimating = false;
-
-  $dialogs.each((_, el) => {
-    util.prefixedOn($(el), 'AnimationEnd', onAnimEnd);
-  });
-
-  ready = true;
-};
-
-const startHighlight = (highlights, skipAnimation) => {;
-  cur = highlights.cur;
-  prev = highlights.prev;
-  next = highlights.next;
-
-  if (!ready) init();
-
-  // reset dialog
-  //highlight.curDialogPart = 0;
-  $lineOne.removeClass('animation-finished animate');
-  $lineTwo.removeClass('animation-finished animate');
-
-  cur.started = true;
-  if (skipAnimation) {
-    showHighlight(cur);
-  } else {
-    animateHighlight(cur);
-  }
-};
-
+// old
 const animateHighlight = (highlight) => {
   $lineOne.removeClass('animation-finished animate');
   $lineTwo.removeClass('animation-finished animate');
@@ -65,19 +12,7 @@ const animateHighlight = (highlight) => {
   animate('one');
 };
 
-const showHighlight = (highlight) => {
-  $lineOne.removeClass('animate');
-  $lineTwo.removeClass('animate');
-
-  $lineOne.text(highlight.dialogParts[highlight.curDialogPart][0] || '');
-  $lineTwo.text(highlight.dialogParts[highlight.curDialogPart][1] || '');
-
-  $lineOne.addClass('animation-finished');
-  $lineTwo.addClass('animation-finished');
-
-  showControl();
-};
-
+// old
 const animate = (line) => {
   if (line === 'one') {
     //stopAnimate('two');
@@ -90,6 +25,7 @@ const animate = (line) => {
   }
 };
 
+// old
 const stopAnimate = (line) => {
   if (line === 'one') {
     $lineOne
@@ -104,6 +40,7 @@ const stopAnimate = (line) => {
   }
 };
 
+// old
 const onAnimEnd = () => {
   // check for the second animation first so the second animation
   // doesn't get triggered then immediately ended inside this func
@@ -125,112 +62,158 @@ const onAnimEnd = () => {
   }
 };
 
-const showControl = () => {
-  showPrev();
-  showNext();
-};
+class Dialog {
+  constructor() {
+    console.debug('new Dialog()');
 
-// show next arrow if:
-// there are parts left to this highlight
-// there are highlights left to the story
-const showNext = () => {
-  // todo: show arrow if next, but move into outro
-  if (cur.hasDialogNext || next) {
-    $control.last().addClass('show');
+    this.$dialogs = $('#highlights-dialog__text p');
+    this.$lineOne = this.$dialogs.first();
+    this.$lineTwo = this.$dialogs.last();
+    this.$control = $('.dialog-control');
+
+    this.lineOneAnimating = false;
+    this.lineTwoAnimating = false;
+
+    //this.$dialogs.each((_, el) => {
+      //util.prefixedOn($(el), 'AnimationEnd', onAnimEnd);
+    //});
+
+    this.cur;
+    this.prev;
+    this.next;
+
+    this.ready = true;
   }
-};
 
-// show pre arrow if:
-// there are parts before this highlight
-// there are highlights earlier in the story
-const showPrev = () => {
-  // todo: show arrow if next, but move into outro
-  if (cur.hasDialogPrev() || prev) {
-    $control.first().addClass('show');
+  startHighlight(highlights, skipAnimation) {
+    this.cur = highlights.cur;
+    this.prev = highlights.prev;
+    this.next = highlights.next;
+
+    //if (!this.ready) this.init();
+
+    // reset dialog
+    //highlight.curDialogPart = 0;
+    this.$lineOne.removeClass('animation-finished animate');
+    this.$lineTwo.removeClass('animation-finished animate');
+
+    this.cur.started = true;
+    if (skipAnimation) {
+      this.showHighlight(this.cur);
+    } else {
+      this.animateHighlight(this.cur);
+    }
   }
-};
 
-const hideControl = () => {
-  $control.removeClass('show');
-};
+  showHighlight(highlight) {
+    this.$lineOne.removeClass('animate');
+    this.$lineTwo.removeClass('animate');
 
-const continueHighlight = (highlights) => {
-  cur = highlights.cur;
-  prev = highlights.prev;
-  next = highlights.next;
+    this.$lineOne.text(highlight.dialogParts[highlight.curDialogPart][0] || '');
+    this.$lineTwo.text(highlight.dialogParts[highlight.curDialogPart][1] || '');
 
-  if (!cur) { return false; }
-  if (!cur.started) { return false; }
+    this.$lineOne.addClass('animation-finished');
+    this.$lineTwo.addClass('animation-finished');
 
-  // if currently animating, simply end the animation
-  if (lineOneAnimating) {
+    this.showControl();
+  }
 
-    $lineOne
-      .removeClass('animate')
-      .addClass('animation-finished');
-    lineOneAnimating = false;
-    $lineTwo
-      .removeClass('animate')
-      .addClass('animation-finished');
-    lineTwoAnimating = false;
-    showControl();
+  showControl() {
+    this.showPrev();
+    this.showNext();
+  }
 
-  } else if (lineTwoAnimating) {
+  // show next arrow if:
+  // there are parts left to this highlight
+  // there are highlights left to the story
+  showNext() {
+    // todo: show arrow if next, but move into outro
+    if (this.cur.hasDialogNext || this.next) {
+      this.$control.last().addClass('show');
+    }
+  }
 
-    $lineTwo
-      .removeClass('animate')
-      .addClass('animation-finished');
-    lineTwoAnimating = false;
-    showControl();
+  // show pre arrow if:
+  // there are parts before this highlight
+  // there are highlights earlier in the story
+  showPrev() {
+    // todo: show arrow if next, but move into outro
+    if (this.cur.hasDialogPrev() || this.prev) {
+      this.$control.first().addClass('show');
+    }
+  }
 
-  } else {
-    cur.curDialogPart++;
+  hideControl() {
+    this.$control.removeClass('show');
+  }
+
+  continueHighlight(highlights) {
+    this.cur = highlights.cur;
+    this.prev = highlights.prev;
+    this.next = highlights.next;
+
+    if (!this.cur) { return false; }
+    if (!this.cur.started) { return false; }
+
+    // if currently animating, simply end the animation
+    if (this.lineOneAnimating) {
+
+      this.$lineOne
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineOneAnimating = false;
+      this.$lineTwo
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineTwoAnimating = false;
+      this.showControl();
+
+    } else if (this.lineTwoAnimating) {
+
+      this.$lineTwo
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineTwoAnimating = false;
+      this.showControl();
+
+    } else {
+      this.cur.curDialogPart++;
+
+      // no more text to this highlight
+      if (this.cur.curDialogPart === this.cur.dialogParts.length) {
+        this.cur.curDialogPart = 0;
+        return false;
+      }
+
+      // skip animations for now
+      this.showHighlight(this.cur);
+      //animateHighlight(cur);
+    }
+
+    return true;
+  }
+
+  reverseHighlight(highlights) {
+    this.cur = highlights.cur;
+    this.prev = highlights.prev;
+    this.next = highlights.next;
+
+    if (!this.cur) { return false; }
+    if (!this.cur.started) { return false; }
+
+    this.cur.curDialogPart--;
 
     // no more text to this highlight
-    if (cur.curDialogPart === cur.dialogParts.length) {
-      cur.curDialogPart = 0;
+    if (this.cur.curDialogPart === -1) {
+      this.cur.curDialogPart = 0;
       return false;
     }
 
-    // skip animations for now
-    showHighlight(cur);
-    //animateHighlight(cur);
+    this.showHighlight(this.cur);
+    return true;
   }
 
-  return true;
-};
+}
 
-const reverseHighlight = (highlights) => {
-  cur = highlights.cur;
-  prev = highlights.prev;
-  next = highlights.next;
-
-  if (!cur) { return false; }
-  if (!cur.started) { return false; }
-
-  cur.curDialogPart--;
-
-  // no more text to this highlight
-  if (cur.curDialogPart === -1) {
-    cur.curDialogPart = 0;
-    return false;
-  }
-
-  showHighlight(cur);
-  return true;
-};
-
-const setIntro = (one, two) => {
-  if (!ready) init();
-
-  $lineOne.text(one);
-  $lineTwo.text(two);
-};
-
-module.exports = {
-  startHighlight,
-  continueHighlight,
-  reverseHighlight,
-  setIntro,
-};
+module.exports = Dialog;
 

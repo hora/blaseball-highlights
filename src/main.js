@@ -1,5 +1,5 @@
 const gameEventSelector = require('./game-event-selector');
-const dialog = require('./dialog');
+const Dialog = require('./dialog');
 const visual = require('./visual');
 const downloader = require('./downloader');
 const teamsData = require('../lib/teams-data');
@@ -7,6 +7,7 @@ const teamsData = require('../lib/teams-data');
 global.highlights = [];
 let curHighlight = 0;
 let intro = true;
+const dialog = new Dialog();
 
 const DIAMOND_COLOURS = {
   mound: 'ffcf56',
