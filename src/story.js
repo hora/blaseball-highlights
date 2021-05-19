@@ -85,7 +85,7 @@ class Story {
 
   advanceDialog() {
     this.dialog.advance();
-    this.dialog.showControl(this.hasPrevHighlight, this.hasNextHighlight);
+    this.dialog.showControl(this.hasPrevHighlight(), this.hasNextHighlight());
   }
 
   hasPrevHighlight() {
@@ -93,7 +93,7 @@ class Story {
   }
 
   hasNextHighlight() {
-    return this.curHighlight < this.highlights.length;
+    return this.curHighlight < (this.highlights.length - 1);
   }
 
   startCurrent() {
@@ -101,7 +101,7 @@ class Story {
 
     this.visual.showFor(current);
     this.dialog.startHighlight(current);
-    this.dialog.showControl(this.hasPrevHighlight, this.hasNextHighlight);
+    this.dialog.showControl(this.hasPrevHighlight(), this.hasNextHighlight());
   }
 
 }

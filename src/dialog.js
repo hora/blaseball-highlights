@@ -115,6 +115,7 @@ class Dialog {
   }
 
   showControl(hasPrev, hasNext) {
+    this.hideControl();
     this.showPrev(hasPrev);
     this.showNext(hasNext);
   }
