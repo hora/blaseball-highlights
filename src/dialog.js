@@ -22,8 +22,9 @@ class Dialog {
     this.dialogParts = [];
     this.curDialogPart = 0;
 
-    this.$lineOne.removeClass('animation-finished animate');
-    this.$lineTwo.removeClass('animation-finished animate');
+    // old animation stuff
+    //this.$lineOne.removeClass('animation-finished animate');
+    //this.$lineTwo.removeClass('animation-finished animate');
   }
 
   // todo: do i wanna support mobile? then update this accordingly
@@ -101,16 +102,16 @@ class Dialog {
   }
 
   showHighlight() {
-    this.$lineOne.removeClass('animate');
-    this.$lineTwo.removeClass('animate');
+    // old animation stuff
+    //this.$lineOne.removeClass('animate');
+    //this.$lineTwo.removeClass('animate');
 
     this.$lineOne.text(this.dialogParts[this.curDialogPart][0] || '');
     this.$lineTwo.text(this.dialogParts[this.curDialogPart][1] || '');
 
-    this.$lineOne.addClass('animation-finished');
-    this.$lineTwo.addClass('animation-finished');
-
-    this.showControl();
+    // old animation stuff
+    //this.$lineOne.addClass('animation-finished');
+    //this.$lineTwo.addClass('animation-finished');
   }
 
   showControl(hasPrev, hasNext) {
