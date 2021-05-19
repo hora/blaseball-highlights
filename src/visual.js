@@ -17,6 +17,10 @@ const DIAMOND_COLOURS = {
 
 class Visual {
   constructor() {
+    this.gameID = '';
+    this.homeTeam = '';
+    this.awayTeam = '';
+
     this.initDiamond();
     this.initMatchup();
   }
@@ -33,11 +37,21 @@ class Visual {
 
     this.BASES = ['first', 'second', 'third']; // todo: 'fourth', 'secret'?
 
-    this.homeTeam = '';
+    this.diamondReady = false;
   }
 
   initMatchup() {
-    this.matchupSetup = false;
+    this.matchupReady = false;
+  }
+
+  setGameData(highlight) {
+    this.gameID = highlight.gameEvent.gameId;
+    this.homeTeam = highlight.gameEvent.data.homeTeam;
+    this.awayTeam = highlight.gameEvent.data.awayTeam;
+
+    // new game data, reset diamond and matchup
+    this.diamondReady = false;
+    this.matchupReady = false;
   }
 
   customizeDiamond(highlight) {
@@ -90,43 +104,43 @@ class Visual {
     $logo
       .attr('src', homeTeamData.stadiumLogoURL || homeTeamData.homeLogoURL)
       .toggleClass('m-outline', homeTeamData.stadiumLogoOutline);
+
+    // set the matchup text above the diamond
+    $('.diamond-header .matchup')
+      .text(`${highlight.gameEvent.data.homeTeamName} vs. ${highlight.gameEvent.data.awayTeamName}`);
+    $('#diamond .game-name')
+      .text(`Season ${highlight.gameEvent.data.season + 1}, Day ${highlight.gameEvent.data.day + 1}`);
+
+    this.diamondReady = true;
   }
 
   customizeMatchup(highlight) {
-    // grab game info from first highlight
     const gameEv = highlight.gameEvent.data;
     const $home = $('.vs-logo__home');
     const $away = $('.vs-logo__away');
+    const homeTeamData = teamsData[this.homeTeam];
+    const awayTeamData = teamsData[this.awayTeam];
 
-    let hNick = gameEv.homeTeamNickname.split(' ').pop().toLowerCase();
-    let aNick = gameEv.awayTeamNickname.split(' ').pop().toLowerCase();
+    $('#intro .game-name')
+      .text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
 
-    if (aNick === 'mechanics') {
-      aNick += '-away';
-    }
-
-    $('.game-name').text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
     $home
-      .attr('src', `./images/logo-${hNick}.png`)
+      .attr('src', homeTeamData.homeLogoURL)
       .attr('alt', `${gameEv.homeTeamName}`);
     $away
-      .attr('src', `./images/logo-${aNick}.png`)
+      .attr('src', awayTeamData.awayLogoURL || awayTeamData.homeLogoURL)
       .attr('alt', `${gameEv.awayTeamName}`);
-    $('.diamond-header .matchup').text(`${gameEv.homeTeamName} vs. ${gameEv.awayTeamName}`);
 
-    // georgias don't have a standard size logo
-    if (hNick === 'georgias') {
-      $home.css('height', 'auto');
-    }
-
-    if (aNick === 'georgias') {
-      $away.css('height', 'auto');
-    }
-
-    this.matchupSetup = true;
+    this.matchupReady = true;
   }
 
   showFor(highlight) {
+
+    // if game data hasn't been set, or if the game has changed,
+    // update the game data
+    if (this.gameID !== highlight.gameEvent.gameId) {
+      this.setGameData(highlight);
+    }
 
     this.hideCurrent();
 
@@ -148,7 +162,7 @@ class Visual {
   }
 
   showMatchup(highlight) {
-    if (!this.matchupSetup) {
+    if (!this.matchupReady) {
       this.customizeMatchup(highlight);
     }
 
@@ -161,8 +175,7 @@ class Visual {
   }
 
   updateDiamond(highlight) {
-    if (this.homeTeam !== highlight.gameEvent.data.homeTeam) {
-      this.homeTeam = highlight.gameEvent.data.homeTeam;
+    if (!this.diamondReady) {
       this.customizeDiamond(highlight);
     }
 
