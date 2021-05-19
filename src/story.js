@@ -5,9 +5,8 @@ const teamsData = require('../lib/teams-data');
 class Story {
   constructor(settings) {
     this.highlights = settings.highlights || [];
-    this.dialog = new Dialog();
     this.curHighlight = 0;
-    this.intro = true;
+    this.dialog = new Dialog();
     this.visual = new Visual();
   }
 
@@ -37,83 +36,74 @@ class Story {
         // todo: fix this, this is cursed:
         if ($(evt.target).attr('id').indexOf('next') >= 0) {
           direction = 'next';
-        } else if ($(evt.target).attr('id').indexOf('next') >= 0) {
+        } else if ($(evt.target).attr('id').indexOf('prev') >= 0) {
           direction = 'prev';
         }
       }
 
-      _this.playHighlight(direction);
+      _this.doStep(direction);
     }
 
     $(document).on('keyup', handleAction);
     $('.dialog-control').on('click', handleAction);
 
     // show the first highlight
-    this.nextHighlight(true);
+    this.startCurrent();
   }
 
-  nextHighlight(skipAnimation) {
-    const hls = this.getHighlights();
-
-    this.visual.showFor(hls.cur);
-    //this.visual.updateDiamond(hls);
-    this.dialog.startHighlight(hls, skipAnimation);
-  }
-
-  getHighlights () {
-    return {
-      prev: this.highlights[this.curHighlight - 1],
-      cur: this.highlights[this.curHighlight],
-      next: this.highlights[this.curHighlight + 1],
-    };
-  }
-
-  playHighlight(direction) {
-
+  doStep(direction) {
     if (direction === 'next') {
-      // try to advance the highlight, if there's more text to animate
-      if (!this.continueHighlight()) {
 
-        // do nothing if there's no more highlights
-        if (this.highlights.length - 1 === this.curHighlight) { return };
-
-        this.curHighlight++;
-
-        // if there are no more highlights, don't advance
-        if (this.highlights.length === this.curHighlight) {
-          return;
-        }
-
-        // otherwise, show the next highlight
-        this.nextHighlight(true);
+      if (this.dialog.finished()) {
+        this.moveToNextHighlight();
+      } else {
+        this.advanceDialog();
       }
-    } else {
-      // try to reverse highlight, if there was previous text to animate
-      if (!this.reverseHighlight()) {
 
-        // do nothing if there's no previous highlights
-        if (this.curHighlight === 0) { return };
-
-        this.curHighlight--;
-
-        // if there are no previous highlights, don't reverse
-        if (this.curHighlight < 0) {
-          return;
-        }
-
-        // todo: fix the naming, oh gods this is cursed
-        this.nextHighlight(true);
-      }
+    } else { // direction === 'prev'
+      this.moveToPrevHighlight();
     }
   }
 
-  continueHighlight() {
-    return this.dialog.continueHighlight(this.getHighlights());
-  };
+  moveToNextHighlight() {
+    if (!this.hasNextHighlight()) {
+      return;
+    }
 
-  reverseHighlight() {
-    return this.dialog.reverseHighlight(this.getHighlights());
+    this.curHighlight++;
+    this.startCurrent();
   }
+
+  moveToPrevHighlight() {
+    if (!this.hasPrevHighlight()) {
+      return;
+    }
+
+    this.curHighlight--;
+    this.startCurrent();
+  }
+
+  advanceDialog() {
+    this.dialog.advance();
+    this.dialog.showControl(this.hasPrevHighlight, this.hasNextHighlight);
+  }
+
+  hasPrevHighlight() {
+    return this.curHighlight > 0;
+  }
+
+  hasNextHighlight() {
+    return this.curHighlight < this.highlights.length;
+  }
+
+  startCurrent() {
+    const current = this.highlights[this.curHighlight];
+
+    this.visual.showFor(current);
+    this.dialog.startHighlight(current);
+    this.dialog.showControl(this.hasPrevHighlight, this.hasNextHighlight);
+  }
+
 }
 
 module.exports = Story;

@@ -9,18 +9,11 @@ class Dialog {
     this.$lineTwo = this.$dialogs.last();
     this.$control = $('.dialog-control');
 
-    // should this go in resetDialog?
-    this.lineOneAnimating = false;
-    this.lineTwoAnimating = false;
+    // old animation stuff
+    //this.lineOneAnimating = false;
+    //this.lineTwoAnimating = false;
 
-    //this.$dialogs.each((_, el) => {
-      //util.prefixedOn($(el), 'AnimationEnd', onAnimEnd);
-    //});
-
-    this.cur;
-    this.prev;
-    this.next;
-
+    this.highlight;
     this.resetDialog();
   }
 
@@ -83,29 +76,28 @@ class Dialog {
     });
   }
 
+  finished() {
+    return this.curDialogPart === (this.dialogParts.length - 1);
+  }
+
+  advance() {
+    if (!this.highlight) { return false; }
+
+    this.curDialogPart++;
+    this.showHighlight();
+  }
+
   hasDialogNext() {
       return !((this.curDialogPart + 1) === this.dialogParts.length);
   }
 
-  hasDialogPrev() {
-      return !((this.curDialogPart - 1) === -1);
-  }
+  startHighlight(highlight) {
+    this.highlight = highlight;
 
-  startHighlight(highlights, skipAnimation) {
-    this.cur = highlights.cur;
-    this.prev = highlights.prev;
-    this.next = highlights.next;
-
-    // reset dialog
     this.resetDialog();
-    this.breakIntoDialogParts(this.cur.commentary);
+    this.breakIntoDialogParts(this.highlight.commentary);
 
-    this.cur.started = true;
-    if (skipAnimation) {
-      this.showHighlight(this.cur);
-    } else {
-      this.animateHighlight(this.cur);
-    }
+    this.showHighlight(this.highlight);
   }
 
   showHighlight() {
@@ -121,99 +113,30 @@ class Dialog {
     this.showControl();
   }
 
-  showControl() {
-    this.showPrev();
-    this.showNext();
+  showControl(hasPrev, hasNext) {
+    this.showPrev(hasPrev);
+    this.showNext(hasNext);
   }
 
   // show next arrow if:
   // there are parts left to this highlight
   // there are highlights left to the story
-  showNext() {
-    // todo: show arrow if next, but move into outro
-    if (this.hasDialogNext() || this.next) {
+  showNext(hasNext) {
+    if (this.hasDialogNext() || hasNext) {
       this.$control.last().addClass('show');
     }
   }
 
   // show pre arrow if:
-  // there are parts before this highlight
   // there are highlights earlier in the story
-  showPrev() {
-    // todo: show arrow if next, but move into outro
-    if (this.hasDialogPrev() || this.prev) {
+  showPrev(hasPrev) {
+    if (hasPrev) {
       this.$control.first().addClass('show');
     }
   }
 
   hideControl() {
     this.$control.removeClass('show');
-  }
-
-  continueHighlight(highlights) {
-    this.cur = highlights.cur;
-    this.prev = highlights.prev;
-    this.next = highlights.next;
-
-    if (!this.cur) { return false; }
-    if (!this.cur.started) { return false; }
-
-    // if currently animating, simply end the animation
-    if (this.lineOneAnimating) {
-
-      this.$lineOne
-        .removeClass('animate')
-        .addClass('animation-finished');
-      this.lineOneAnimating = false;
-      this.$lineTwo
-        .removeClass('animate')
-        .addClass('animation-finished');
-      this.lineTwoAnimating = false;
-      this.showControl();
-
-    } else if (this.lineTwoAnimating) {
-
-      this.$lineTwo
-        .removeClass('animate')
-        .addClass('animation-finished');
-      this.lineTwoAnimating = false;
-      this.showControl();
-
-    } else {
-      this.curDialogPart++;
-
-      // no more text to this highlight
-      if (this.curDialogPart === this.dialogParts.length) {
-        this.curDialogPart = 0;
-        return false;
-      }
-
-      // skip animations for now
-      this.showHighlight(this.cur);
-      //animateHighlight(cur);
-    }
-
-    return true;
-  }
-
-  reverseHighlight(highlights) {
-    this.cur = highlights.cur;
-    this.prev = highlights.prev;
-    this.next = highlights.next;
-
-    if (!this.cur) { return false; }
-    if (!this.cur.started) { return false; }
-
-    this.curDialogPart--;
-
-    // no more text to this highlight
-    if (this.curDialogPart === -1) {
-      this.curDialogPart = 0;
-      return false;
-    }
-
-    this.showHighlight(this.cur);
-    return true;
   }
 
 }
@@ -279,5 +202,72 @@ const onAnimEnd = () => {
     }
   }
 };
+
+  continueHighlight(highlights) {
+    //this.cur = highlights.cur;
+    //this.prev = highlights.prev;
+    //this.next = highlights.next;
+
+    if (!this.highlight) { return false; }
+    if (!this.highlight.started) { return false; }
+
+    // if currently animating, simply end the animation
+    if (this.lineOneAnimating) {
+
+      this.$lineOne
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineOneAnimating = false;
+      this.$lineTwo
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineTwoAnimating = false;
+      this.showControl();
+
+    } else if (this.lineTwoAnimating) {
+
+      this.$lineTwo
+        .removeClass('animate')
+        .addClass('animation-finished');
+      this.lineTwoAnimating = false;
+      this.showControl();
+
+    } else {
+      this.curDialogPart++;
+
+      // no more text to this highlight
+      if (this.curDialogPart === this.dialogParts.length) {
+        this.curDialogPart = 0;
+        return false;
+      }
+
+      // skip animations for now
+      this.showHighlight();
+      //animateHighlight(cur);
+    }
+
+    return true;
+  }
+
+  reverseHighlight(highlights) {
+    this.cur = highlights.cur;
+    this.prev = highlights.prev;
+    this.next = highlights.next;
+
+    if (!this.cur) { return false; }
+    if (!this.cur.started) { return false; }
+
+    this.curDialogPart--;
+
+    // no more text to this highlight
+    if (this.curDialogPart === -1) {
+      this.curDialogPart = 0;
+      return false;
+    }
+
+    this.showHighlight();
+    return true;
+  }
+
 */
 
