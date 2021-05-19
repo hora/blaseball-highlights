@@ -33,10 +33,9 @@ class Story {
           return;
         }
       } else { // click
-        // todo: fix this, this is cursed:
-        if ($(evt.target).attr('id').indexOf('next') >= 0) {
+        if ($(evt.target).attr('id') === 'highlights-dialog__next') {
           direction = 'next';
-        } else if ($(evt.target).attr('id').indexOf('prev') >= 0) {
+        } else if ($(evt.target).attr('id') === 'highlights-dialog__prev') {
           direction = 'prev';
         }
       }

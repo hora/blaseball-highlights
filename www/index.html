@@ -34,15 +34,17 @@
   <div id="game-event-form" class="container game-chooser">
 
     <h2>Choose a game</h2>
+
     <form id="game-event-form">
-        <label for="game-id" class="">
-          Enter a game ID or the game's
-          <a href="https://reblase.sibr.dev/">Reblase</a>
-          link
-        </label>
-        <p class="error-msg d-none">Oops! Something went wrong. Check the game
-        ID/URL and try again.</p>
-        <input id="game-id" type="text" class="" placeholder=""></input>
+
+      <label for="game-id" class="">
+        Enter a game ID or the game's
+        <a href="https://reblase.sibr.dev/">Reblase</a>
+        link
+      </label>
+      <p class="error-msg d-none">Oops! Something went wrong. Check the game
+      ID/URL and try again.</p>
+      <input id="game-id" type="text" class="" placeholder=""></input>
       <button type="submit" class="">Start Replay</button>
 
       <div class="loading d-none" role="status">
@@ -72,9 +74,9 @@
   </div>
 
   <div id="visuals" class="container text-center d-none">
-    <div id="intro">
+    <div id="matchup">
 
-      <div class="game-intro">
+      <div class="game-matchup">
         <h2 class="game-name text-center"></h2>
 
         <div class="vs-logo-container">
@@ -87,6 +89,7 @@
     </div>
 
     <div id="diamond" class="d-none">
+
       <div class="diamond-header">
         <span class="game-name"></span>
         <span class="matchup"></span>
@@ -191,13 +194,12 @@
     </div>
   </div>
 
-
-
   <button id="download-story" type="button" class="btn btn-primary d-none">
     Download Story
   </button>
 
   </div> <!-- main-cotainer -->
+
   <div id="highlights-dialog__container" class="d-none">
 
     <div id="highlights-dialog__text" class="centered">

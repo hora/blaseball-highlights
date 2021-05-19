@@ -121,7 +121,7 @@ class Visual {
     const homeTeamData = teamsData[this.homeTeam];
     const awayTeamData = teamsData[this.awayTeam];
 
-    $('#intro .game-name')
+    $('#matchup .game-name')
       .text(`Season ${gameEv.season + 1}, Day ${gameEv.day + 1}`);
 
     $home
@@ -157,7 +157,7 @@ class Visual {
   }
 
   hideCurrent() {
-    $('#intro').addClass('d-none');
+    $('#matchup').addClass('d-none');
     $('#diamond').addClass('d-none');
   }
 
@@ -166,7 +166,7 @@ class Visual {
       this.customizeMatchup(highlight);
     }
 
-    $('#intro').removeClass('d-none');
+    $('#matchup').removeClass('d-none');
   }
 
   showDiamond(highlight) {
