@@ -73,11 +73,29 @@ const makeCountCircle = (classes) => {
   return $('<span>').addClass(classes);
 };
 
-const renderGameEv = (gameEv) => {
+const renderGameEv = (gameEv, $container) => {
   const data = gameEv.ev.data;
 
   if (!data.lastUpdate) {
     return;
+  }
+
+  // check for half-inning changes
+  if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
+    $('<h3>')
+      .addClass('inning inning-top')
+      .text(`Top of 1`)
+      .appendTo($container);
+  } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
+    $('<h3>')
+      .addClass('inning inning-top')
+      .text(`Top of ${data.inning + 1}`)
+      .appendTo($container);
+  } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
+    $('<h3>')
+      .addClass('inning inning-bottom')
+      .text(`Bottom of ${data.inning + 1}`)
+      .appendTo($container);
   }
 
   const $gameEv = $('<div>');
@@ -90,25 +108,19 @@ const renderGameEv = (gameEv) => {
   let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
 
   $check
-    .addClass('form-check-input')
+    .addClass('game-event__check')
     .attr('id', gameEv.ev.hash)
     .attr('type', 'checkbox')
     .attr('name', 'game event')
     .val('');
 
-  //if (isPlayBall(data)) {
-    $check
-      .attr('checked', true)
-      .attr('disabled', true);
-  //}
-
   $label
-    .addClass('form-check-label')
+    .addClass('')
     .attr('for', gameEv.ev.hash)
     .text(update);
 
   $chContainer
-    .addClass('form-check col-7')
+    .addClass('')
     .append($check)
     .append($label);
 
@@ -176,15 +188,62 @@ const renderGameEv = (gameEv) => {
     .addClass('bases-occupied');
 
   $gameEvInfo
-    .addClass('col-5')
+    .addClass('')
     .append($score)
     .append($bases)
     .append($balls)
     .append($strikes)
     .append($outs);
 
+  let containerClasses = ['game-event__container'];
+
+  // highlight interesting events
+  // todo: when refactoring this whole cursed file, also don't do so many
+  // dom lookups here
+  if (gameEv.mlustard.out && gameEv.mlustard.outMeta.kind === 'strike') {
+
+    containerClasses.push('interesting strikeout');
+    $('.scroll-to.strikeout').removeClass('d-none');
+
+  }
+
+  if (gameEv.mlustard.hit) {
+
+    containerClasses.push('interesting hit');
+    $('.scroll-to.hit').removeClass('d-none');
+
+  }
+
+  if (gameEv.mlustard.steal && gameEv.mlustard.stealMeta.success) {
+
+    containerClasses.push('interesting steal');
+    $('.scroll-to.steal').removeClass('d-none');
+
+  }
+
+  if (gameEv.mlustard.special) {
+
+    containerClasses.push('interesting special');
+    $('.scroll-to.special').removeClass('d-none');
+
+  }
+
+  if (gameEv.mlustard.maximumBlaseball) {
+
+    containerClasses.push('interesting max');
+    $('.scroll-to.max').removeClass('d-none');
+
+  }
+
+  if (gameEv.mlustard.runsScored || gameEv.mlustard.unrunsScored) {
+
+    containerClasses.push('interesting score');
+    $('.scroll-to.score').removeClass('d-none');
+
+  }
+
   $gameEv
-    .addClass('game-event__container row border')
+    .addClass(containerClasses)
     .append($chContainer)
     .append($gameEvInfo);
 
@@ -193,25 +252,35 @@ const renderGameEv = (gameEv) => {
 
 const renderGameEvs = () => {
   stopLoading();
-  //$('#game-events-select').removeClass('d-none');
+  $('.game-events-choose__container').removeClass('d-none');
+  $('.game-events-choose__info').addClass('d-none');
 
-  const $container = $('#game-events-choose__container');
+  const $container = $('#game-events-choose__form-items');
 
+  // set game title and matchup
+  let headerRendered = false;
   // gotta render some general stuff too (home vs away, s#d#, weather)
   // also: label for the select, and the select itself
   for (let id in gameEvents) {
-    let $gameEv = renderGameEv(gameEvents[id]);
+    let gameEv = gameEvents[id];
+
+    if (!headerRendered) {
+      $('.game-events-choose__header .game-name')
+        .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
+      $('.game-events-choose__header .matchup')
+        .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
+      headerRendered = true;
+    }
+
+    let $gameEv = renderGameEv(gameEv, $container);
 
     if ($gameEv) {
       $container.append($gameEv);
     }
   }
-
-  // hack for mvp:
-  $('#game-events-choose__form button')[0].click();
 };
 
-const getGameEvents = async (gameId, nextPage) => {
+const getGameEvents = (gameId, nextPage) => {
   let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${gameId}`;
 
   if (nextPage) {
@@ -220,9 +289,7 @@ const getGameEvents = async (gameId, nextPage) => {
 
   startLoading();
 
-  //const resp = await fetch(gamesURL);
-  await fetch(gamesURL)
-    // catch server errors, from https://stackoverflow.com/a/54164027
+  fetch(gamesURL)
     .then((resp) => {
       if (!resp.ok) {
         throw new Error('Bad response from server');
@@ -297,6 +364,65 @@ const init = (highlightsReadyCb) => {
   $highlightsSelectForm.on('submit', (ev) => {
     ev.preventDefault();
     generateHighlights(highlightsReadyCb);
+  });
+
+  const $checkAll = $('#check-all');
+
+  $('#check-all').on('change', () => {
+    let state = $checkAll.is(':checked');
+
+    $('.game-event__check').each((_, ch) => {
+      $(ch).attr('checked', state);
+    });
+  });
+
+  $('.scroll-to').on('click', (evt) => {
+    const $button = $(evt.target);
+    let lookup = '.game-event__container';
+
+    if ($button.hasClass('strikeout')) {
+      lookup += '.strikeout';
+    } else if ($button.hasClass('hit')) {
+      lookup += '.hit';
+    } else if ($button.hasClass('steal')) {
+      lookup += '.steal';
+    } else if ($button.hasClass('special')) {
+      lookup += '.special';
+    } else if ($button.hasClass('max')) {
+      lookup += '.max';
+    } else if ($button.hasClass('score')) {
+      lookup += '.score';
+    }
+
+    const $items = $('#game-events-choose__form-items');
+    const $gameEvents = $('.game-event__container');
+
+    // if the form hasn't been scrolled much, search from the first event
+    // otherwise, search from first element in view onwards
+    let $firstInView = $gameEvents.filter((_, el) => {
+      const $el = $(el);
+      return ($el.offset().top - 450) > 0 && ($el.offset().top - 450 < 100);
+    });
+
+    if (!$firstInView.length) {
+      $firstInView = $gameEvents.first();
+    }
+
+    // look for next sibling that matches the type we're looking for
+    let $lookup = $firstInView.nextAll(lookup).first();
+
+    // if there's no match looking forward, loop from the top
+    if (!$lookup.length) {
+      $lookup = $(lookup).first();
+    }
+
+    $items
+      .scrollTop(0)
+      .scrollTop($lookup.offset().top - $items.offset().top);
+
+    //$items
+      //.scrollTop(0)
+      //.scrollTop($(lookup).first().offset().top - $items.offset().top);
   });
 
 };

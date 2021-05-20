@@ -64,7 +64,7 @@ h2 {
   font-size: 28px;
 }
 
-#game-events-choose__container {
+#game-events-choose__form-items {
   height: 330px;
   overflow: scroll;
   padding: 20px;
@@ -77,8 +77,15 @@ h2 {
   margin-bottom: .5rem;
   font-size: 1.1rem;
 }
+
 .game-event__container:hover {
   background-color: #eee;
+}
+
+.game-event__container.interesting {
+  background-color: pink;
+  font-weight: 600;
+  color: #003049;
 }
 
 .game-event__container .form-check {

@@ -33,7 +33,7 @@
 
   <div id="game-event-form" class="container game-chooser">
 
-    <h2>Choose a game</h2>
+    <h2>1. Choose a game</h2>
 
     <form id="game-event-form">
 
@@ -45,7 +45,7 @@
       <p class="error-msg d-none">Oops! Something went wrong. Check the game
       ID/URL and try again.</p>
       <input id="game-id" type="text" class="" placeholder=""></input>
-      <button type="submit" class="">Start Replay</button>
+      <button type="submit" class="">Load Game Events</button>
 
       <div class="loading d-none" role="status">
         <span class="">Loading...</span>
@@ -55,22 +55,42 @@
 
   </div>
 
-  <div id="game-events-select" class="container d-none">
-    <div class="row">
-    <div class="col"></div>
+  <div id="game-events-choose" class="container">
 
-    <div class="col-8">
-    <form id="game-events-choose__form">
-      <div id="game-events-choose__container" class="container">
+    <h2>2. Choose game events to highlight</h2>
+
+    <p class="game-events-choose__info">Waiting on you to choose a game.</p>
+
+    <div class="game-events-choose__container d-none">
+
+      <div class="game-events-choose__header">
+        <span class="game-name"></span>
+        <span class="matchup"></span>
       </div>
-      <button type="submit" class="btn btn-primary">
-        Generate Highlights!
-      </button>
-    </form>
+
+      <div class="">
+        <span>Scroll to next:</span>
+        <span class="scroll-to strikeout d-none">Strikeout</span>
+        <span class="scroll-to hit d-none">Hit</span>
+        <span class="scroll-to steal d-none">Steal</span>
+        <span class="scroll-to special d-none">Special</span>
+        <span class="scroll-to max d-none">Maximum Blaseball</span>
+        <span class="scroll-to score d-none">Score</span>
+      </div>
+
+      <form id="game-events-choose__form">
+        <div id="game-events-choose__form-items">
+          <div class="">
+            <input id="check-all" type="checkbox" name="check all game events">
+            <label for="check-all">Choose all events</label>
+          </div>
+        </div>
+        <button type="submit" class="">
+          Generate Highlights!
+        </button>
+      </form>
     </div>
 
-    <div class="col"></div>
-    </div>
   </div>
 
   <div id="visuals" class="container text-center d-none">
