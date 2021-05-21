@@ -63,24 +63,27 @@
 
     <div class="game-events-choose__container d-none">
 
-      <div class="game-events-choose__header">
-        <span class="game-name"></span>
+      <h3 class="game-events-choose__header">
+        <span class="game-name"></span> –
         <span class="matchup"></span>
-      </div>
+      </h3>
 
-      <div class="">
-        <span>Scroll to next:</span>
-        <span class="scroll-to strikeout d-none">Strikeout</span>
-        <span class="scroll-to hit d-none">Hit</span>
-        <span class="scroll-to steal d-none">Steal</span>
-        <span class="scroll-to special d-none">Special</span>
-        <span class="scroll-to max d-none">Maximum Blaseball</span>
-        <span class="scroll-to score d-none">Score</span>
+      <div class="scroll-to-container">
+        <span>Jump to:</span>
+        <ul class="">
+          <li class="scroll-to inning">next Half-inning</li>
+          <li class="scroll-to strikeout d-none">next Strikeout</li>
+          <li class="scroll-to hit d-none">next Hit</li>
+          <li class="scroll-to steal d-none">next Steal</li>
+          <li class="scroll-to special d-none">next Special</li>
+          <li class="scroll-to max d-none">next Maximum Blaseball</li>
+          <li class="scroll-to score d-none">next Score</li>
+        </ul>
       </div>
 
       <form id="game-events-choose__form">
         <div id="game-events-choose__form-items">
-          <div class="">
+          <div class="check-all-cursed">
             <input id="check-all" type="checkbox" name="check all game events">
             <label for="check-all">Choose all events</label>
           </div>

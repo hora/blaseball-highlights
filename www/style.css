@@ -12,18 +12,19 @@ a {
   color: white;
 }
 
-input {
+input, button {
   border-radius: 2px;
   border: none;
+  padding: 10px;
+}
+
+input {
   margin-bottom: 15px;
 }
 
 button {
   background-color: #2a9d8f;
   color: white;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 2px;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -32,6 +33,8 @@ h1, h2, h3, h4, h5, h6 {
 
 ul {
   list-style: none;
+  padding-left: 0;
+  margin: 0 0 10px 0;
 }
 
 .main-container {
@@ -62,13 +65,20 @@ ul {
 
 h2 {
   font-size: 28px;
+  text-align: center;
+}
+
+h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
 #game-events-choose__form-items {
   height: 330px;
-  overflow: scroll;
+  overflow-y: scroll;
   padding: 20px;
-  border: 1px solid #ccc;
+  background-color: #33596d;
 }
 
 .game-event__container {
@@ -273,10 +283,6 @@ h2 {
   margin: 0 20px;
 }
 
-.d-none {
-  display: none;
-}
-
 .scoreboard {
   position: absolute;
   right: 0;
@@ -334,14 +340,9 @@ h2 {
   width: 80px;
 }
 
-.game-chooser h2 {
-  text-align: center;
-}
-
 .game-chooser input {
   display: block;
   width: 100%;
-  line-height: 2;
   margin-top: 10px;
 }
 
@@ -356,3 +357,26 @@ h2 {
   height: 460px;
 }
 
+.scroll-to {
+  display: inline-block;
+  margin-right: 5px;
+  margin-bottom: 7px;
+  background-color: pink;
+  color: #003049;
+  font-size: 18px;
+  padding: 2px 5px;
+  text-transform: lowercase;
+}
+
+.scroll-to-container {
+  display: flex;
+}
+
+
+.scroll-to-container span {
+  width: 120px;
+}
+
+.d-none {
+  display: none !important;
+}
