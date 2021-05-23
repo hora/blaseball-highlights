@@ -378,7 +378,10 @@ const init = (highlightsReadyCb) => {
 
   $('.scroll-to').on('click', (evt) => {
     const $button = $(evt.target);
-    let lookup = '.game-event__container';
+    const $itemsContainer = $('#game-events-choose__form-items')
+    const $items = $itemsContainer.children(':not(.check-all-cursed)');
+
+    let lookup = '.interesting';
 
     if ($button.hasClass('strikeout')) {
       lookup += '.strikeout';
@@ -392,20 +395,19 @@ const init = (highlightsReadyCb) => {
       lookup += '.max';
     } else if ($button.hasClass('score')) {
       lookup += '.score';
+    } else if ($button.hasClass('inning')) {
+      lookup = '#game-events-choose__form .inning';
     }
-
-    const $items = $('#game-events-choose__form-items');
-    const $gameEvents = $('.game-event__container');
 
     // if the form hasn't been scrolled much, search from the first event
     // otherwise, search from first element in view onwards
-    let $firstInView = $gameEvents.filter((_, el) => {
+    let $firstInView = $items.filter((_, el) => {
       const $el = $(el);
       return ($el.offset().top - 450) > 0 && ($el.offset().top - 450 < 100);
     });
 
     if (!$firstInView.length) {
-      $firstInView = $gameEvents.first();
+      $firstInView = $items.first();
     }
 
     // look for next sibling that matches the type we're looking for
@@ -416,13 +418,9 @@ const init = (highlightsReadyCb) => {
       $lookup = $(lookup).first();
     }
 
-    $items
+    $itemsContainer
       .scrollTop(0)
-      .scrollTop($lookup.offset().top - $items.offset().top);
-
-    //$items
-      //.scrollTop(0)
-      //.scrollTop($(lookup).first().offset().top - $items.offset().top);
+      .scrollTop($lookup.offset().top - $itemsContainer.offset().top);
   });
 
 };
