@@ -26,6 +26,7 @@ const getRandomGame = () => {
     'https://reblase.sibr.dev/game/462481f4-7f97-441c-9fc9-c3dc3c5844a4',
     'https://reblase.sibr.dev/game/11a8a7d3-460b-4c99-a98a-b0bd1f577073',
     'https://reblase.sibr.dev/game/823dfcb6-dddb-43f4-90ff-eac05827a82e',
+    'https://reblase.sibr.dev/game/f7ad7826-ca6e-49c2-818e-190408b046fe',
 
     // other games
     // s3d100 (riv landry)
@@ -264,11 +265,18 @@ const renderGameEvs = () => {
   for (let id in gameEvents) {
     let gameEv = gameEvents[id];
 
-    if (!headerRendered) {
+    if (!headerRendered && gameEv.ev.data.homePitcherName && gameEv.ev.data.awayPitcherName) {
+      let homeEmoji = util.getEmoji('home', gameEv.ev.data);
+      let awayEmoji = util.getEmoji('away', gameEv.ev.data);
+
       $('.game-events-choose__header .game-name')
         .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
       $('.game-events-choose__header .matchup')
         .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
+      $('.game-events-choose__header-sub .home-pitcher')
+        .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
+      $('.game-events-choose__header-sub .away-pitcher')
+        .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
       headerRendered = true;
     }
 
@@ -379,7 +387,7 @@ const init = (highlightsReadyCb) => {
   $('.scroll-to').on('click', (evt) => {
     const $button = $(evt.target);
     const $itemsContainer = $('#game-events-choose__form-items')
-    const $items = $itemsContainer.children(':not(.check-all-cursed)');
+    const $items = $itemsContainer.children();
 
     let lookup = '.interesting';
 

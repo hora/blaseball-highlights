@@ -33,7 +33,7 @@
 
   <div id="game-event-form" class="container game-chooser">
 
-    <h2>1. Choose a game</h2>
+    <h2>1. Load a game</h2>
 
     <form id="game-event-form">
 
@@ -59,7 +59,7 @@
 
     <h2>2. Choose game events to highlight</h2>
 
-    <p class="game-events-choose__info">Waiting on you to choose a game.</p>
+    <p class="game-events-choose__info">Waiting on you to load a game.</p>
 
     <div class="game-events-choose__container d-none">
 
@@ -67,6 +67,11 @@
         <span class="game-name"></span> –
         <span class="matchup"></span>
       </h3>
+      <h4 class="game-events-choose__header-sub">
+        Starting pitchers: 
+        <span class="home-pitcher"></span> and
+        <span class="away-pitcher"></span>
+      </h4>
 
       <div class="scroll-to-container">
         <span>Jump to:</span>
@@ -81,15 +86,21 @@
         </ul>
       </div>
 
+      <div class="check-all-cursed">
+        <input id="check-all" type="checkbox" name="check all game events">
+        <label for="check-all">Choose all events</label>
+      </div>
       <form id="game-events-choose__form">
         <div id="game-events-choose__form-items">
-          <div class="check-all-cursed">
-            <input id="check-all" type="checkbox" name="check all game events">
-            <label for="check-all">Choose all events</label>
-          </div>
         </div>
         <button type="submit" class="">
-          Generate Highlights!
+          Preview Story
+        </button>
+        <button type="submit" class="">
+          Save Story
+        </button>
+        <button type="submit" class="">
+          Share Story
         </button>
       </form>
     </div>
