@@ -31,7 +31,7 @@ class Highlight {
       //gameEvent: gameEvent.data,
       //mlustard: mlustard,
     //});
-  };
+  }
 
 }
 

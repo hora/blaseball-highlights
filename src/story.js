@@ -95,8 +95,13 @@ class Story {
     return this.curHighlight < (this.highlights.length - 1);
   }
 
+  currentHighlight() {
+    return this.highlights[this.curHighlight];
+  }
+
   startCurrent() {
-    const current = this.highlights[this.curHighlight];
+    //const current = this.highlights[this.curHighlight];
+    const current = this.currentHighlight();
 
     this.visual.showFor(current);
     this.dialog.startHighlight(current);
