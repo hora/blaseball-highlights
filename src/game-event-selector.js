@@ -41,6 +41,9 @@ const isPlayBall = (gameEv) => {
 };
 
 const generateHighlights = (cb) => {
+  // reset highlights
+  highlights = [];
+
   $('.game-event__container input:checked').each((_, checked) => {
     const id = $(checked).attr('id');
     let visual = 'diamond';
@@ -337,7 +340,11 @@ const stopLoading = () => {
   $gameEvForm.find('.loading').addClass('d-none');
 };
 
-const init = (highlightsReadyCb) => {
+// todo: will send highlights data to flask to save
+const saveHighlights = () => {
+};
+
+const init = (onPreview) => {
   const $gameEvForm = $('#game-load-form');
   const $gameInput = $('#game-load-form__game-id');
 
@@ -364,7 +371,12 @@ const init = (highlightsReadyCb) => {
 
   $highlightsSelectForm.on('submit', (ev) => {
     ev.preventDefault();
-    generateHighlights(highlightsReadyCb);
+    saveHighlights();
+    //generateHighlights(onPreview);
+  });
+
+  $highlightsSelectForm.find('.preview-story').on('click', (ev) => {
+    generateHighlights(onPreview);
   });
 
   const $checkAll = $('#check-all');

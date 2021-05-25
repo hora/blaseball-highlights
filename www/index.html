@@ -54,7 +54,6 @@
     </form>
   </div> <!-- game-load -->
 
-  <!--<div id="game-events-choose" class="container">-->
   <div id="game-events" class="game-events container">
 
     <h2>2. Choose game events to highlight</h2>
@@ -102,20 +101,21 @@
       <form id="game-events__form">
         <div id="game-events__form-items" class="show-status">
         </div>
-        <button type="submit" class="">
-          Preview Story
-        </button>
-        <button type="submit" class="">
+        <button type="submit" class="save-story">
           Save Story
         </button>
-        <button type="submit" class="">
-          Share Story
+        <button type="button" class="preview-story">
+          Preview Story
+        </button>
+        <button type="button" class="publish-story">
+          Publish Story
         </button>
       </form>
     </div>
 
-  </div>
+  </div> <!-- #game-events -->
 
+  <button type="button" id="exit-preview" class="d-none">Exit Preview</button>
   <div id="visuals" class="container text-center d-none">
     <div id="matchup">
 

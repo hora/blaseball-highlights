@@ -11,7 +11,6 @@ class Story {
   }
 
   start() {
-    $('#game-event-form').addClass('d-none');
     $('#visuals').removeClass('d-none');
     $('#highlights-dialog__container').removeClass('d-none');
 
@@ -108,6 +107,10 @@ class Story {
     this.dialog.showControl(this.hasPrevHighlight(), this.hasNextHighlight());
   }
 
+  stop() {
+    $('#visuals').addClass('d-none');
+    $('#highlights-dialog__container').addClass('d-none');
+  }
 }
 
 module.exports = Story;
