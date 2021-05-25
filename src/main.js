@@ -3,6 +3,7 @@ const Story = require('./story');
 const downloader = require('./downloader');
 
 let story;
+let inPreview = false;
 
 const onPreview = (hls) => {
 
@@ -15,13 +16,24 @@ const onPreview = (hls) => {
   $('#exit-preview').removeClass('d-none');
 
   story.start();
+  inPreview = true;
 };
 
-const exitPreview = () => {
+const exitPreview = (evt) => {
+  if (!inPreview) { return; }
+
+  // also exit preview on esc
+  if (evt.type === 'keyup') {
+    if (evt.keyCode !== 27) {
+      return;
+    }
+  }
+
   $('#exit-preview').addClass('d-none');
   $('#game-load').removeClass('d-none');
   $('#game-events').removeClass('d-none');
   story.stop();
+  inPreview = false;
 };
 
 const initApp = () => {
@@ -37,7 +49,8 @@ const initApp = () => {
     //downloader.init();
   }
 
-  $('#exit-preview').on('click', exitPreview);
+  $('#exit-preview').on('click.preview', exitPreview);
+  $(document).on('keyup.preview', exitPreview);
 };
 
 initApp();

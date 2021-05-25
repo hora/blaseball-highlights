@@ -44,8 +44,8 @@ class Story {
       _this.doStep(direction);
     }
 
-    $(document).on('keyup', handleAction);
-    $('.dialog-control').on('click', handleAction);
+    $(document).on('keyup.story', handleAction);
+    $('.dialog-control').on('click.story', handleAction);
 
     // show the first highlight
     this.startCurrent();
@@ -112,8 +112,8 @@ class Story {
   stop() {
     $('#visuals').addClass('d-none');
     $('#highlights-dialog__container').addClass('d-none');
-    $(document).off('keyup');
-    $('.dialog-control').off('click');
+    $(document).off('keyup.story');
+    $('.dialog-control').off('click.story');
   }
 }
 
