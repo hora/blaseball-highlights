@@ -31,11 +31,11 @@
 
   <div class="main-container centered">
 
-  <div id="game-event-form" class="container game-chooser">
+  <div id="game-load" class="game-load container game-chooser">
 
     <h2>1. Load a game</h2>
 
-    <form id="game-event-form">
+    <form id="game-load-form" class="game-load-form">
 
       <label for="game-id" class="">
         Enter a game ID or the game's
@@ -44,7 +44,7 @@
       </label>
       <p class="error-msg d-none">Oops! Something went wrong. Check the game
       ID/URL and try again.</p>
-      <input id="game-id" type="text" class="" placeholder=""></input>
+      <input id="game-load-form__game-id" type="text" class="" placeholder=""></input>
       <button type="submit" class="">Load Game Events</button>
 
       <div class="loading d-none" role="status">
@@ -52,23 +52,23 @@
       </div>
 
     </form>
+  </div> <!-- game-load -->
 
-  </div>
-
-  <div id="game-events-choose" class="container">
+  <!--<div id="game-events-choose" class="container">-->
+  <div id="game-events" class="game-events container">
 
     <h2>2. Choose game events to highlight</h2>
 
-    <p class="game-events-choose__info">Waiting on you to load a game.</p>
+    <p class="game-events__info">Waiting on you to load a game.</p>
 
-    <div class="game-events-choose__container d-none">
+    <div class="game-events__container d-none">
 
-      <h3 class="game-events-choose__header">
+      <h3 class="game-events__game-header">
         <span class="game-name"></span> –
         <span class="matchup"></span>
       </h3>
-      <h4 class="game-events-choose__header-sub">
-        Starting pitchers: 
+      <h4 class="game-events__game-subheader">
+        Starting pitchers:
         <span class="home-pitcher"></span> and
         <span class="away-pitcher"></span>
       </h4>
@@ -86,12 +86,13 @@
         </ul>
       </div>
 
-      <div class="check-all-cursed">
+      <div class="">
         <input id="check-all" type="checkbox" name="check all game events">
         <label for="check-all">Choose all events</label>
       </div>
-      <form id="game-events-choose__form">
-        <div id="game-events-choose__form-items">
+
+      <form id="game-events__form">
+        <div id="game-events__form-items">
         </div>
         <button type="submit" class="">
           Preview Story

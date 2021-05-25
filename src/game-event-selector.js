@@ -253,10 +253,10 @@ const renderGameEv = (gameEv, $container) => {
 
 const renderGameEvs = () => {
   stopLoading();
-  $('.game-events-choose__container').removeClass('d-none');
-  $('.game-events-choose__info').addClass('d-none');
+  $('.game-events__container').removeClass('d-none');
+  $('.game-events__info').addClass('d-none');
 
-  const $container = $('#game-events-choose__form-items');
+  const $container = $('#game-events__form-items');
 
   // set game title and matchup
   let headerRendered = false;
@@ -269,13 +269,13 @@ const renderGameEvs = () => {
       let homeEmoji = util.getEmoji('home', gameEv.ev.data);
       let awayEmoji = util.getEmoji('away', gameEv.ev.data);
 
-      $('.game-events-choose__header .game-name')
+      $('.game-events__game-header .game-name')
         .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
-      $('.game-events-choose__header .matchup')
+      $('.game-events__game-header .matchup')
         .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
-      $('.game-events-choose__header-sub .home-pitcher')
+      $('.game-events__game-subheader .home-pitcher')
         .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
-      $('.game-events-choose__header-sub .away-pitcher')
+      $('.game-events__game-subheader .away-pitcher')
         .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
       headerRendered = true;
     }
@@ -323,14 +323,14 @@ const getGameEvents = (gameId, nextPage) => {
     })
     .catch((err) => {
       console.error(err);
-      $('#game-event-form .error-msg').removeClass('d-none');
+      $('#game-load-form .error-msg').removeClass('d-none');
       stopLoading();
     });
 
 };
 
 const startLoading = () => {
-  const $gameEvForm = $('#game-event-form');
+  const $gameEvForm = $('#game-load-form');
 
   $gameEvForm.find('.error-msg').addClass('d-none');
   $gameEvForm.find('button').addClass('d-none');
@@ -338,15 +338,15 @@ const startLoading = () => {
 };
 
 const stopLoading = () => {
-  const $gameEvForm = $('#game-event-form');
+  const $gameEvForm = $('#game-load-form');
 
   $gameEvForm.find('button').removeClass('d-none');
   $gameEvForm.find('.loading').addClass('d-none');
 };
 
 const init = (highlightsReadyCb) => {
-  const $gameEvForm = $('#game-event-form');
-  const $gameInput = $('#game-id');
+  const $gameEvForm = $('#game-load-form');
+  const $gameInput = $('#game-load-form__game-id');
 
   // focus on game input
   $gameInput.focus();
@@ -367,7 +367,7 @@ const init = (highlightsReadyCb) => {
     getGameEvents(gameId);
   });
 
-  const $highlightsSelectForm = $('#game-events-choose__form');
+  const $highlightsSelectForm = $('#game-events__form');
 
   $highlightsSelectForm.on('submit', (ev) => {
     ev.preventDefault();
@@ -386,7 +386,8 @@ const init = (highlightsReadyCb) => {
 
   $('.scroll-to').on('click', (evt) => {
     const $button = $(evt.target);
-    const $itemsContainer = $('#game-events-choose__form-items')
+    const $itemsContainer = $('#game-events__form-items')
+    const containerOffTop = $itemsContainer.offset().top;
     const $items = $itemsContainer.children();
 
     let lookup = '.interesting';
@@ -404,14 +405,16 @@ const init = (highlightsReadyCb) => {
     } else if ($button.hasClass('score')) {
       lookup += '.score';
     } else if ($button.hasClass('inning')) {
-      lookup = '#game-events-choose__form .inning';
+      lookup = '#game-events__form .inning';
     }
 
     // if the form hasn't been scrolled much, search from the first event
     // otherwise, search from first element in view onwards
     let $firstInView = $items.filter((_, el) => {
       const $el = $(el);
-      return ($el.offset().top - 450) > 0 && ($el.offset().top - 450 < 100);
+      return ($el.offset().top - containerOffTop) > 0 && ($el.offset().top - containerOffTop < 100);
+      // the 100 is hard-coded here; it's roughly the height of each $el
+      // yes. this is probably super cursed.
     });
 
     if (!$firstInView.length) {
@@ -428,7 +431,7 @@ const init = (highlightsReadyCb) => {
 
     $itemsContainer
       .scrollTop(0)
-      .scrollTop($lookup.offset().top - $itemsContainer.offset().top);
+      .scrollTop($lookup.offset().top - containerOffTop);
   });
 
 };

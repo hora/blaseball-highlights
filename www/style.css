@@ -74,7 +74,7 @@ h3 {
   margin-bottom: 10px;
 }
 
-#game-events-choose__form-items {
+#game-events__form-items {
   height: 330px;
   overflow-y: scroll;
   padding: 20px;
