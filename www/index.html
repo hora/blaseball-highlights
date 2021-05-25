@@ -86,13 +86,21 @@
         </ul>
       </div>
 
-      <div class="">
-        <input id="check-all" type="checkbox" name="check all game events">
-        <label for="check-all">Choose all events</label>
+      <div class="game-events-control">
+        <ul>
+          <li>
+            <input id="check-all" type="checkbox" name="check all game events">
+            <label for="check-all">Choose all events</label>
+          </li>
+          <li class="game-events-control__status">
+            <span class="hide-status">Hide game status</span>
+            <span class="show-status d-none">Show game status</span>
+          </li>
+        </ul>
       </div>
 
       <form id="game-events__form">
-        <div id="game-events__form-items">
+        <div id="game-events__form-items" class="show-status">
         </div>
         <button type="submit" class="">
           Preview Story

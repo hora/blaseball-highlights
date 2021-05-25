@@ -56,13 +56,6 @@ const generateHighlights = (cb) => {
       visual,
     });
 
-    //const hl = highlight.makeHighlight({
-      //id: id,
-      //gameEvent: gameEvents[id].ev,
-      //mlustard: gameEvents[id].mlustard,
-      //visual,
-    //});
-
     highlights.push(hl);
   });
 
@@ -189,7 +182,7 @@ const renderGameEv = (gameEv, $container) => {
     .addClass('bases-occupied');
 
   $gameEvInfo
-    .addClass('')
+    .addClass('game-status')
     .append($score)
     .append($bases)
     .append($balls)
@@ -382,6 +375,27 @@ const init = (highlightsReadyCb) => {
     $('.game-event__check').each((_, ch) => {
       $(ch).attr('checked', state);
     });
+  });
+
+  const $statusToggle = $('.game-events-control__status');
+
+  $statusToggle.on('click', (evt) => {
+    const $button = $(evt.target);
+    const $formItems = $('#game-events__form-items');
+
+    if ($button.hasClass('hide-status')) {
+
+      $button.addClass('d-none');
+      $statusToggle.find('.show-status').removeClass('d-none');
+      $formItems.removeClass('show-status');
+
+    } else if ($button.hasClass('show-status')) {
+
+      $button.addClass('d-none');
+      $statusToggle.find('.hide-status').removeClass('d-none');
+      $formItems.addClass('show-status');
+
+    }
   });
 
   $('.scroll-to').on('click', (evt) => {

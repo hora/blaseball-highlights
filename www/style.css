@@ -81,6 +81,14 @@ h3 {
   background-color: #33596d;
 }
 
+#game-events__form-items .game-status {
+  display: none;
+}
+
+#game-events__form-items.show-status .game-status {
+  display: block;
+}
+
 .game-event__container {
   padding-top: .5rem;
   padding-bottom: .5rem;
@@ -380,3 +388,5 @@ h3 {
 .d-none {
   display: none !important;
 }
+
+
