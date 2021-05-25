@@ -4,7 +4,6 @@ const Highlight = require('./highlight');
 const util = require('./util');
 
 let gameEvents = {};
-let highlights = [];
 
 const getRandomGame = () => {
   const games = [
@@ -41,8 +40,7 @@ const isPlayBall = (gameEv) => {
 };
 
 const generateHighlights = (cb) => {
-  // reset highlights
-  highlights = [];
+  let highlights = [];
 
   $('.game-event__container input:checked').each((_, checked) => {
     const id = $(checked).attr('id');

@@ -8,6 +8,8 @@ class Story {
     this.curHighlight = 0;
     this.dialog = new Dialog();
     this.visual = new Visual();
+
+    console.debug('new story with highlights', this.highlights);
   }
 
   start() {
@@ -110,6 +112,8 @@ class Story {
   stop() {
     $('#visuals').addClass('d-none');
     $('#highlights-dialog__container').addClass('d-none');
+    $(document).off('keyup');
+    $('.dialog-control').off('click');
   }
 }
 
