@@ -1,11 +1,11 @@
 const gameEventSelector = require('./game-event-selector');
+const gameLoader = require('./game-loader');
 const Story = require('./story');
-const downloader = require('./downloader');
 
 let story;
 let inPreview = false;
 
-const onPreview = (hls) => {
+const onStartPreview = (hls) => {
 
   story = new Story({
     highlights: hls,
@@ -19,7 +19,7 @@ const onPreview = (hls) => {
   inPreview = true;
 };
 
-const exitPreview = (evt) => {
+const onEndPreview = (evt) => {
   if (!inPreview) { return; }
 
   // also exit preview on esc
@@ -45,12 +45,19 @@ const initApp = () => {
     onPreview(JSON.parse(highlightsData));
     //highlights = JSON.parse(highlightsData);
   } else {
-    gameEventSelector.init(onPreview);
-    //downloader.init();
+    gameLoader.loadWithMlustard()
+      .then((gameEvents) => {
+        gameEventSelector.render({
+          gameEvents,
+          onStartPreview,
+          onEndPreview,
+        });
+      });
   }
 
-  $('#exit-preview').on('click.preview', exitPreview);
-  $(document).on('keyup.preview', exitPreview);
+  // todo: put these elsewhere
+  $('#exit-preview').on('click.preview', onEndPreview);
+  $(document).on('keyup.preview', onEndPreview);
 };
 
 initApp();

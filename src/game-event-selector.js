@@ -1,39 +1,9 @@
-const mlustard = require('mlustard');
-
 const Highlight = require('./highlight');
 const util = require('./util');
 
-let gameEvents = {};
-
-const getRandomGame = () => {
-  const games = [
-    // internet series championship games, starting season 2
-    'https://reblase.sibr.dev/game/97d88b9e-406d-4f31-a18f-2a3b903edc03',
-    'https://reblase.sibr.dev/game/b38e0917-43da-470c-a7bb-5712368a2492',
-    'https://reblase.sibr.dev/game/628a2ddb-f608-411b-8d2e-2768cd36d58b',
-    'https://reblase.sibr.dev/game/52f6274e-e0dc-4c23-87e8-686f6d2b2bbf',
-    'https://reblase.sibr.dev/game/10538840-1f72-4a90-98e5-724a9dc5d061',
-    'https://reblase.sibr.dev/game/9d85897e-e689-4eeb-b2ae-b69679a3ebc7',
-    'https://reblase.sibr.dev/game/ee35a868-b004-449f-a99c-6a40ca54b382',
-    'https://reblase.sibr.dev/game/06566f8d-3d14-4956-b054-36dc981fd589',
-    'https://reblase.sibr.dev/game/704ddf2f-3fe2-48b3-b674-b94765f70d01',
-    'https://reblase.sibr.dev/game/47bcac42-f651-4fc9-9f93-5567a7b10daf',
-    'https://reblase.sibr.dev/game/0f19d78d-c27d-4146-863d-b55e6dae1679',
-    'https://reblase.sibr.dev/game/1506b88f-1fea-4ba1-9256-1ebb030cdcae',
-    'https://reblase.sibr.dev/game/b2cafd20-a799-48f6-abd7-c99bd79a6bd1',
-    'https://reblase.sibr.dev/game/2bc6e86e-8d25-4e37-9026-780d8b6969c5',
-    'https://reblase.sibr.dev/game/462481f4-7f97-441c-9fc9-c3dc3c5844a4',
-    'https://reblase.sibr.dev/game/11a8a7d3-460b-4c99-a98a-b0bd1f577073',
-    'https://reblase.sibr.dev/game/823dfcb6-dddb-43f4-90ff-eac05827a82e',
-    'https://reblase.sibr.dev/game/f7ad7826-ca6e-49c2-818e-190408b046fe',
-
-    // other games
-    // s3d100 (riv landry)
-    'https://reblase.sibr.dev/game/aa1b7fde-f077-4e4b-825f-0d1538d02822',
-  ];
-
-  return games[Math.floor(Math.random() * (games.length - 1))];
-};
+let gameEvents;
+let onStartPreview;
+let onEndPreview;
 
 const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
@@ -42,18 +12,20 @@ const isPlayBall = (gameEv) => {
 const generateHighlights = (cb) => {
   let highlights = [];
 
-  $('.game-event__container input:checked').each((_, checked) => {
+  $('#game-events__form-items .game-event-form__check:checked')
+  .each((_, checked) => {
     const id = $(checked).attr('id');
+    const gameEvent = gameEvents[id];
     let visual = 'diamond';
 
-    if (isPlayBall(gameEvents[id].ev.data)) {
+    if (isPlayBall(gameEvent.ev.data)) {
       visual = 'matchup';
     }
 
     const hl = new Highlight({
       id: id,
-      gameEvent: gameEvents[id].ev,
-      mlustard: gameEvents[id].mlustard,
+      gameEvent: gameEvent.ev,
+      mlustard: gameEvent.mlustard,
       visual,
     });
 
@@ -188,33 +160,43 @@ const renderGameEv = (gameEv, $container) => {
   return ret;
 };
 
-const renderGameEvs = () => {
-  stopLoading();
+// set game title and matchup
+let headerRendered = false;
+
+const headerNotRendered = (gameEv) => {
+  return !headerRendered && gameEv.ev.data.homePitcherName && gameEv.ev.data.awayPitcherName;
+};
+
+const renderHeader = (gameEv) => {
+  let homeEmoji = util.getEmoji('home', gameEv.ev.data);
+  let awayEmoji = util.getEmoji('away', gameEv.ev.data);
+
+  $('.game-events__game-header .game-name')
+    .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
+  $('.game-events__game-header .matchup')
+    .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
+  $('.game-events__game-subheader .home-pitcher')
+    .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
+  $('.game-events__game-subheader .away-pitcher')
+    .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
+  headerRendered = true;
+};
+
+const render = (settings) => {
+  gameEvents = settings.gameEvents;
+  onStartPreview = settings.onStartPreview;
+  onEndPreview = settings.onEndPreview;
+
   $('.game-events__container').removeClass('d-none');
   $('.game-events__info').addClass('d-none');
 
   const $container = $('#game-events__form-items');
 
-  // set game title and matchup
-  let headerRendered = false;
-  // gotta render some general stuff too (home vs away, s#d#, weather)
-  // also: label for the select, and the select itself
   for (let id in gameEvents) {
     let gameEv = gameEvents[id];
 
-    if (!headerRendered && gameEv.ev.data.homePitcherName && gameEv.ev.data.awayPitcherName) {
-      let homeEmoji = util.getEmoji('home', gameEv.ev.data);
-      let awayEmoji = util.getEmoji('away', gameEv.ev.data);
-
-      $('.game-events__game-header .game-name')
-        .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
-      $('.game-events__game-header .matchup')
-        .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
-      $('.game-events__game-subheader .home-pitcher')
-        .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
-      $('.game-events__game-subheader .away-pitcher')
-        .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
-      headerRendered = true;
+    if (headerNotRendered(gameEv)) {
+      renderHeader(gameEv);
     }
 
     let $gameEv = renderGameEv(gameEv, $container);
@@ -223,91 +205,15 @@ const renderGameEvs = () => {
       $container.append($gameEv);
     }
   }
-};
 
-const getGameEvents = (gameId, nextPage) => {
-  let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${gameId}`;
-
-  if (nextPage) {
-    gamesURL += `&page=${nextPage}`;
-  }
-
-  startLoading();
-
-  fetch(gamesURL)
-    .then((resp) => {
-      if (!resp.ok) {
-        throw new Error('Bad response from server');
-      }
-
-      return resp.json();
-    })
-    .then((data) => {
-      for (let gameEv of data.data) {
-        gameEvents[gameEv.hash] = {
-          ev: gameEv,
-          mlustard: mlustard.analyzeGameEvent(gameEv.data),
-        };
-      }
-
-      if (data.nextPage) {
-        getGameEvents(gameId, data.nextPage);
-      } else {
-        // done loading all game events
-        renderGameEvs();
-        console.debug('getGameEvents done:', gameEvents);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      $('#game-load-form .error-msg').removeClass('d-none');
-      stopLoading();
-    });
-
-};
-
-const startLoading = () => {
-  const $gameEvForm = $('#game-load-form');
-
-  $gameEvForm.find('.error-msg').addClass('d-none');
-  $gameEvForm.find('button').addClass('d-none');
-  $gameEvForm.find('.loading').removeClass('d-none');
-};
-
-const stopLoading = () => {
-  const $gameEvForm = $('#game-load-form');
-
-  $gameEvForm.find('button').removeClass('d-none');
-  $gameEvForm.find('.loading').addClass('d-none');
+  bindHandlers();
 };
 
 // todo: will send highlights data to flask to save
 const saveHighlights = () => {
 };
 
-const init = (onPreview) => {
-  const $gameEvForm = $('#game-load-form');
-  const $gameInput = $('#game-load-form__game-id');
-
-  // focus on game input
-  $gameInput.focus();
-
-  // pick a random interesting game as the placeholder for the input
-  $gameInput.attr('placeholder', getRandomGame());
-
-  $gameEvForm.on('submit', (ev) => {
-    ev.preventDefault();
-
-    let gameVal = $gameInput.val();
-
-    if (!gameVal) {
-      gameVal = $gameInput.attr('placeholder');
-    }
-
-    const gameId = gameVal.split('/').pop();
-    getGameEvents(gameId);
-  });
-
+const bindSaveAndPublish = () => {
   const $highlightsSelectForm = $('#game-events__form');
 
   $highlightsSelectForm.on('submit', (ev) => {
@@ -316,16 +222,23 @@ const init = (onPreview) => {
     //generateHighlights(onPreview);
   });
 
-  $highlightsSelectForm.find('.preview-story').on('click', (ev) => {
-    generateHighlights(onPreview);
-  });
+};
 
+const bindPreview = () => {
+  const $highlightsSelectForm = $('#game-events__form');
+
+  $highlightsSelectForm.find('.preview-story').on('click', (ev) => {
+    generateHighlights(onStartPreview);
+  });
+};
+
+const bindCheckboxes = () => {
   const $checkAll = $('#check-all');
 
   $('#check-all').on('change', () => {
     let state = $checkAll.is(':checked');
 
-    $('.game-event__check').each((_, ch) => {
+    $('.game-event-form__check').each((_, ch) => {
       $(ch).attr('checked', state);
     });
   });
@@ -339,7 +252,9 @@ const init = (onPreview) => {
       .find('.preview-from-button')
       .attr('disabled', !state);
   });
+};
 
+const bindStatusToggle = () => {
   const $statusToggle = $('.game-events-control__status');
 
   $statusToggle.on('click', (evt) => {
@@ -360,7 +275,9 @@ const init = (onPreview) => {
 
     }
   });
+};
 
+const bindJumpButtons = () => {
   $('.scroll-to').on('click', (evt) => {
     const $button = $(evt.target);
     const $itemsContainer = $('#game-events__form-items')
@@ -410,10 +327,17 @@ const init = (onPreview) => {
       .scrollTop(0)
       .scrollTop($lookup.offset().top - containerOffTop);
   });
+};
 
+const bindHandlers = () => {
+  bindSaveAndPublish();
+  bindPreview();
+  bindCheckboxes();
+  bindStatusToggle();
+  bindJumpButtons();
 };
 
 module.exports = {
-  init,
+  render,
 };
 
