@@ -258,5 +258,33 @@
   <script src="jquery-3.6.0.slim.min.js"></script>
   <script src="app.js"></script>
 
+  <div id="game-event__template" class="game-event d-none">
+    <div class="game-event__form">
+      <input type="checkbox" id="" class="game-event-form__check">
+      <label for=""></label>
+    </div>
+    <div class="game-event__game-status">
+      <span class="game-status__score"></span>
+      <span title="Bases occupied" class="game-status__bases">
+        <span class="diamond"></span>
+        <span class="diamond"></span>
+        <span class="diamond"></span>
+      </span>
+      <span title="Balls" class="game-status__balls">
+        <span class="circle empty"></span>
+        <span class="circle empty"></span>
+        <span class="circle empty"></span>
+      </span>
+      <span title="Strikes" class="game-status__strikes">
+        <span class="circle empty"></span>
+        <span class="circle empty"></span>
+      </span>
+      <span title="Outs" class="game-status__outs">
+        <span class="circle empty"></span>
+        <span class="circle empty"></span>
+      </span>
+    </div>
+  </div>
+
 </body>
 </html>

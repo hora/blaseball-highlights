@@ -68,6 +68,7 @@ const makeCountCircle = (classes) => {
   return $('<span>').addClass(classes);
 };
 
+/*
 const renderGameEv = (gameEv, $container) => {
   const data = gameEv.ev.data;
 
@@ -243,6 +244,122 @@ const renderGameEv = (gameEv, $container) => {
     .append($gameEvInfo);
 
   return $gameEv;
+};
+*/
+
+const renderGameEv = (gameEv, $container) => {
+  const data = gameEv.ev.data;
+
+  if (!data.lastUpdate) {
+    return;
+  }
+
+  let ret = [];
+
+  // check for half-inning changes
+  if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
+    ret.push($('<h3>')
+      .addClass('inning inning-top')
+      .text(`Top of 1`));
+  } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
+    ret.push($('<h3>')
+      .addClass('inning inning-top')
+      .text(`Top of ${data.inning + 1}`));
+  } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
+    ret.push($('<h3>')
+      .addClass('inning inning-bottom')
+      .text(`Bottom of ${data.inning + 1}`));
+  }
+
+  const $gameEv = $('#game-event__template').clone();
+
+  let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
+
+  $gameEv
+    .find('.game-event-form__check')
+    .attr('id', gameEv.ev.hash);
+
+  $gameEv
+    .find('label')
+    .attr('for', gameEv.ev.hash)
+    .text(update);
+
+  // game status
+  const $gameStatus = $gameEv.find('.game-event__game-status');
+  let homeEmoji = util.getEmoji('home', data);
+  let awayEmoji = util.getEmoji('away', data);
+
+  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
+  $gameStatus
+    .find('.game-status__score')
+    .text(score);
+
+  // bases are from third to first
+  const $bases = $gameStatus.find('.game-status__bases .diamond');
+  gameEv.mlustard.baseRunners.third.playerName && $bases.eq(0).addClass('filled');
+  gameEv.mlustard.baseRunners.second.playerName && $bases.eq(1).addClass('filled');
+  gameEv.mlustard.baseRunners.first.playerName && $bases.eq(2).addClass('filled');
+
+  // fill in balls count
+  const $balls = $gameStatus.find('.game-status__balls span');
+  for (let ball = 0; ball < data.atBatBalls; ball++) {
+    $balls.eq(ball).addClass('full');
+  }
+
+  // fill in strikes count
+  const $strikes = $gameStatus.find('.game-status__strikes span');
+  for (let strike = 0; strike < data.atBatStrikes; strike++) {
+    $strikes.eq(strike).addClass('full');
+  }
+
+  // fill in outs count
+  const $outs = $gameStatus.find('.game-status__outs span');
+  for (let out = 0; out < data.halfInningOuts; out++) {
+    $outs.eq(out).addClass('full');
+  }
+
+  // highlight interesting events
+  let containerClasses = [];
+
+  if (gameEv.mlustard.out && gameEv.mlustard.outMeta.kind === 'strike') {
+    containerClasses.push('strikeout');
+  }
+
+  if (gameEv.mlustard.hit) {
+    containerClasses.push('hit');
+  }
+
+  if (gameEv.mlustard.steal && gameEv.mlustard.stealMeta.success) {
+    containerClasses.push('steal');
+  }
+
+  if (gameEv.mlustard.special) {
+    containerClasses.push('special');
+  }
+
+  if (gameEv.mlustard.maximumBlaseball) {
+    containerClasses.push('max');
+  }
+
+  if (gameEv.mlustard.runsScored || gameEv.mlustard.unrunsScored) {
+    containerClasses.push('score');
+  }
+
+  if (containerClasses.length) {
+    containerClasses.forEach((className) => {
+      $(`.scroll-to.${className}`).removeClass('d-none');
+    });
+
+    containerClasses.push('interesting');
+  }
+
+  $gameEv
+    .attr('id', '')
+    .removeClass('d-none')
+    .addClass(containerClasses);
+
+  ret.push($gameEv);
+  return ret;
 };
 
 const renderGameEvs = () => {

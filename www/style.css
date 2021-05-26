@@ -89,25 +89,21 @@ h3 {
   display: block;
 }
 
-.game-event__container {
+.game-event {
   padding-top: .5rem;
   padding-bottom: .5rem;
   margin-bottom: .5rem;
   font-size: 1.1rem;
 }
 
-.game-event__container:hover {
+.game-event:hover {
   background-color: #eee;
 }
 
-.game-event__container.interesting {
+.game-event.interesting {
   background-color: pink;
   font-weight: 600;
   color: #003049;
-}
-
-.game-event__container .form-check {
-  padding-left: 2em;
 }
 
 .circle {
