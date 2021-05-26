@@ -27,6 +27,10 @@ button {
   color: white;
 }
 
+button[disabled] {
+  background-color: gray;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
@@ -81,11 +85,11 @@ h3 {
   background-color: #33596d;
 }
 
-#game-events__form-items .game-status {
+#game-events__form-items .game-event__game-status {
   display: none;
 }
 
-#game-events__form-items.show-status .game-status {
+#game-events__form-items.show-status .game-event__game-status {
   display: block;
 }
 
@@ -120,16 +124,6 @@ h3 {
 
 .circle.empty {
   border: 2px solid black;
-}
-
-.balls-count,
-.strikes-count {
-  margin-right: 4px;
-}
-
-.bases-occupied {
-  margin-left: 6px;
-  margin-right: 8px;
 }
 
 .diamond {

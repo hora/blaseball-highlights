@@ -68,185 +68,6 @@ const makeCountCircle = (classes) => {
   return $('<span>').addClass(classes);
 };
 
-/*
-const renderGameEv = (gameEv, $container) => {
-  const data = gameEv.ev.data;
-
-  if (!data.lastUpdate) {
-    return;
-  }
-
-  // check for half-inning changes
-  if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
-    $('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of 1`)
-      .appendTo($container);
-  } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
-    $('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of ${data.inning + 1}`)
-      .appendTo($container);
-  } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
-    $('<h3>')
-      .addClass('inning inning-bottom')
-      .text(`Bottom of ${data.inning + 1}`)
-      .appendTo($container);
-  }
-
-  const $gameEv = $('<div>');
-
-  // form stuff
-  const $chContainer = $('<div>');
-  const $check = $('<input>');
-  const $label = $('<label>');
-
-  let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
-
-  $check
-    .addClass('game-event__check')
-    .attr('id', gameEv.ev.hash)
-    .attr('type', 'checkbox')
-    .attr('name', 'game event')
-    .val('');
-
-  $label
-    .addClass('')
-    .attr('for', gameEv.ev.hash)
-    .text(update);
-
-  $chContainer
-    .addClass('')
-    .append($check)
-    .append($label);
-
-  // game event info
-  const $gameEvInfo = $('<div>');
-  const $score = $('<span>');
-  const $bases = $('<span>');
-  const $balls = $('<span>');
-  const $strikes = $('<span>');
-  const $outs = $('<span>');
-
-  let homeEmoji = util.getEmoji('home', data);
-  let awayEmoji = util.getEmoji('away', data);
-
-  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
-  let bases = '';
-
-  // fill in balls count
-  for (let ball = 0; ball < data.atBatBalls; ball++) {
-    $balls.append(makeCountCircle('circle full'));
-  }
-
-  for (let ball = 3; ball > data.atBatBalls; ball--) {
-    $balls.append(makeCountCircle('circle empty'));
-  }
-
-  // fill in strikes count
-  for (let strike = 0; strike < data.atBatStrikes; strike++) {
-    $strikes.append(makeCountCircle('circle full'));
-  }
-
-  for (let strike = 2; strike > data.atBatStrikes; strike--) {
-    $strikes.append(makeCountCircle('circle empty'));
-  }
-
-  // fill in outs count
-  for (let out = 0; out < data.halfInningOuts; out++) {
-    $outs.append(makeCountCircle('circle full'));
-  }
-
-  for (let out = 2; out > data.halfInningOuts; out--) {
-    $outs.append(makeCountCircle('circle empty'));
-  }
-
-  // fill in base diamonds
-  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
-  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
-  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
-  // todo: deal with 4 bases
-  //$bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
-
-  $score
-    .text(score);
-  $balls
-    .attr('title', 'Balls')
-    .addClass('balls-count');
-  $strikes
-    .attr('title', 'Strikes')
-    .addClass('strikes-count');
-  $outs
-    .attr('title', 'Outs')
-    .addClass('outs-count');
-  $bases
-    .attr('title', 'Bases occupied')
-    .addClass('bases-occupied');
-
-  $gameEvInfo
-    .addClass('game-status')
-    .append($score)
-    .append($bases)
-    .append($balls)
-    .append($strikes)
-    .append($outs);
-
-  let containerClasses = ['game-event__container'];
-
-  // highlight interesting events
-  // todo: when refactoring this whole cursed file, also don't do so many
-  // dom lookups here
-  if (gameEv.mlustard.out && gameEv.mlustard.outMeta.kind === 'strike') {
-
-    containerClasses.push('interesting strikeout');
-    $('.scroll-to.strikeout').removeClass('d-none');
-
-  }
-
-  if (gameEv.mlustard.hit) {
-
-    containerClasses.push('interesting hit');
-    $('.scroll-to.hit').removeClass('d-none');
-
-  }
-
-  if (gameEv.mlustard.steal && gameEv.mlustard.stealMeta.success) {
-
-    containerClasses.push('interesting steal');
-    $('.scroll-to.steal').removeClass('d-none');
-
-  }
-
-  if (gameEv.mlustard.special) {
-
-    containerClasses.push('interesting special');
-    $('.scroll-to.special').removeClass('d-none');
-
-  }
-
-  if (gameEv.mlustard.maximumBlaseball) {
-
-    containerClasses.push('interesting max');
-    $('.scroll-to.max').removeClass('d-none');
-
-  }
-
-  if (gameEv.mlustard.runsScored || gameEv.mlustard.unrunsScored) {
-
-    containerClasses.push('interesting score');
-    $('.scroll-to.score').removeClass('d-none');
-
-  }
-
-  $gameEv
-    .addClass(containerClasses)
-    .append($chContainer)
-    .append($gameEvInfo);
-
-  return $gameEv;
-};
-*/
-
 const renderGameEv = (gameEv, $container) => {
   const data = gameEv.ev.data;
 
@@ -283,6 +104,10 @@ const renderGameEv = (gameEv, $container) => {
     .find('label')
     .attr('for', gameEv.ev.hash)
     .text(update);
+
+  $gameEv
+    .find('textarea')
+    .val(update);
 
   // game status
   const $gameStatus = $gameEv.find('.game-event__game-status');
@@ -359,6 +184,7 @@ const renderGameEv = (gameEv, $container) => {
     .addClass(containerClasses);
 
   ret.push($gameEv);
+
   return ret;
 };
 
@@ -504,6 +330,16 @@ const init = (onPreview) => {
     });
   });
 
+  $('#game-events__form-items').on('change', '.game-event-form__check', (evt) => {
+    $checkbox = $(evt.target);
+    let state = $checkbox.is(':checked');
+
+    $checkbox
+      .closest('.game-event')
+      .find('.preview-from-button')
+      .attr('disabled', !state);
+  });
+
   const $statusToggle = $('.game-events-control__status');
 
   $statusToggle.on('click', (evt) => {
@@ -555,7 +391,7 @@ const init = (onPreview) => {
       const $el = $(el);
       return ($el.offset().top - containerOffTop) > 0 && ($el.offset().top - containerOffTop < 100);
       // the 100 is hard-coded here; it's roughly the height of each $el
-      // yes. this is probably super cursed.
+      // yup, this is probably super cursed.
     });
 
     if (!$firstInView.length) {
