@@ -91,24 +91,23 @@
             <input id="check-all" type="checkbox" name="check all game events">
             <label for="check-all">Select all events</label>
           </li>
-          <li class="game-events-control__status">
-            <span class="hide-status">Hide game status</span>
-            <span class="show-status d-none">Show game status</span>
-          </li>
         </ul>
       </div>
 
       <form id="game-events__form">
-        <div id="game-events__form-items" class="show-status">
-        </div>
+        <table class="">
+          <thead>
+          </thead>
+
+          <tbody id="game-events__form-items">
+          </tbody>
+        </table>
+
         <button type="submit" class="save-story">
-          Save Story
+          Save &#38; Publish Story
         </button>
         <button type="button" class="preview-story">
           Preview Story
-        </button>
-        <button type="button" class="publish-story">
-          Publish Story
         </button>
       </form>
     </div>
@@ -258,26 +257,24 @@
   <script src="jquery-3.6.0.slim.min.js"></script>
   <script src="app.js"></script>
 
-  <div id="game-event__template" class="game-event d-none">
+  <!-- don't wanna mess around with a non-tr template, but for this to be valid
+  html, it's gotta snuggle inside a table -->
+  <table class="d-none">
+  <tr id="game-event__template" class="game-event d-none">
 
-    <div class="game-event__form">
-      <input type="checkbox" id="" class="game-event-form__check">
-      <label for=""></label>
-      <textarea class="game-event-form__textarea"></textarea>
-      <button type="button">Edit</button>
-      <button type="button">Save</button>
-      <button type="button">Cancel</button>
-    </div>
+    <td class="game-event-check">
+      <input type="checkbox" id="" class="game-event-check__input">
+    </td>
 
-    <div class="game-event__image">
+    <td class="game-event-update">
+      <textarea class="game-event-update__textarea"></textarea>
+    </td>
+
+    <td class="game-event-image">
       <span>Diamond</span>
-    </div>
+    </td>
 
-    <div class="game-event__preview-from">
-      <button type="button" disabled class="preview-from-button">Preview</button>
-    </div>
-
-    <div class="game-event__game-status">
+    <td class="game-event-game-status">
       <span class="game-status__score"></span>
       <span title="Bases occupied" class="game-status__bases">
         <span class="diamond"></span>
@@ -297,9 +294,32 @@
         <span class="circle empty"></span>
         <span class="circle empty"></span>
       </span>
-    </div>
+    </td>
 
-  </div>
+    <td class="game-event-preview">
+      <button type="button" disabled class="game-event-preview__button">
+        Preview
+      </button>
+    </td>
+
+  </tr>
+
+  <tr id="inning-header__template" class="inning d-none">
+    <td></td>
+    <td>
+      <span></span>
+    </td>
+  </tr>
+
+  <tr id="inning-info__template" class="inning-info d-none">
+    <td></td>
+    <td>
+      <span class="fielding"></span>
+      <span class="batting"></span>
+    </td>
+  </tr>
+
+  </table>
 
 </body>
 </html>

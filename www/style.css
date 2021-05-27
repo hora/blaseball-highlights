@@ -79,18 +79,8 @@ h3 {
 }
 
 #game-events__form-items {
-  height: 330px;
-  overflow-y: scroll;
   padding: 20px;
   background-color: #33596d;
-}
-
-#game-events__form-items .game-event__game-status {
-  display: none;
-}
-
-#game-events__form-items.show-status .game-event__game-status {
-  display: block;
 }
 
 .game-event {

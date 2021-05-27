@@ -36,10 +36,6 @@ const generateHighlights = (cb) => {
   cb(highlights);
 };
 
-const makeCountCircle = (classes) => {
-  return $('<span>').addClass(classes);
-};
-
 const renderGameEv = (gameEv, $container) => {
   const data = gameEv.ev.data;
 
@@ -48,48 +44,96 @@ const renderGameEv = (gameEv, $container) => {
   }
 
   let ret = [];
+  let inning;
+  let inningClasses;
+  let homeEmoji = util.getEmoji('home', data);
+  let awayEmoji = util.getEmoji('away', data);
+  let topOfOne = false;
 
   // check for half-inning changes
   if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
-    ret.push($('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of 1`));
+
+    inning = 'Top of 1';
+    inningClasses = 'inning-top';
+    // sometimes, the game event doesn't think it's the top of 1 if there are
+    // some events before the first pitch, or something
+    topOfOne = true;
+
   } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
-    ret.push($('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of ${data.inning + 1}`));
+
+    inning = `Top of ${data.inning + 1}`;
+    inningClasses = 'inning-top';
+
   } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
-    ret.push($('<h3>')
-      .addClass('inning inning-bottom')
-      .text(`Bottom of ${data.inning + 1}`));
+
+    inning = `Bottom of ${data.inning + 1}`;
+    inningClasses = 'inning-bottom';
+
+  }
+
+  if (inning) {
+    const $inning = $('#inning-header__template').clone();
+
+    $inning
+      .attr('id', '')
+      .addClass(inningClasses)
+      .removeClass('d-none')
+      .find('span')
+      .text(inning);
+
+    ret.push($inning);
+
+    const $inningInfo = $('#inning-info__template').clone();
+    const fielding = data.topOfInning ? 'home' : 'away';
+    let fieldingTeam;
+    let fieldingEmoji;
+    let pitcher;
+    let battingTeam;
+    let battingEmoji;
+
+    if (data.topOfInning || topOfOne) { // home fielding
+      fieldingTeam = data.homeTeamName;
+      fieldingEmoji = homeEmoji;
+      pitcher = data.homePitcherName || 'home-pitcher-placeholder';
+      battingTeam = data.awayTeamName;
+      battingEmoji = awayEmoji;
+    } else { // away fielding
+      fieldingTeam = data.awayTeamName;
+      fieldingEmoji = awayEmoji;
+      pitcher = data.awayPitcherName;
+      battingTeam = data.homeTeamName;
+      battingEmoji = homeEmoji;
+    }
+
+    $inningInfo
+      .attr('id', '')
+      .removeClass('d-none')
+      .find('.fielding')
+      .text(`${fieldingEmoji}${fieldingTeam} fielding, with ${pitcher} pitching`);
+
+    $inningInfo
+      .find('.batting')
+      .text(`${battingEmoji}${battingTeam} batting`);
+
+    ret.push($inningInfo);
   }
 
   const $gameEv = $('#game-event__template').clone();
 
-  let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
-
   $gameEv
-    .find('.game-event-form__check')
+    .find('.game-event-check__input')
     .attr('id', gameEv.ev.hash);
 
   $gameEv
-    .find('label')
-    .attr('for', gameEv.ev.hash)
-    .text(update);
-
-  $gameEv
     .find('textarea')
-    .val(update);
+    .val(`${data.lastUpdate} ${data.scoreUpdate || ''}`);
 
   // game status
-  const $gameStatus = $gameEv.find('.game-event__game-status');
-  let homeEmoji = util.getEmoji('home', data);
-  let awayEmoji = util.getEmoji('away', data);
+  const $gameStatus = $gameEv.find('.game-event-game-status');
 
-  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
   $gameStatus
     .find('.game-status__score')
-    .text(score);
+    .text(`${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`);
 
   // bases are from third to first
   const $bases = $gameStatus.find('.game-status__bases .diamond');
@@ -179,7 +223,30 @@ const renderHeader = (gameEv) => {
     .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
   $('.game-events__game-subheader .away-pitcher')
     .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
+
   headerRendered = true;
+};
+
+let hpReady = false;
+
+const homePitcherReady = (gameEv) => {
+  if (hpReady) return false;
+
+  return gameEv.ev.data.homePitcherName;
+};
+
+const updateHomePitcher = (gameEv) => {
+  // hack: since at this point we know the home pitcher, check if we need to
+  // update it in the table of game events for the top of 1st
+  const $firstInning = $('#game-events__form-items .inning-info .fielding');
+
+  if (!$firstInning.length) {
+    return;
+  }
+
+  $firstInning
+    .text($firstInning.text().replace('home-pitcher-placeholder', gameEv.ev.data.homePitcherName));
+  hpReady = true;
 };
 
 const render = (settings) => {
@@ -197,6 +264,10 @@ const render = (settings) => {
 
     if (headerNotRendered(gameEv)) {
       renderHeader(gameEv);
+    }
+
+    if (homePitcherReady(gameEv)) {
+      updateHomePitcher(gameEv);
     }
 
     let $gameEv = renderGameEv(gameEv, $container);
@@ -238,42 +309,19 @@ const bindCheckboxes = () => {
   $('#check-all').on('change', () => {
     let state = $checkAll.is(':checked');
 
-    $('.game-event-form__check').each((_, ch) => {
+    $('.game-event-check__input').each((_, ch) => {
       $(ch).attr('checked', state);
     });
   });
 
-  $('#game-events__form-items').on('change', '.game-event-form__check', (evt) => {
+  $('#game-events__form-items').on('change', '.game-event-check__input', (evt) => {
     $checkbox = $(evt.target);
     let state = $checkbox.is(':checked');
 
     $checkbox
       .closest('.game-event')
-      .find('.preview-from-button')
+      .find('.game-event-preview__button')
       .attr('disabled', !state);
-  });
-};
-
-const bindStatusToggle = () => {
-  const $statusToggle = $('.game-events-control__status');
-
-  $statusToggle.on('click', (evt) => {
-    const $button = $(evt.target);
-    const $formItems = $('#game-events__form-items');
-
-    if ($button.hasClass('hide-status')) {
-
-      $button.addClass('d-none');
-      $statusToggle.find('.show-status').removeClass('d-none');
-      $formItems.removeClass('show-status');
-
-    } else if ($button.hasClass('show-status')) {
-
-      $button.addClass('d-none');
-      $statusToggle.find('.hide-status').removeClass('d-none');
-      $formItems.addClass('show-status');
-
-    }
   });
 };
 
@@ -333,7 +381,6 @@ const bindHandlers = () => {
   bindSaveAndPublish();
   bindPreview();
   bindCheckboxes();
-  bindStatusToggle();
   bindJumpButtons();
 };
 
