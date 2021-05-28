@@ -5,7 +5,7 @@ const Story = require('./story');
 let story;
 let inPreview = false;
 
-const onStartPreview = (hls) => {
+const onStartPreview = (hls, startFrom) => {
 
   story = new Story({
     highlights: hls,
@@ -15,7 +15,7 @@ const onStartPreview = (hls) => {
   $('#game-events').addClass('d-none');
   $('#exit-preview').removeClass('d-none');
 
-  story.start();
+  story.start(startFrom);
   inPreview = true;
 };
 

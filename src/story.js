@@ -12,7 +12,7 @@ class Story {
     console.debug('new story with highlights', this.highlights);
   }
 
-  start() {
+  start(startFrom) {
     $('#visuals').removeClass('d-none');
     $('#highlights-dialog__container').removeClass('d-none');
 
@@ -47,8 +47,19 @@ class Story {
     $(document).on('keyup.story', handleAction);
     $('.dialog-control').on('click.story', handleAction);
 
-    // show the first highlight
+    // find the highlight to start from
+    if (startFrom) {
+      this.setCurrentTo(startFrom);
+    }
+
+    // show the current highlight
     this.startCurrent();
+  }
+
+  setCurrentTo(id) {
+    while (id !== this.currentHighlight().id) {
+      this.moveToNextHighlight();
+    }
   }
 
   doStep(direction) {

@@ -9,7 +9,7 @@ const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
 };
 
-const generateHighlights = (cb) => {
+const generateHighlights = (cb, startFrom) => {
   let highlights = [];
 
   $('#game-events__form-items .game-event-check__input:checked')
@@ -33,7 +33,7 @@ const generateHighlights = (cb) => {
   });
 
   console.debug('generateHighlights:', highlights);
-  cb(highlights);
+  cb(highlights, startFrom);
 };
 
 const renderGameEv = (gameEv, $container) => {
@@ -301,6 +301,13 @@ const bindPreview = () => {
   $highlightsSelectForm.find('.preview-story').on('click', (ev) => {
     generateHighlights(onStartPreview);
   });
+
+  $highlightsSelectForm.find('.game-event-preview__button').on('click', (ev) => {
+    const id = $(ev.target)
+      .closest('.game-event').find('.game-event-check__input').attr('id');
+
+    generateHighlights(onStartPreview, id);
+  });
 };
 
 const togglePreviewAll = (state) => {
@@ -329,7 +336,7 @@ const bindCheckboxes = () => {
       $ch.prop('checked', state);
       togglePreview($ch);
     });
-    
+
     togglePreviewAll(state);
   });
 
