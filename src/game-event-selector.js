@@ -12,7 +12,7 @@ const isPlayBall = (gameEv) => {
 const generateHighlights = (cb) => {
   let highlights = [];
 
-  $('#game-events__form-items .game-event-form__check:checked')
+  $('#game-events__form-items .game-event-check__input:checked')
   .each((_, checked) => {
     const id = $(checked).attr('id');
     const gameEvent = gameEvents[id];
@@ -303,13 +303,18 @@ const bindPreview = () => {
   });
 };
 
+const togglePreviewAll = (state) => {
+  $('.preview-story')
+    .prop('disabled', !state);
+};
+
 const togglePreview = ($checkbox) => {
   let state = $checkbox.is(':checked');
 
   $checkbox
     .closest('.game-event')
     .find('.game-event-preview__button')
-    .attr('disabled', !state);
+    .prop('disabled', !state);
 };
 
 const bindCheckboxes = () => {
@@ -324,10 +329,15 @@ const bindCheckboxes = () => {
       $ch.prop('checked', state);
       togglePreview($ch);
     });
+    
+    togglePreviewAll(state);
   });
 
   $('#game-events__form-items').on('change', '.game-event-check__input', (evt) => {
-    togglePreview($(evt.target));
+    const $ch = $(evt.target);
+
+    togglePreview($ch);
+    togglePreviewAll($ch.is(':checked'));
   });
 };
 
