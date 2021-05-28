@@ -310,7 +310,7 @@ const bindCheckboxes = () => {
     let state = $checkAll.is(':checked');
 
     $('.game-event-check__input').each((_, ch) => {
-      $(ch).attr('checked', state);
+      $(ch).prop('checked', state);
     });
   });
 
