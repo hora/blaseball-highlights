@@ -14,8 +14,11 @@ const generateHighlights = (cb, startFrom) => {
 
   $('#game-events__form-items .game-event-check__input:checked')
   .each((_, checked) => {
-    const id = $(checked).attr('id');
+    const $checked = $(checked);
+    const id = $checked.attr('id');
     const gameEvent = gameEvents[id];
+    const commentary = $checked
+      .closest('.game-event').find('.game-event-update__textarea').val();
     let visual = 'diamond';
 
     if (isPlayBall(gameEvent.ev.data)) {
@@ -26,6 +29,7 @@ const generateHighlights = (cb, startFrom) => {
       id: id,
       gameEvent: gameEvent.ev,
       mlustard: gameEvent.mlustard,
+      commentary,
       visual,
     });
 
