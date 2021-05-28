@@ -72,29 +72,27 @@
         <span class="away-pitcher"></span>
       </h4>
 
-      <div class="scroll-to-container">
-        <span>Jump to:</span>
-        <ul class="">
-          <li class="scroll-to inning">next Half-inning</li>
-          <li class="scroll-to strikeout d-none">next Strikeout</li>
-          <li class="scroll-to hit d-none">next Hit</li>
-          <li class="scroll-to steal d-none">next Steal</li>
-          <li class="scroll-to special d-none">next Special</li>
-          <li class="scroll-to max d-none">next Maximum Blaseball</li>
-          <li class="scroll-to score d-none">next Score</li>
-        </ul>
+      <div class="game-events__header">
+        <div class="game-events-control">
+          <input id="check-all" type="checkbox" name="select all events">
+          <label for="check-all">Select all events</label>
+        </div>
+
+        <div class="scroll-to-container">
+          <span>Jump to:</span>
+          <ul class="">
+            <li class="scroll-to inning">next Half-inning</li>
+            <li class="scroll-to strikeout d-none">next Strikeout</li>
+            <li class="scroll-to hit d-none">next Hit</li>
+            <li class="scroll-to steal d-none">next Steal</li>
+            <li class="scroll-to special d-none">next Special</li>
+            <li class="scroll-to max d-none">next Maximum Blaseball</li>
+            <li class="scroll-to score d-none">next Score</li>
+          </ul>
+        </div>
       </div>
 
-      <div class="game-events-control">
-        <ul>
-          <li>
-            <input id="check-all" type="checkbox" name="check all game events">
-            <label for="check-all">Select all events</label>
-          </li>
-        </ul>
-      </div>
-
-      <form id="game-events__form">
+      <form id="game-events__form" class="game-events__form">
         <table class="">
           <thead>
           </thead>
@@ -304,7 +302,7 @@
 
   </tr>
 
-  <tr id="inning-header__template" class="inning d-none">
+  <tr id="inning-header__template" class="interesting inning d-none">
     <td></td>
     <td>
       <span></span>

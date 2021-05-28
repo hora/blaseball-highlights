@@ -329,8 +329,9 @@ const bindJumpButtons = () => {
   $('.scroll-to').on('click', (evt) => {
     const $button = $(evt.target);
     const $itemsContainer = $('#game-events__form-items')
-    const containerOffTop = $itemsContainer.offset().top;
+    //const containerOffTop = $itemsContainer.offset().top;
     const $items = $itemsContainer.children();
+    const headerHeight = $('.game-events__header').outerHeight();
 
     let lookup = '.interesting';
 
@@ -347,18 +348,17 @@ const bindJumpButtons = () => {
     } else if ($button.hasClass('score')) {
       lookup += '.score';
     } else if ($button.hasClass('inning')) {
-      lookup = '#game-events__form .inning';
+      lookup += '.inning';
     }
 
-    // if the form hasn't been scrolled much, search from the first event
-    // otherwise, search from first element in view onwards
+    // find the first game event in view
     let $firstInView = $items.filter((_, el) => {
       const $el = $(el);
-      return ($el.offset().top - containerOffTop) > 0 && ($el.offset().top - containerOffTop < 100);
-      // the 100 is hard-coded here; it's roughly the height of each $el
-      // yup, this is probably super cursed.
+      return ($el.offset().top > window.pageYOffset + headerHeight) && ($el.offset().top < window.pageYOffset + $el.outerHeight() + headerHeight);
     });
 
+    // if the page hasn't been scrolled beyond the start of the game events,
+    // the first in view will be the first from the top
     if (!$firstInView.length) {
       $firstInView = $items.first();
     }
@@ -371,9 +371,18 @@ const bindJumpButtons = () => {
       $lookup = $(lookup).first();
     }
 
-    $itemsContainer
-      .scrollTop(0)
-      .scrollTop($lookup.offset().top - containerOffTop);
+
+    $(window)
+      .scrollTop($lookup.offset().top - headerHeight);
+  });
+};
+
+const bindStickyHeader = () => {
+  const $stickyHeader = $('.game-events__header');
+  const stickyOffset = $stickyHeader.offset().top;
+
+  $(window).on('scroll', () => {
+    $stickyHeader.toggleClass('sticky', window.pageYOffset > stickyOffset);
   });
 };
 
@@ -382,6 +391,7 @@ const bindHandlers = () => {
   bindPreview();
   bindCheckboxes();
   bindJumpButtons();
+  bindStickyHeader();
 };
 
 module.exports = {

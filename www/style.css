@@ -78,6 +78,19 @@ h3 {
   margin-bottom: 10px;
 }
 
+.game-events__header {
+  background-color: #003049;
+}
+
+.game-events__header.sticky {
+  position: fixed;
+  top: 0;
+}
+
+.game-events__header.sticky + .game-events__form {
+  padding-top: 100px;
+}
+
 #game-events__form-items {
   padding: 20px;
   background-color: #33596d;
