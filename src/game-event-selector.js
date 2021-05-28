@@ -303,6 +303,15 @@ const bindPreview = () => {
   });
 };
 
+const togglePreview = ($checkbox) => {
+  let state = $checkbox.is(':checked');
+
+  $checkbox
+    .closest('.game-event')
+    .find('.game-event-preview__button')
+    .attr('disabled', !state);
+};
+
 const bindCheckboxes = () => {
   const $checkAll = $('#check-all');
 
@@ -310,18 +319,15 @@ const bindCheckboxes = () => {
     let state = $checkAll.is(':checked');
 
     $('.game-event-check__input').each((_, ch) => {
-      $(ch).prop('checked', state);
+      const $ch = $(ch);
+
+      $ch.prop('checked', state);
+      togglePreview($ch);
     });
   });
 
   $('#game-events__form-items').on('change', '.game-event-check__input', (evt) => {
-    $checkbox = $(evt.target);
-    let state = $checkbox.is(':checked');
-
-    $checkbox
-      .closest('.game-event')
-      .find('.game-event-preview__button')
-      .attr('disabled', !state);
+    togglePreview($(evt.target));
   });
 };
 
