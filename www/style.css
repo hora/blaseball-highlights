@@ -113,6 +113,10 @@ h3 {
   color: #003049;
 }
 
+.game-event-visual img {
+  height: 250px;
+}
+
 .circle {
   height: 12px;
   width: 12px;

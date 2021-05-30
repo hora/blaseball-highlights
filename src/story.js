@@ -6,10 +6,27 @@ class Story {
   constructor(settings) {
     this.highlights = settings.highlights || [];
     this.curHighlight = 0;
+    this.title = settings.title || this.generateTitle();
     this.dialog = new Dialog();
     this.visual = new Visual();
+    this.setGameId();
 
     console.debug('new story with highlights', this.highlights);
+  }
+
+  generateTitle() {
+    // Home-nickname vs. Away-nickname, Sn Dnnn
+    const gameEv = this.highlights[0].gameEvent.data;
+    const homeNick = gameEv.homeTeamNickname || '';
+    const awayNick = gameEv.awayTeamNickname || '';
+    const season = gameEv.season + 1;
+    const day = gameEv.day + 1;
+
+    return `${homeNick} vs. ${awayNick}, S${season} D${day}`;
+  }
+
+  setGameId() {
+    this.gameId = this.highlights[0].gameEvent.gameId || '';
   }
 
   start(startFrom) {
@@ -125,6 +142,24 @@ class Story {
     $('#highlights-dialog__container').addClass('d-none');
     $(document).off('keyup.story');
     $('.dialog-control').off('click.story');
+  }
+
+  makeJSON() {
+    let ret = {
+      title: this.title,
+      game_id: this.gameId,
+      events: [],
+    };
+
+    for (let highlight of this.highlights) {
+      ret.events.push({
+        blaseball_event_id: highlight.id,
+        description: highlight.commentary,
+        visual: highlight.makeVisualJSON(),
+      });
+    }
+
+    return JSON.stringify(ret);
   }
 }
 

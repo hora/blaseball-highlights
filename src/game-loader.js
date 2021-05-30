@@ -96,7 +96,7 @@ const hideLoading = () => {
   $gameEvForm.find('.loading').addClass('d-none');
 };
 
-const loadWithMlustard = () => {
+const loadWithMlustard = (gameId) => {
   return new Promise((resolve, reject) => {
     const $gameEvForm = $('#game-load-form');
     const $gameInput = $('#game-load-form__game-id');
@@ -107,23 +107,30 @@ const loadWithMlustard = () => {
     // pick a random interesting game as the placeholder for the input
     $gameInput.attr('placeholder', getRandomGame());
 
-    $gameEvForm.on('submit', (ev) => {
-      ev.preventDefault();
-
-      let gameVal = $gameInput.val();
-
-      if (!gameVal) {
-        gameVal = $gameInput.attr('placeholder');
-      }
-
-      const gameId = gameVal.split('/').pop();
-
+    const getEvents = (gameId) => {
       getGameEvents(gameId)
         .then((gameEvents) => {
           console.debug('Game loaded with events:', gameEvents);
           resolve(gameEvents);
         });
-    });
+    };
+
+    if (gameId) {
+      getEvents(gameId);
+    } else {
+    }
+      $gameEvForm.on('submit', (ev) => {
+        ev.preventDefault();
+
+        let gameVal = $gameInput.val();
+
+        if (!gameVal) {
+          gameVal = $gameInput.attr('placeholder');
+        }
+
+        gameId = gameVal.split('/').pop();
+        getEvents(gameId);
+      });
   });
 };
 

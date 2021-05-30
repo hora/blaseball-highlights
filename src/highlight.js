@@ -33,6 +33,17 @@ class Highlight {
     //});
   }
 
+  makeVisualJSON() {
+    let ret = {
+      type: this.visual,
+      meta: null,
+    };
+
+    // todo: if custom image, add meta for image credit
+
+    return ret;
+  }
+
 }
 
 module.exports = Highlight;

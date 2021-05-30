@@ -4,6 +4,7 @@ const util = require('./util');
 let gameEvents;
 let onStartPreview;
 let onEndPreview;
+let onSaveAndPublish;
 
 const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
@@ -17,13 +18,11 @@ const generateHighlights = (cb, startFrom) => {
     const $checked = $(checked);
     const id = $checked.attr('id');
     const gameEvent = gameEvents[id];
-    const commentary = $checked
-      .closest('.game-event').find('.game-event-update__textarea').val();
-    let visual = 'diamond';
+    const $gameEv = $checked.closest('.game-event');
+    const commentary = $gameEv.find('.game-event-update__textarea').val();
+    const visual = $gameEv.find('.visual-select').val();
 
-    if (isPlayBall(gameEvent.ev.data)) {
-      visual = 'matchup';
-    }
+    // todo: handle custom visual
 
     const hl = new Highlight({
       id: id,
@@ -131,6 +130,24 @@ const renderGameEv = (gameEv, $container) => {
   $gameEv
     .find('textarea')
     .val(`${data.lastUpdate} ${data.scoreUpdate || ''}`);
+
+  // update visual select options and ids
+  const $visualSelect = $gameEv.find('.visual-select');
+
+  $visualSelect.attr('id', `visual-select-${gameEv.ev.hash}`);
+  if (isPlayBall(gameEv.ev.data)) {
+    $visualSelect.val('matchup').change();
+  }
+
+  const $customForm = $gameEv.find('.custom-visual-form');
+
+  $customForm.attr('id', `custom-visual-form-${gameEv.ev.hash}`);
+  $customForm
+    .find('label')
+    .attr('for', `custom-visual__input-${gameEv.ev.hash}`);
+  $customForm
+    .find('input')
+    .attr('id', `custom-visual__input-${gameEv.ev.hash}`);
 
   // game status
   const $gameStatus = $gameEv.find('.game-event-game-status');
@@ -257,6 +274,7 @@ const render = (settings) => {
   gameEvents = settings.gameEvents;
   onStartPreview = settings.onStartPreview;
   onEndPreview = settings.onEndPreview;
+  onSaveAndPublish = settings.onSaveAndPublish;
 
   $('.game-events__container').removeClass('d-none');
   $('.game-events__info').addClass('d-none');
@@ -284,17 +302,12 @@ const render = (settings) => {
   bindHandlers();
 };
 
-// todo: will send highlights data to flask to save
-const saveHighlights = () => {
-};
-
 const bindSaveAndPublish = () => {
   const $highlightsSelectForm = $('#game-events__form');
 
   $highlightsSelectForm.on('submit', (ev) => {
     ev.preventDefault();
-    saveHighlights();
-    //generateHighlights(onPreview);
+    generateHighlights(onSaveAndPublish);
   });
 
 };
@@ -413,12 +426,72 @@ const bindStickyHeader = () => {
   });
 };
 
+const bindVisuals = () => {
+  $('.visual-select').on('change', (evt) => {
+    const $select = $(evt.target);
+    const val = $select.val();
+
+    if (val === 'custom') {
+      $select
+        .closest('.game-event-visual')
+        .find('.custom-visual-form').removeClass('d-none');
+    } else {
+      $select
+        .closest('.game-event-visual')
+        .find('.custom-visual-form').addClass('d-none');
+    }
+  });
+
+  $('.custom-visual__input').on('change', (evt) => {
+    const file = evt.target.files[0];
+    const $input = $(evt.target);
+    const $form = $input.parent();
+    const $preview = $input.closest('.game-event-visual').find('.custom-visual__preview');
+
+    if (validateImage(file, $form)) {
+      handleUploadedImage(file, $preview);
+    }
+  });
+};
+
+const validateImage = (file, $form) => {
+  const $error = $form.find('.error-msg').addClass('d-none');
+
+  if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+    $error
+      .text('Sorry, only .png and .jp(e)g images are supported')
+      .removeClass('d-none');
+
+    return false;
+  }
+
+  if (file.size > 1000000) {
+    $error
+      .text('Sorry, the image has to be smaller than 1MB')
+      .removeClass('d-none');
+
+    return false;
+  }
+
+  return true;
+};
+
+const handleUploadedImage = (file, $preview) => {
+  const reader = new FileReader();
+
+  reader.addEventListener('load', (evt) => {
+    $preview.attr('src', reader.result).removeClass('d-none');
+  });
+  reader.readAsDataURL(file);
+};
+
 const bindHandlers = () => {
   bindSaveAndPublish();
   bindPreview();
   bindCheckboxes();
   bindJumpButtons();
   bindStickyHeader();
+  bindVisuals();
 };
 
 module.exports = {
