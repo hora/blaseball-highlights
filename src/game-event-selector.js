@@ -318,8 +318,17 @@ const bindPreview = () => {
     generateHighlights(onStartPreview);
   });
 
-  $highlightsSelectForm.find('.game-event-preview__button').on('click', (ev) => {
-    const id = $(ev.target)
+  $highlightsSelectForm.find('.game-event-preview__link').on('click', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    const $link = $(evt.target);
+
+    if ($link.hasClass('disabled')) {
+      return;
+    }
+
+    const id = $link
       .closest('.game-event').find('.game-event-check__input').attr('id');
 
     generateHighlights(onStartPreview, id);
@@ -336,8 +345,8 @@ const togglePreview = ($checkbox) => {
 
   $checkbox
     .closest('.game-event')
-    .find('.game-event-preview__button')
-    .prop('disabled', !state);
+    .find('.game-event-preview__link')
+    .toggleClass('disabled', !state);
 };
 
 const bindCheckboxes = () => {

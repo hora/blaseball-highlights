@@ -165,18 +165,20 @@ col.game-event-game-status {
   /*font-size: 1.1rem;*/
 /*}*/
 
-.game-event:hover {
+.game-event:hover,
+.game-event.interesting:hover {
   background-color: #00283c;
+  color: white;
 }
 
 .game-event.interesting {
   background-color: pink;
-  font-weight: 600;
   color: #003049;
 }
 
 .game-event-visual img {
-  height: 250px;
+  max-height: 250px;
+  max-width: 300px;
 }
 
 .circle {
@@ -456,9 +458,10 @@ col.game-event-game-status {
   display: none !important;
 }
 
-.game-event-preview__button.disabled {
+.game-event-preview__link.disabled {
   color: rgba(255,255,255,0.5);
   text-decoration: none;
+  cursor: default;
 }
 
 .custom-visual__input {
