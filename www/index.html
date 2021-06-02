@@ -75,47 +75,58 @@
       </h4>
 
       <div class="game-events__header">
-        <div class="game-events-control">
-          <input id="check-all" type="checkbox" name="select all events">
-          <label for="check-all">Select all events</label>
-        </div>
+        <div class="game-event-control-wrapper">
+          <div class="game-events-control">
+            <input id="check-all" type="checkbox" name="select all events">
+            <label for="check-all">Select all events</label>
+          </div>
 
-        <div class="scroll-to-container">
-          <span>Jump to:</span>
-          <ul class="">
-            <li class="scroll-to inning">next Half-inning</li>
-            <li class="scroll-to strikeout d-none">next Strikeout</li>
-            <li class="scroll-to hit d-none">next Hit</li>
-            <li class="scroll-to steal d-none">next Steal</li>
-            <li class="scroll-to special d-none">next Special</li>
-            <li class="scroll-to max d-none">next Maximum Blaseball</li>
-            <li class="scroll-to score d-none">next Score</li>
-          </ul>
+          <div class="scroll-to-container">
+            <span>Jump to:</span>
+            <ul class="">
+              <li class="scroll-to inning">next Half-inning</li>
+              <li class="scroll-to strikeout d-none">next Strikeout</li>
+              <li class="scroll-to hit d-none">next Hit</li>
+              <li class="scroll-to steal d-none">next Steal</li>
+              <li class="scroll-to special d-none">next Special</li>
+              <li class="scroll-to max d-none">next Maximum Blaseball</li>
+              <li class="scroll-to score d-none">next Score</li>
+            </ul>
+          </div>
+
+          <div class="buttons-wrapper">
+            <button type="submit" class="save-story">
+              Save &#38; Publish Story
+            </button>
+            <button type="button" class="preview-story" disabled>
+              Preview Story
+            </button>
+          </div>
         </div>
       </div>
 
       <form id="game-events__form" class="game-events__form">
         <table class="">
+          <colgroup>
+            <col class="game-event-check">
+            <col class="game-event-update">
+            <col class="game-event-visual">
+            <col class="game-event-game-status">
+            <col class="game-event-preview">
+          </colgroup>
           <thead>
           </thead>
 
           <tbody id="game-events__form-items">
           </tbody>
         </table>
-
-        <button type="submit" class="save-story">
-          Save &#38; Publish Story
-        </button>
-        <button type="button" class="preview-story" disabled>
-          Preview Story
-        </button>
       </form>
     </div>
 
   </div> <!-- #game-events -->
 
   <button type="button" id="exit-preview" class="d-none">Exit Preview</button>
-  <div id="visuals" class="container text-center d-none">
+  <div id="visuals" class="container text-center d-none centered-small">
     <div id="matchup">
 
       <div class="game-matchup">
@@ -244,7 +255,7 @@
 
   <div id="highlights-dialog__container" class="d-none">
 
-    <div id="highlights-dialog__text" class="centered">
+    <div id="highlights-dialog__text" class="centered-small">
       <p id="highlights-dialog__text-one" class="animation-finished"></p>
       <p id="highlights-dialog__text-two" class="animation-finished"></p>
       <div id="highlights-dialog__prev" class="dialog-control"></div>
@@ -291,49 +302,48 @@
         <p class="error-msg d-none"></p>
       </form>
 
-      <img src="#" class="custom-visual__preview d-none">
+      <img src="#" class="visual-preview visual-preview-custom d-none">
     </td>
 
     <td class="game-event-game-status">
-      <span class="game-status__score"></span>
-      <span title="Bases occupied" class="game-status__bases">
-        <span class="diamond"></span>
-        <span class="diamond"></span>
-        <span class="diamond"></span>
-      </span>
-      <span title="Balls" class="game-status__balls">
-        <span class="circle empty"></span>
-        <span class="circle empty"></span>
-        <span class="circle empty"></span>
-      </span>
-      <span title="Strikes" class="game-status__strikes">
-        <span class="circle empty"></span>
-        <span class="circle empty"></span>
-      </span>
-      <span title="Outs" class="game-status__outs">
-        <span class="circle empty"></span>
-        <span class="circle empty"></span>
-      </span>
+      <ul class="scoreboard scoreboard-small">
+        <li class="scoreboard-teams">
+          <div class="scoreboard-teams__home">
+            <span></span><span></span>
+          </div>
+          <div class="scoreboard-teams__away">
+            <span></span><span></span>
+          </div>
+        </li>
+        <li class="scoreboard-bases">
+        </li>
+        <li class="scoreboard-count">
+          <div class="scoreboard-count__count">
+            <span></span> - <span></span>
+          </div>
+          <div class="scoreboard-count__outs">
+            <span></span> out
+          </div>
+        </li>
+      </ul>
     </td>
 
     <td class="game-event-preview">
-      <button type="button" disabled class="game-event-preview__button">
+      <a href="#" class="game-event-preview__button">
         Preview
-      </button>
+      </a>
     </td>
 
   </tr>
 
   <tr id="inning-header__template" class="interesting inning d-none">
-    <td></td>
-    <td>
+    <td colspan="5">
       <span></span>
     </td>
   </tr>
 
   <tr id="inning-info__template" class="inning-info d-none">
-    <td></td>
-    <td>
+    <td colspan="5">
       <span class="fielding"></span>
       <span class="batting"></span>
     </td>

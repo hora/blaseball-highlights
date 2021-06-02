@@ -41,6 +41,12 @@ ul {
   margin: 0 0 10px 0;
 }
 
+td {
+  padding: 10px 10px;
+  font-size: 18px;
+  vertical-align: top;
+}
+
 .main-container {
   margin-bottom: 50px; /* to allow for fixed dialog */
   padding-top: 50px;
@@ -48,6 +54,12 @@ ul {
 }
 
 .centered {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.centered-small {
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
@@ -80,15 +92,44 @@ h3 {
 
 .game-events__header {
   background-color: #003049;
+  width: 100%;
 }
 
 .game-events__header.sticky {
   position: fixed;
   top: 0;
+  left: 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.8);
+  background-color: #00283c;
+  z-index: 1000;
 }
 
 .game-events__header.sticky + .game-events__form {
   padding-top: 100px;
+}
+
+.game-event-control-wrapper {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+
+.game-events-control {
+  width: 260px;
+  margin-right: 20px;
+  margin-top: 15px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin-top: 15px;
+}
+
+.buttons-wrapper button {
+  margin-bottom: 7px;
 }
 
 #game-events__form-items {
@@ -96,15 +137,36 @@ h3 {
   background-color: #33596d;
 }
 
-.game-event {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
-  margin-bottom: .5rem;
-  font-size: 1.1rem;
+col.game-event-check {
+  width: 4%;
 }
 
+col.game-event-update {
+  width: 30%;
+}
+
+col.game-event-visual {
+  width: 35%;
+}
+
+col.game-event-game-status {
+  width: 22%;
+}
+
+/* the last one doesn't need to be specified */
+/*col.game-event-preview {*/
+  /*width: 9%;*/
+/*}*/
+
+/*.game-event {*/
+  /*padding-top: .5rem;*/
+  /*padding-bottom: .5rem;*/
+  /*margin-bottom: .5rem;*/
+  /*font-size: 1.1rem;*/
+/*}*/
+
 .game-event:hover {
-  background-color: #eee;
+  background-color: #00283c;
 }
 
 .game-event.interesting {
@@ -304,6 +366,13 @@ h3 {
   justify-content: center;
 }
 
+.scoreboard-small {
+  margin: 0;
+  padding: 4px 0;
+  position: static;
+  width: 180px;
+}
+
 .scoreboard li {
   padding-left: 5px;
   padding-right: 5px;
@@ -375,6 +444,7 @@ h3 {
 
 .scroll-to-container {
   display: flex;
+  margin-top: 15px;
 }
 
 
@@ -386,4 +456,12 @@ h3 {
   display: none !important;
 }
 
+.game-event-preview__button.disabled {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+}
+
+.custom-visual__input {
+  width: 100%
+}
 

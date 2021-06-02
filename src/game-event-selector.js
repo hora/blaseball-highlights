@@ -1,5 +1,6 @@
 const Highlight = require('./highlight');
 const util = require('./util');
+const teamsData = require('../lib/teams-data');
 
 let gameEvents;
 let onStartPreview;
@@ -137,6 +138,8 @@ const renderGameEv = (gameEv, $container) => {
   $visualSelect.attr('id', `visual-select-${gameEv.ev.hash}`);
   if (isPlayBall(gameEv.ev.data)) {
     $visualSelect.val('matchup').change();
+  } else {
+    $gameEv.find('.visual-preview-diamond').removeClass('d-none');
   }
 
   const $customForm = $gameEv.find('.custom-visual-form');
@@ -152,33 +155,29 @@ const renderGameEv = (gameEv, $container) => {
   // game status
   const $gameStatus = $gameEv.find('.game-event-game-status');
 
-  $gameStatus
-    .find('.game-status__score')
-    .text(`${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`);
+  // score
+  const $homeScore = $gameStatus.find('.scoreboard-teams__home span');
+  const $awayScore = $gameStatus.find('.scoreboard-teams__away span');
+
+  $homeScore.first().text(teamsData[data.homeTeam].shorthand);
+  $homeScore.last().text(data.homeScore);
+
+  $awayScore.first().text(teamsData[data.awayTeam].shorthand);
+  $awayScore.last().text(data.awayScore);
 
   // bases are from third to first
-  const $bases = $gameStatus.find('.game-status__bases .diamond');
-  gameEv.mlustard.baseRunners.third.playerName && $bases.eq(0).addClass('filled');
-  gameEv.mlustard.baseRunners.second.playerName && $bases.eq(1).addClass('filled');
-  gameEv.mlustard.baseRunners.first.playerName && $bases.eq(2).addClass('filled');
+  const $bases = $gameStatus.find('.scoreboard-bases');
+  $bases.empty();
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
+  $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
 
-  // fill in balls count
-  const $balls = $gameStatus.find('.game-status__balls span');
-  for (let ball = 0; ball < data.atBatBalls; ball++) {
-    $balls.eq(ball).addClass('full');
-  }
-
-  // fill in strikes count
-  const $strikes = $gameStatus.find('.game-status__strikes span');
-  for (let strike = 0; strike < data.atBatStrikes; strike++) {
-    $strikes.eq(strike).addClass('full');
-  }
-
-  // fill in outs count
-  const $outs = $gameStatus.find('.game-status__outs span');
-  for (let out = 0; out < data.halfInningOuts; out++) {
-    $outs.eq(out).addClass('full');
-  }
+  // count
+  const $count = $gameStatus.find('.scoreboard-count__count span');
+  $count.first().text(data.atBatBalls);
+  $count.last().text(data.atBatStrikes);
+  const $outs = $gameStatus.find('.scoreboard-count__outs span');
+  $outs.text(data.halfInningOuts);
 
   // highlight interesting events
   let containerClasses = [];
@@ -315,7 +314,7 @@ const bindSaveAndPublish = () => {
 const bindPreview = () => {
   const $highlightsSelectForm = $('#game-events__form');
 
-  $highlightsSelectForm.find('.preview-story').on('click', (ev) => {
+  $('.preview-story').on('click', (ev) => {
     generateHighlights(onStartPreview);
   });
 
@@ -430,15 +429,20 @@ const bindVisuals = () => {
   $('.visual-select').on('change', (evt) => {
     const $select = $(evt.target);
     const val = $select.val();
+    const $visual = $select.closest('.game-event-visual');
+
+    $visual.find('.visual-preview').addClass('d-none');
 
     if (val === 'custom') {
-      $select
-        .closest('.game-event-visual')
-        .find('.custom-visual-form').removeClass('d-none');
+      const $preview = $visual.find('.visual-preview-custom');
+
+      $visual.find('.custom-visual-form').removeClass('d-none');
+
+      if ($preview.attr('src') !== '#') {
+        $preview.removeClass('d-none');
+      }
     } else {
-      $select
-        .closest('.game-event-visual')
-        .find('.custom-visual-form').addClass('d-none');
+      $visual.find('.custom-visual-form').addClass('d-none');
     }
   });
 
@@ -446,7 +450,7 @@ const bindVisuals = () => {
     const file = evt.target.files[0];
     const $input = $(evt.target);
     const $form = $input.parent();
-    const $preview = $input.closest('.game-event-visual').find('.custom-visual__preview');
+    const $preview = $input.closest('.game-event-visual').find('.visual-preview-custom');
 
     if (validateImage(file, $form)) {
       handleUploadedImage(file, $preview);
