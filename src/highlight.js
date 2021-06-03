@@ -34,15 +34,15 @@ class Highlight {
     //});
   }
 
-  makeVisualJSON() {
-    let ret = {
-      type: this.visual,
-      meta: null,
+  makeJSON() {
+   return {
+      blaseball_event_id: this.id,
+      description: this.commentary,
+      visual: {
+        type: this.visual,
+        meta: this.visualMeta,
+      },
     };
-
-    // todo: if custom image, add meta for image credit
-
-    return ret;
   }
 
 }

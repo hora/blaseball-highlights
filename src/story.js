@@ -152,11 +152,7 @@ class Story {
     };
 
     for (let highlight of this.highlights) {
-      ret.events.push({
-        blaseball_event_id: highlight.id,
-        description: highlight.commentary,
-        visual: highlight.makeVisualJSON(),
-      });
+      ret.events.push(highlight.makeJSON());
     }
 
     return JSON.stringify(ret);

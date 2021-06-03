@@ -313,11 +313,14 @@ const render = (settings) => {
 const bindSaveAndPublish = () => {
   const $highlightsSelectForm = $('#game-events__form');
 
-  $highlightsSelectForm.on('submit', (ev) => {
-    ev.preventDefault();
+  $highlightsSelectForm.on('submit', (evt) => {
+    evt.preventDefault();
     generateHighlights(onSaveAndPublish);
   });
 
+  $('.save-story').on('click', (evt) => {
+    generateHighlights(onSaveAndPublish);
+  });
 };
 
 const bindPreview = () => {
@@ -344,8 +347,12 @@ const bindPreview = () => {
   });
 };
 
-const togglePreviewAll = (state) => {
+const togglePreviewAll = () => {
+  const state = $('.game-event-check__input:checked').length;
+
   $('.preview-story')
+    .prop('disabled', !state);
+  $('.save-story')
     .prop('disabled', !state);
 };
 
@@ -371,14 +378,14 @@ const bindCheckboxes = () => {
       togglePreview($ch);
     });
 
-    togglePreviewAll(state);
+    togglePreviewAll();
   });
 
   $('#game-events__form-items').on('change', '.game-event-check__input', (evt) => {
     const $ch = $(evt.target);
 
     togglePreview($ch);
-    togglePreviewAll($ch.is(':checked'));
+    togglePreviewAll();
   });
 };
 
