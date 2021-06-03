@@ -90,6 +90,10 @@ h3 {
   margin-bottom: 10px;
 }
 
+.game-events__game-subheader {
+  margin-top: 10px;
+}
+
 .game-events__header {
   background-color: #003049;
   width: 100%;
