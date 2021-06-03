@@ -179,6 +179,12 @@ col.game-event-game-status {
 .game-event-visual img {
   max-height: 250px;
   max-width: 300px;
+  margin-top: 16px;
+}
+
+.game-event-visual select {
+  display: block;
+  margin-top: 4px;
 }
 
 .circle {
@@ -465,6 +471,12 @@ col.game-event-game-status {
 }
 
 .custom-visual__input {
-  width: 100%
+  width: 100%;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.custom-visual-form {
+  margin-top: 16px;
 }
 
