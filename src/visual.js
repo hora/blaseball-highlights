@@ -145,6 +145,10 @@ class Visual {
     this.hideCurrent();
 
     switch (highlight.visual) {
+      case 'custom':
+        this.showCustom(highlight);
+        break;
+
       case 'matchup':
         this.showMatchup(highlight);
         break;
@@ -157,9 +161,20 @@ class Visual {
   }
 
   hideCurrent() {
+    $('#custom').addClass('d-none');
     $('#matchup').addClass('d-none');
     $('#diamond').addClass('d-none');
   }
+
+  showCustom(highlight) {
+    const $custom = $('#custom');
+
+    $custom
+      .find('img')
+      .attr('src', highlight.visualMeta.imageData)
+      .attr('alt', highlight.visualMeta.imageDescription);
+    $custom.removeClass('d-none');
+  };
 
   showMatchup(highlight) {
     if (!this.matchupReady) {

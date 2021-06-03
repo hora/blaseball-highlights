@@ -422,6 +422,11 @@ col.game-event-game-status {
   width: 80px;
 }
 
+#custom img {
+  max-width: 720px;
+  max-height: 460px;
+}
+
 .game-chooser input {
   display: block;
   width: 100%;
@@ -478,5 +483,20 @@ col.game-event-game-status {
 
 .custom-visual-form {
   margin-top: 16px;
+}
+
+.custom-visual-form label,
+.custom-visual-form input {
+  display: block;
+}
+
+.custom-visual-form input {
+  line-height: 1;
+  font-size: 18px;
+  padding: 5px;
+}
+
+#exit-preview {
+  margin-bottom: 8px;
 }
 

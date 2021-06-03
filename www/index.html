@@ -207,44 +207,51 @@
         </svg>
       </div>
 
-        <div id="diamond__image">
-          <img src="" class="diamond-logo">
-          <p class="player-on-diamond batting"></p>
-          <p class="player-on-diamond second"></p>
-          <p class="player-on-diamond third"></p>
-          <p class="player-on-diamond first"></p>
-          <p class="player-on-diamond mound"></p>
+      <div id="diamond__image">
+        <img src="" class="diamond-logo">
+        <p class="player-on-diamond batting"></p>
+        <p class="player-on-diamond second"></p>
+        <p class="player-on-diamond third"></p>
+        <p class="player-on-diamond first"></p>
+        <p class="player-on-diamond mound"></p>
 
-          <ul id="diamond__scoreboard" class="scoreboard">
-            <li class="scoreboard-teams">
-              <div class="scoreboard-teams__home">
-                <span></span><span></span>
-              </div>
-              <div class="scoreboard-teams__away">
-                <span></span><span></span>
-              </div>
-            </li>
-            <li class="scoreboard-bases">
-            </li>
-            <li class="scoreboard-count">
-              <div class="scoreboard-count__count">
-                <span></span> - <span></span>
-              </div>
-              <div class="scoreboard-count__outs">
-                <span></span> out
-              </div>
-            </li>
-            <li class="scoreboard-other">
-              <div class="scoreboard-other__inning">
-                <span></span>
-                <span></span>
-              </div>
-              <div class="scoreboard-other__weather"><span></span></div>
-            </li>
-          </ul>
+        <ul id="diamond__scoreboard" class="scoreboard">
+          <li class="scoreboard-teams">
+            <div class="scoreboard-teams__home">
+              <span></span><span></span>
+            </div>
+            <div class="scoreboard-teams__away">
+              <span></span><span></span>
+            </div>
+          </li>
+          <li class="scoreboard-bases">
+          </li>
+          <li class="scoreboard-count">
+            <div class="scoreboard-count__count">
+              <span></span> - <span></span>
+            </div>
+            <div class="scoreboard-count__outs">
+              <span></span> out
+            </div>
+          </li>
+          <li class="scoreboard-other">
+            <div class="scoreboard-other__inning">
+              <span></span>
+              <span></span>
+            </div>
+            <div class="scoreboard-other__weather"><span></span></div>
+          </li>
+        </ul>
       </div>
 
+    </div> <!-- #diamond -->
+
+    <div id="custom" class="d-none">
+      <img class="" src="" alt="">
     </div>
+
+    </div>
+
   </div>
 
   <button id="download-story" type="button" class="btn btn-primary d-none">
@@ -299,10 +306,35 @@
         <input type="file" class="custom-visual__input"
                      id="custom-visual__input" accept="image/png, image/jpeg,
                      image/jpg">
+
+        <img src="#" class="visual-preview visual-preview-custom d-none">
+
+        <div class="custom-visual__image-meta d-none">
+          <label for="image-meta__title">
+            Title
+          </label>
+          <input id="image-meta__title" class="image-meta__title" type="text">
+
+          <label for="image-meta__id">
+            Image description
+          </label>
+          <input id="image-meta__id" class="image-meta__id" type="text">
+
+          <label for="image-meta__creator">
+            Creator (if known)
+          </label>
+          <input id="image-meta__creator" class="image-meta__creator" type="text">
+
+          <label for="image-meta__link">
+            Creator homepage (optional)
+          </label>
+          <input id="image-meta__link" class="image-meta__link" type="text">
+            
+        </div>
+
         <p class="error-msg d-none"></p>
       </form>
 
-      <img src="#" class="visual-preview visual-preview-custom d-none">
     </td>
 
     <td class="game-event-game-status">

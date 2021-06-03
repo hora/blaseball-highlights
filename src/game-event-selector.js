@@ -22,8 +22,15 @@ const generateHighlights = (cb, startFrom) => {
     const $gameEv = $checked.closest('.game-event');
     const commentary = $gameEv.find('.game-event-update__textarea').val();
     const visual = $gameEv.find('.visual-select').val();
+    const visualMeta = {};
 
-    // todo: handle custom visual
+    if (visual === 'custom') {
+      visualMeta.imageData = $gameEv.find('.visual-preview-custom').attr('src');
+      visualMeta.imageTitle = $gameEv.find('.image-meta__title').val();
+      visualMeta.imageDescription = $gameEv.find('.image-meta__id').val();
+      visualMeta.creator = $gameEv.find('.image-meta__creator').val();
+      visualMeta.creatorLink = $gameEv.find('.image-meta__link').val();
+    }
 
     const hl = new Highlight({
       id: id,
@@ -31,6 +38,7 @@ const generateHighlights = (cb, startFrom) => {
       mlustard: gameEvent.mlustard,
       commentary,
       visual,
+      visualMeta,
     });
 
     highlights.push(hl);
@@ -145,6 +153,7 @@ const renderGameEv = (gameEv, $container) => {
   const $customForm = $gameEv.find('.custom-visual-form');
 
   $customForm.attr('id', `custom-visual-form-${gameEv.ev.hash}`);
+  // todo: there's more than 1 input, fix this
   $customForm
     .find('label')
     .attr('for', `custom-visual__input-${gameEv.ev.hash}`);
@@ -435,6 +444,12 @@ const bindStickyHeader = () => {
 };
 
 const bindVisuals = () => {
+  $('.custom-visual-form').on('submit', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    return false;
+  });
+
   $('.visual-select').on('change', (evt) => {
     const $select = $(evt.target);
     const val = $select.val();
@@ -494,6 +509,7 @@ const handleUploadedImage = (file, $preview) => {
 
   reader.addEventListener('load', (evt) => {
     $preview.attr('src', reader.result).removeClass('d-none');
+    $preview.next('.custom-visual__image-meta').removeClass('d-none');
   });
   reader.readAsDataURL(file);
 };

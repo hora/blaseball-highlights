@@ -8,6 +8,7 @@ class Highlight {
     this.gameEvent = settings.gameEvent;
     this.mlustard = settings.mlustard;
     this.visual = settings.visual;
+    this.visualMeta = settings.visualMeta;
     this.commentary = settings.commentary || this.generateCommentary();
   }
 
