@@ -131,6 +131,50 @@ class Visual {
       .attr('src', awayTeamData.awayLogoURL || awayTeamData.homeLogoURL)
       .attr('alt', `${gameEv.awayTeamName}`);
 
+    if (homeTeamData.homeLogoCredit) {
+      if (homeTeamData.homeLogoCreditURL) {
+        $home
+          .next('.vs-logo-citation')
+          .empty()
+          .append(
+            $('<a>')
+              .attr('href', homeTeamData.homeLogoCreditURL)
+              .attr('target', '_blank')
+              .text(`by ${homeTeamData.homeLogoCredit}`)
+          );
+      } else {
+        $home
+          .next('.vs-logo-citation')
+          .text(`by ${homeTeamData.homeLogoCredit}`);
+      }
+    } else {
+      $home
+        .next('.vs-logo-citation')
+        .text('Artist unknown.');
+    }
+
+    if (awayTeamData.homeLogoCredit) {
+      if (awayTeamData.homeLogoCreditURL) {
+        $away
+          .next('.vs-logo-citation')
+          .empty()
+          .append(
+            $('<a>')
+              .attr('href', awayTeamData.homeLogoCreditURL)
+              .attr('target', '_blank')
+              .text(`by ${awayTeamData.homeLogoCredit}`)
+          );
+      } else {
+        $away
+          .next('.vs-logo-citation')
+          .text(`by ${awayTeamData.homeLogoCredit}`);
+      }
+    } else {
+      $away
+        .next('.vs-logo-citation')
+        .text('Artist unknown.');
+    }
+
     this.matchupReady = true;
   }
 
@@ -173,6 +217,28 @@ class Visual {
       .find('img')
       .attr('src', highlight.visualMeta.imageData)
       .attr('alt', highlight.visualMeta.imageDescription);
+
+    if (highlight.visualMeta.creator) {
+      if (highlight.visualMeta.creatorLink) {
+        $custom
+          .find('.custom__citation')
+          .empty()
+          .append(
+            $('<a>')
+              .attr('href', highlight.visualMeta.creatorLink)
+              .attr('target', '_blank')
+              .text(`by ${highlight.visualMeta.creator}`)
+          );
+      } else {
+      $custom
+        .find('.custom__citation')
+        .text(`by ${highlight.visualMeta.creator}`)
+      }
+    } else {
+      $custom
+        .find('.custom__citation')
+        .text('Artist unknown.')
+    }
     $custom.removeClass('d-none');
   };
 

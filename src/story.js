@@ -160,12 +160,15 @@ class Story {
   makeJSON() {
     const ret = {
       story: {
-        story_id: this.id,
         title: this.title,
         game_id: this.gameId,
       },
       events: [],
     };
+
+    if (this.id) {
+      ret.story.story_id = this.id;
+    }
 
     const user = this.getUser();
 

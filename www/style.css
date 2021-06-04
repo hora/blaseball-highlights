@@ -172,6 +172,10 @@ col.game-event-game-status {
   width: 22%;
 }
 
+.game-event-update__textarea {
+  padding: 5px;
+}
+
 /* the last one doesn't need to be specified */
 /*col.game-event-preview {*/
   /*width: 9%;*/
@@ -517,5 +521,11 @@ col.game-event-game-status {
 
 #exit-preview {
   margin-bottom: 8px;
+}
+
+.custom__citation,
+.vs-logo-citation {
+  font-size: 14px;
+  margin-top: 0;
 }
 

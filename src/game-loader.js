@@ -120,24 +120,35 @@ const loadWithMlustard = (onLoad, gameId) => {
 
   if (gameId) {
     getEvents(gameId);
-  } else {
-    $gameEvForm.on('submit', (ev) => {
-      ev.preventDefault();
-
-      //if (!window.confirm('Are you sure?')) {
-        //return false;
-      //}
-
-      let gameVal = $gameInput.val();
-
-      if (!gameVal) {
-        gameVal = $gameInput.attr('placeholder');
-      }
-
-      gameId = gameVal.split('/').pop();
-      getEvents(gameId);
-    });
   }
+
+  $gameEvForm.on('submit', (ev) => {
+    ev.preventDefault();
+
+    if ($('.game-events__container').is(':visible')) {
+      if (!window.confirm('Loading a new game will overwrite any unsaved changes you may have made to the previously loaded game.')) {
+        return false;
+      } else {
+        history.pushState('', document.title, window.location.pathname);
+      }
+    }
+
+    $('.game-events__container')
+      .addClass('d-none')
+      .find('.story-url')
+      .addClass('d-none');
+    $('.game-events__info').removeClass('d-none');
+
+    let gameVal = $gameInput.val();
+
+    if (!gameVal) {
+      gameVal = $gameInput.attr('placeholder');
+    }
+
+    gameId = gameVal.split('/').pop();
+    getEvents(gameId);
+
+  });
 };
 
 module.exports = {

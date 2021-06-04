@@ -325,7 +325,8 @@ const render = (settings) => {
   $('.game-events__info').addClass('d-none');
 
   const $container = $('#game-events__form-items');
-  //$container.empty();
+  $container.empty();
+  headerRendered = false;
 
   for (let id in gameEvents) {
     let gameEv = gameEvents[id];
@@ -347,33 +348,41 @@ const render = (settings) => {
 
   // this is gross, but duct tape is easier (for now shhhh)
   if (savedEvents) {
+    $('.game-events__header .buttons-wrapper button').prop('disabled', true);
+
     for (let savedEv of savedEvents) {
       const $check = $(`#${savedEv.blaseball_event_id}`);
 
-      $check.prop('checked', true);
-      $('.game-events__header .buttons-wrapper button').prop('disabled', false);
-      $gameEv = $check.closest('.game-event');
-      $gameEv.find('.game-event-update__textarea').val(savedEv.description);
-      $gameEv.find('.game-event-preview__link').removeClass('disabled');
-      $gameEv.find('.visual-select').val(savedEv.visual.type);
+      // so this is cursed: if we got to the page by editing an old story,
+      // then decided to load a new game, we still have savedEvents; but, they
+      // won't find any checked events
+      if ($check.length) {
+        $check.prop('checked', true);
+        $('.game-events__header .buttons-wrapper button').prop('disabled', false);
+        $gameEv = $check.closest('.game-event');
+        $gameEv.find('.game-event-update__textarea').val(savedEv.description);
+        $gameEv.find('.game-event-preview__link').removeClass('disabled');
+        $gameEv.find('.visual-select').val(savedEv.visual.type);
 
-      if (savedEv.visual.type === 'custom') {
-        const $custom = $gameEv.find('.custom-visual-form');
+        if (savedEv.visual.type === 'custom') {
+          const $custom = $gameEv.find('.custom-visual-form');
 
-        $custom
-          .find('.visual-preview-custom')
-          .attr('src', savedEv.visual.meta.imageData)
-          .removeClass('d-none');
-        $custom
-          .find('.image-meta__title').val(savedEv.visual.meta.imageTitle);
-        $custom
-          .find('.image-meta__id').val(savedEv.visual.meta.imageDescription);
-        $custom
-          .find('.image-meta__creator').val(savedEv.visual.meta.creator);
-        $custom
-          .find('.image-meta__link').val(savedEv.visual.meta.creatorLink);
-        $custom.removeClass('d-none');
-        $custom.find('.custom-visual__image-meta').removeClass('d-none');
+          $custom
+            .find('.visual-preview-custom')
+            .attr('src', savedEv.visual.meta.imageData)
+            .removeClass('d-none');
+          $custom
+            .find('.image-meta__title').val(savedEv.visual.meta.imageTitle);
+          $custom
+            .find('.image-meta__id').val(savedEv.visual.meta.imageDescription);
+          $custom
+            .find('.image-meta__creator').val(savedEv.visual.meta.creator);
+          $custom
+            .find('.image-meta__link').val(savedEv.visual.meta.creatorLink);
+          $custom.removeClass('d-none');
+          $custom.find('.custom-visual__image-meta').removeClass('d-none');
+        }
+
       }
     }
   }
@@ -384,12 +393,12 @@ const render = (settings) => {
 const bindSaveAndPublish = (gameEvents) => {
   const $highlightsSelectForm = $('#game-events__form');
 
-  $highlightsSelectForm.on('submit', (evt) => {
+  $highlightsSelectForm.off('submit').on('submit', (evt) => {
     evt.preventDefault();
     generateHighlights(onSaveAndPublish, gameEvents);
   });
 
-  $('.save-story').on('click', (evt) => {
+  $('.save-story').off('click').on('click', (evt) => {
     generateHighlights(onSaveAndPublish, gameEvents);
   });
 };
@@ -397,11 +406,11 @@ const bindSaveAndPublish = (gameEvents) => {
 const bindPreview = (gameEvents) => {
   const $highlightsSelectForm = $('#game-events__form');
 
-  $('.preview-story').on('click', (ev) => {
+  $('.preview-story').off('click').on('click', (ev) => {
     generateHighlights(onStartPreview, gameEvents);
   });
 
-  $highlightsSelectForm.find('.game-event-preview__link').on('click', (evt) => {
+  $highlightsSelectForm.find('.game-event-preview__link').off('click').on('click', (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
 
@@ -439,7 +448,7 @@ const togglePreview = ($checkbox) => {
 const bindCheckboxes = () => {
   const $checkAll = $('#check-all');
 
-  $('#check-all').on('change', () => {
+  $('#check-all').off('change').on('change', () => {
     let state = $checkAll.is(':checked');
 
     $('.game-event-check__input').each((_, ch) => {
@@ -452,7 +461,7 @@ const bindCheckboxes = () => {
     togglePreviewAll();
   });
 
-  $('#game-events__form-items').on('change', '.game-event-check__input', (evt) => {
+  $('#game-events__form-items').off('change').on('change', '.game-event-check__input', (evt) => {
     const $ch = $(evt.target);
 
     togglePreview($ch);
@@ -461,7 +470,7 @@ const bindCheckboxes = () => {
 };
 
 const bindJumpButtons = () => {
-  $('.scroll-to').on('click', (evt) => {
+  $('.scroll-to').off('click').on('click', (evt) => {
     const $button = $(evt.target);
     const $itemsContainer = $('#game-events__form-items')
     //const containerOffTop = $itemsContainer.offset().top;
@@ -516,19 +525,19 @@ const bindStickyHeader = () => {
   const $stickyHeader = $('.game-events__header');
   const stickyOffset = $stickyHeader.offset().top;
 
-  $(window).on('scroll', () => {
+  $(window).off('scroll').on('scroll', () => {
     $stickyHeader.toggleClass('sticky', window.pageYOffset > stickyOffset);
   });
 };
 
 const bindVisuals = () => {
-  $('.custom-visual-form').on('submit', (evt) => {
+  $('.custom-visual-form').off('submit').on('submit', (evt) => {
     evt.preventDefault();
     evt.stopPropagation();
     return false;
   });
 
-  $('.visual-select').on('change', (evt) => {
+  $('.visual-select').off('change').on('change', (evt) => {
     const $select = $(evt.target);
     const val = $select.val();
     const $visual = $select.closest('.game-event-visual');
@@ -548,7 +557,7 @@ const bindVisuals = () => {
     }
   });
 
-  $('.custom-visual__input').on('change', (evt) => {
+  $('.custom-visual__input').off('change').on('change', (evt) => {
     const file = evt.target.files[0];
     const $input = $(evt.target);
     const $form = $input.parent();

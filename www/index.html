@@ -60,7 +60,7 @@
 
     <h2>2. Select game events to highlight</h2>
 
-    <p class="game-events__info">Waiting on you to load a game.</p>
+    <p class="game-events__info">Waiting for a game to be loaded.</p>
 
     <div class="game-events__container d-none">
 
@@ -146,9 +146,15 @@
         <h2 class="game-name text-center"></h2>
 
         <div class="vs-logo-container">
-          <img class="vs-logo vs-logo__home" src="">
+          <div>
+            <img class="vs-logo vs-logo__home" src="">
+            <p class="vs-logo-citation"></p>
+          </div>
           <span class="vs-text">vs.</span>
-          <img class="vs-logo vs-logo__away" src="">
+          <div>
+            <img class="vs-logo vs-logo__away" src="">
+            <p class="vs-logo-citation"></p>
+          </div>
         </div>
       </div>
 
@@ -261,6 +267,7 @@
 
     <div id="custom" class="d-none">
       <img class="" src="" alt="">
+      <p class="custom__citation"></p>
     </div>
 
     </div>
