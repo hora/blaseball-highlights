@@ -95,14 +95,27 @@
           </div>
 
           <div class="buttons-wrapper">
-            <button type="submit" class="save-story">
+            <button type="submit" class="save-story" disabled>
               Save &#38; Publish Story
             </button>
+            <div class="loading text-center d-none" role="status">
+              <span class="">Saving...</span>
+            </div>
+            <div class="success text-center d-none" role="status">
+              <span class="">💾 Saved!</span>
+            </div>
             <button type="button" class="preview-story" disabled>
               Preview Story
             </button>
+
           </div>
         </div>
+        <div class="messages">
+          <p class="error-msg d-none">Oops! Something went wrong. Try again, but
+          hit us up in the SIBR Discord if you keep seeing this message.</p>
+          <p class="story-url d-none">Published at: <a href="" target="_blank"></a></p>
+        </div>
+
       </div>
 
       <form id="game-events__form" class="game-events__form">
@@ -270,7 +283,6 @@
     </div>
 
   </div>
-  <div id="highlights-json" class="d-none" data=""></div>
 
   <script src="jquery-3.6.0.slim.min.js"></script>
   <script src="app.js"></script>
@@ -329,7 +341,7 @@
             Creator homepage (optional)
           </label>
           <input id="image-meta__link" class="image-meta__link" type="text">
-            
+
         </div>
 
         <p class="error-msg d-none"></p>

@@ -5,6 +5,7 @@ const teamsData = require('../lib/teams-data');
 class Story {
   constructor(settings) {
     this.highlights = settings.highlights || [];
+    this.id = settings.id;
     this.curHighlight = 0;
     this.title = settings.title || this.generateTitle();
     this.dialog = new Dialog();
@@ -144,12 +145,33 @@ class Story {
     $('.dialog-control').off('click.story');
   }
 
+  getUser() {
+    return {
+      user_id: window.localStorage.getItem('id'),
+      user_token: window.localStorage.getItem('token'),
+    };
+  }
+
+  setUser(id, token) {
+    window.localStorage.setItem('id', id);
+    window.localStorage.setItem('token', token);
+  }
+
   makeJSON() {
-    let ret = {
-      title: this.title,
-      game_id: this.gameId,
+    const ret = {
+      story: {
+        story_id: this.id,
+        title: this.title,
+        game_id: this.gameId,
+      },
       events: [],
     };
+
+    const user = this.getUser();
+
+    if (user.user_id) {
+      ret.user = user;
+    }
 
     for (let highlight of this.highlights) {
       ret.events.push(highlight.makeJSON());

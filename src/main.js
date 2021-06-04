@@ -1,21 +1,29 @@
 const gameEventSelector = require('./game-event-selector');
 const gameLoader = require('./game-loader');
 const Story = require('./story');
+const apiUrl = 'https://highlights.sibr.dev/api';
 
 let story;
 let inPreview = false;
 
-const onStartPreview = (hls, startFrom) => {
-
+const startStory = (hls, startFrom) => {
   story = new Story({
     highlights: hls,
+    id: getStoryId(),
   });
+
+  $('.loading-story').addClass('d-none');
+
+  story.start(startFrom);
+};
+
+const onStartPreview = (hls, startFrom) => {
 
   $('#game-load').addClass('d-none');
   $('#game-events').addClass('d-none');
   $('#exit-preview').removeClass('d-none');
 
-  story.start(startFrom);
+  startStory(hls, startFrom);
   inPreview = true;
 };
 
@@ -36,16 +44,80 @@ const onEndPreview = (evt) => {
   inPreview = false;
 };
 
+const showSaving = () => {
+  $('.game-events__header .loading').removeClass('d-none');
+  $('.save-story').addClass('d-none');
+  $('.game-events__header .error-msg').addClass('d-none');
+};
+
+const hideSaving = (success, storyURL) => {
+  $('.game-events__header .loading').addClass('d-none');
+
+  if (success) {
+    $('.game-events__header .success').removeClass('d-none');
+
+    if (storyURL) {
+      showStoryLink(storyURL);
+    }
+
+    setTimeout(() => {
+      $('.save-story').removeClass('d-none');
+      $('.game-events__header .success').addClass('d-none');
+    }, 1000);
+  } else {
+    $('.save-story').removeClass('d-none');
+    $('.game-events__header .error-msg').removeClass('d-none');
+  }
+};
+
+const showStoryLink = (storyURL) => {
+  $('.game-events__header .story-url')
+    .removeClass('d-none')
+    .find('a')
+    .attr('href', `${apiUrl}/story?${storyURL}`)
+    .text(`${apiUrl}/story?${storyURL}`);
+};
+
 const onSaveAndPublish = (hls) => {
+  showSaving();
+
   story = new Story({
     highlights: hls,
+    id: getStoryId(),
   });
 
-  // todo: add user id, or null, from cookie
   const data = story.makeJSON();
+
   console.debug('saving story with data:', data);
 
-  // todo: send to flask, handle outcome
+  fetch(`${apiUrl}/submit`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    cors: 'no-cors',
+    method: 'POST',
+    body: data,
+  })
+    .then((resp) => {
+      if (!resp.ok) {
+        throw new Error('Bad response from server');
+      }
+
+      return resp.json();
+    })
+    .then((data) => {
+      console.debug('Saved story with resp:', data);
+
+      if (data.user_id) {
+        story.setUser(data.user_id, data.user_token);
+      }
+
+      hideSaving(true, data.story_id);
+    })
+    .catch((err) => {
+      console.error(err);
+      hideSaving(false);
+    });
 };
 
 const getStoryId = () => {
@@ -53,16 +125,25 @@ const getStoryId = () => {
 };
 
 const getStoryData = (storyId) => {
-  // todo: replace with fetch
   return new Promise((resolve, reject) => {
-    const mockData = '{"title":"Crabs vs. Shoe Thieves, S10 D113","game_id":"704ddf2f-3fe2-48b3-b674-b94765f70d01","events":[{"blaseball_event_id":"194db8fa-457a-6f6f-6dcb-9043841909b7","description":"Play ball! ","visual":{"type":"matchup","meta":null}},{"blaseball_event_id":"c212e394-e81e-e8fd-d94c-df01d48e3d18","description":"Top of 1, Charleston Shoe Thieves batting. ","visual":{"type":"diamond","meta":null}},{"blaseball_event_id":"e40bf9c3-0d00-6192-47a2-0515cdf4136b","description":"Hotbox Sato batting for the Shoe Thieves. ","visual":{"type":"diamond","meta":null}}]}';
 
-    resolve(JSON.parse(mockData));
+    fetch(`${apiUrl}/story?id=${storyId}`)
+      .then((resp) => {
+        if (!resp.ok) {
+          throw new Error('Bad response from server');
+        }
+
+        return resp.json();
+      })
+      .then((data) => {
+        console.debug('Loaded story with data:', data);
+        resolve(data);
+      });
   });
 };
 
-const isOwnStory = () => {
-  return false;
+const isOwnStory = (storyData) => {
+  return storyData.story.user_id === window.localStorage.getItem('id');
 };
 
 const toggleLoading = (state) => {
@@ -78,38 +159,55 @@ const initApp = () => {
   if (storyId) {
 
     toggleLoading(true);
+    showStoryLink(storyId);
 
     // ... fetch the story data
     getStoryData(storyId)
       .then((storyData) => {
-        console.log(storyData);
 
-        gameLoader
-          .loadWithMlustard(storyData.game_id)
-          .then((gameEvents) => {
+      if (isOwnStory(storyData)) {
+        console.debug('Going into story edit mode');
+
+        $('.loading-story').addClass('d-none');
+        $('#game-load').removeClass('d-none');
+        $('#game-events').removeClass('d-none');
+
+        gameLoader.loadWithMlustard((gameEvents) => {
+          gameEventSelector.render({
+            gameEvents,
+            onStartPreview,
+            onEndPreview,
+            onSaveAndPublish,
+            savedEvents: storyData.events,
           });
+        }, storyData.story.game_id);
+
+      } else {
+        console.debug('Going into story present mode');
 
         // load all the game events and create highlights
-
-        // ... we're going into edit mode ...
-        //if (isOwnStory()) {
-        //} else { // ... or present mode
-        //}
+        gameLoader.loadWithMlustard((gameEvents) => {
+          gameEventSelector
+            .generateHighlights((hls) => {
+                console.debug('Starting story')
+                startStory(hls, null);
+            }, gameEvents, null, storyData.events);
+        }, storyData.story.game_id);
+      }
 
       });
 
   } else {
     toggleLoading(false);
 
-    gameLoader.loadWithMlustard()
-      .then((gameEvents) => {
-        gameEventSelector.render({
-          gameEvents,
-          onStartPreview,
-          onEndPreview,
-          onSaveAndPublish,
-        });
+    gameLoader.loadWithMlustard((gameEvents) => {
+      gameEventSelector.render({
+        gameEvents,
+        onStartPreview,
+        onEndPreview,
+        onSaveAndPublish,
       });
+    })
   }
 
   // todo: put these elsewhere

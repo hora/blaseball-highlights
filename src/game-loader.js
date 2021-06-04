@@ -96,42 +96,48 @@ const hideLoading = () => {
   $gameEvForm.find('.loading').addClass('d-none');
 };
 
-const loadWithMlustard = (gameId) => {
-  return new Promise((resolve, reject) => {
-    const $gameEvForm = $('#game-load-form');
-    const $gameInput = $('#game-load-form__game-id');
+const loadWithMlustard = (onLoad, gameId) => {
+  const $gameEvForm = $('#game-load-form');
+  const $gameInput = $('#game-load-form__game-id');
 
-    // focus on game input
-    $gameInput.focus();
+  // focus on game input
+  $gameInput.focus();
 
+  if (gameId) {
+    $gameInput.attr('placeholder', gameId);
+  } else {
     // pick a random interesting game as the placeholder for the input
     $gameInput.attr('placeholder', getRandomGame());
+  }
 
-    const getEvents = (gameId) => {
-      getGameEvents(gameId)
-        .then((gameEvents) => {
-          console.debug('Game loaded with events:', gameEvents);
-          resolve(gameEvents);
-        });
-    };
-
-    if (gameId) {
-      getEvents(gameId);
-    } else {
-    }
-      $gameEvForm.on('submit', (ev) => {
-        ev.preventDefault();
-
-        let gameVal = $gameInput.val();
-
-        if (!gameVal) {
-          gameVal = $gameInput.attr('placeholder');
-        }
-
-        gameId = gameVal.split('/').pop();
-        getEvents(gameId);
+  const getEvents = (gameId) => {
+    getGameEvents(gameId)
+      .then((gameEvents) => {
+        console.debug('Game loaded with events:', gameEvents);
+        onLoad(gameEvents);
       });
-  });
+  };
+
+  if (gameId) {
+    getEvents(gameId);
+  } else {
+    $gameEvForm.on('submit', (ev) => {
+      ev.preventDefault();
+
+      //if (!window.confirm('Are you sure?')) {
+        //return false;
+      //}
+
+      let gameVal = $gameInput.val();
+
+      if (!gameVal) {
+        gameVal = $gameInput.attr('placeholder');
+      }
+
+      gameId = gameVal.split('/').pop();
+      getEvents(gameId);
+    });
+  }
 };
 
 module.exports = {

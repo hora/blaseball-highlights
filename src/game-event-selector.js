@@ -2,7 +2,6 @@ const Highlight = require('./highlight');
 const util = require('./util');
 const teamsData = require('../lib/teams-data');
 
-let gameEvents;
 let onStartPreview;
 let onEndPreview;
 let onSaveAndPublish;
@@ -11,44 +10,81 @@ const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
 };
 
-const generateHighlights = (cb, startFrom) => {
+const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
   let highlights = [];
 
-  $('#game-events__form-items .game-event-check__input:checked')
-  .each((_, checked) => {
-    const $checked = $(checked);
-    const id = $checked.attr('id');
-    const gameEvent = gameEvents[id];
-    const $gameEv = $checked.closest('.game-event');
-    const commentary = $gameEv.find('.game-event-update__textarea').val();
-    const visual = $gameEv.find('.visual-select').val();
-    const visualMeta = {};
+  if (savedEvents) {
 
-    if (visual === 'custom') {
-      visualMeta.imageData = $gameEv.find('.visual-preview-custom').attr('src');
-      visualMeta.imageTitle = $gameEv.find('.image-meta__title').val();
-      visualMeta.imageDescription = $gameEv.find('.image-meta__id').val();
-      visualMeta.creator = $gameEv.find('.image-meta__creator').val();
-      visualMeta.creatorLink = $gameEv.find('.image-meta__link').val();
+    const savedEventsObj = {};
+
+    for (let savedEv of savedEvents) {
+      savedEventsObj[savedEv.blaseball_event_id] = savedEv;
     }
 
-    const hl = new Highlight({
-      id: id,
-      gameEvent: gameEvent.ev,
-      mlustard: gameEvent.mlustard,
-      commentary,
-      visual,
-      visualMeta,
+    for (let gameEvId in gameEvents) {
+      const savedEv = savedEventsObj[gameEvId];
+
+      if (savedEv) {
+        const gameEvent = gameEvents[savedEv.blaseball_event_id];
+        const commentary = savedEv.description;
+        const visual = savedEv.visual.type;
+        const visualMeta = savedEv.visual.meta;
+
+        const hl = new Highlight({
+          id: savedEv.blaseball_event_id,
+          gameEvent: gameEvent.ev,
+          mlustard: gameEvent.mlustard,
+          commentary,
+          visual,
+          visualMeta,
+        });
+
+        highlights.push(hl);
+      }
+    }
+
+    console.debug('generateHighlights:', highlights);
+    cb(highlights);
+
+  } else {
+
+    $('#game-events__form-items .game-event-check__input:checked')
+    .each((_, checked) => {
+      const $checked = $(checked);
+      const id = $checked.attr('id');
+      const gameEvent = gameEvents[id];
+      const $gameEv = $checked.closest('.game-event');
+      const commentary = $gameEv.find('.game-event-update__textarea').val();
+      const visual = $gameEv.find('.visual-select').val();
+      const visualMeta = {};
+
+      if (visual === 'custom') {
+        visualMeta.imageData = $gameEv.find('.visual-preview-custom').attr('src');
+        visualMeta.imageTitle = $gameEv.find('.image-meta__title').val();
+        visualMeta.imageDescription = $gameEv.find('.image-meta__id').val();
+        visualMeta.creator = $gameEv.find('.image-meta__creator').val();
+        visualMeta.creatorLink = $gameEv.find('.image-meta__link').val();
+      }
+
+      const hl = new Highlight({
+        id: id,
+        gameEvent: gameEvent.ev,
+        mlustard: gameEvent.mlustard,
+        commentary,
+        visual,
+        visualMeta,
+      });
+
+      highlights.push(hl);
     });
 
-    highlights.push(hl);
-  });
+    console.debug('generateHighlights:', highlights);
+    cb(highlights, startFrom);
+  }
 
-  console.debug('generateHighlights:', highlights);
-  cb(highlights, startFrom);
 };
 
-const renderGameEv = (gameEv, $container) => {
+const renderGameEv = (gameEv) => {
   const data = gameEv.ev.data;
 
   if (!data.lastUpdate) {
@@ -283,11 +319,13 @@ const render = (settings) => {
   onStartPreview = settings.onStartPreview;
   onEndPreview = settings.onEndPreview;
   onSaveAndPublish = settings.onSaveAndPublish;
+  const savedEvents = settings.savedEvents;
 
   $('.game-events__container').removeClass('d-none');
   $('.game-events__info').addClass('d-none');
 
   const $container = $('#game-events__form-items');
+  //$container.empty();
 
   for (let id in gameEvents) {
     let gameEv = gameEvents[id];
@@ -300,34 +338,67 @@ const render = (settings) => {
       updateHomePitcher(gameEv);
     }
 
-    let $gameEv = renderGameEv(gameEv, $container);
+    let $gameEv = renderGameEv(gameEv);
 
     if ($gameEv) {
       $container.append($gameEv);
     }
   }
 
-  bindHandlers();
+  // this is gross, but duct tape is easier (for now shhhh)
+  if (savedEvents) {
+    for (let savedEv of savedEvents) {
+      const $check = $(`#${savedEv.blaseball_event_id}`);
+
+      $check.prop('checked', true);
+      $('.game-events__header .buttons-wrapper button').prop('disabled', false);
+      $gameEv = $check.closest('.game-event');
+      $gameEv.find('.game-event-update__textarea').val(savedEv.description);
+      $gameEv.find('.game-event-preview__link').removeClass('disabled');
+      $gameEv.find('.visual-select').val(savedEv.visual.type);
+
+      if (savedEv.visual.type === 'custom') {
+        const $custom = $gameEv.find('.custom-visual-form');
+
+        $custom
+          .find('.visual-preview-custom')
+          .attr('src', savedEv.visual.meta.imageData)
+          .removeClass('d-none');
+        $custom
+          .find('.image-meta__title').val(savedEv.visual.meta.imageTitle);
+        $custom
+          .find('.image-meta__id').val(savedEv.visual.meta.imageDescription);
+        $custom
+          .find('.image-meta__creator').val(savedEv.visual.meta.creator);
+        $custom
+          .find('.image-meta__link').val(savedEv.visual.meta.creatorLink);
+        $custom.removeClass('d-none');
+        $custom.find('.custom-visual__image-meta').removeClass('d-none');
+      }
+    }
+  }
+
+  bindHandlers(gameEvents);
 };
 
-const bindSaveAndPublish = () => {
+const bindSaveAndPublish = (gameEvents) => {
   const $highlightsSelectForm = $('#game-events__form');
 
   $highlightsSelectForm.on('submit', (evt) => {
     evt.preventDefault();
-    generateHighlights(onSaveAndPublish);
+    generateHighlights(onSaveAndPublish, gameEvents);
   });
 
   $('.save-story').on('click', (evt) => {
-    generateHighlights(onSaveAndPublish);
+    generateHighlights(onSaveAndPublish, gameEvents);
   });
 };
 
-const bindPreview = () => {
+const bindPreview = (gameEvents) => {
   const $highlightsSelectForm = $('#game-events__form');
 
   $('.preview-story').on('click', (ev) => {
-    generateHighlights(onStartPreview);
+    generateHighlights(onStartPreview, gameEvents);
   });
 
   $highlightsSelectForm.find('.game-event-preview__link').on('click', (evt) => {
@@ -343,7 +414,7 @@ const bindPreview = () => {
     const id = $link
       .closest('.game-event').find('.game-event-check__input').attr('id');
 
-    generateHighlights(onStartPreview, id);
+    generateHighlights(onStartPreview, gameEvents, id);
   });
 };
 
@@ -521,9 +592,9 @@ const handleUploadedImage = (file, $preview) => {
   reader.readAsDataURL(file);
 };
 
-const bindHandlers = () => {
-  bindSaveAndPublish();
-  bindPreview();
+const bindHandlers = (gameEvents) => {
+  bindSaveAndPublish(gameEvents);
+  bindPreview(gameEvents);
   bindCheckboxes();
   bindJumpButtons();
   bindStickyHeader();
@@ -532,5 +603,6 @@ const bindHandlers = () => {
 
 module.exports = {
   render,
+  generateHighlights,
 };
 

@@ -112,6 +112,21 @@ h3 {
   padding-top: 100px;
 }
 
+.game-events__header .loading {
+  height: 43px;
+}
+
+.game-events__header .messages {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-events__header .messages p {
+  margin: 0;
+  padding: 0;
+}
+
 .game-event-control-wrapper {
   max-width: 900px;
   margin-left: auto;
