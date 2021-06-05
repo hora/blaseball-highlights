@@ -283,11 +283,11 @@ const renderHeader = (gameEv) => {
   $('.game-events__game-header .game-name')
     .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
   $('.game-events__game-header .matchup')
-    .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
-  $('.game-events__game-subheader .home-pitcher')
-    .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
+    .text(`${gameEv.ev.data.awayTeamName} at ${gameEv.ev.data.homeTeamName}`);
   $('.game-events__game-subheader .away-pitcher')
     .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
+  $('.game-events__game-subheader .home-pitcher')
+    .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
 
   headerRendered = true;
 };
