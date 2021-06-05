@@ -1,16 +1,19 @@
 services:
-  highlights:
-    image: highlights
+  frontend:
+    image: highlights:frontend
     ports:
       - "8000:80"
+
+  backend:
+    image: highlights:backend
     environment:
-      - DATABASE_URL=postgresql://highlights:dd89887782e219971425a862@highlights_db/highlights
+      - DATABASE_URL=postgresql://highlights:a@highlights_db/highlights
 
   highlights_db:
-    image: highlights_db
+    image: highlights:db
     environment:
       - POSTGRES_USER=highlights
-      - POSTGRES_PASSWORD=dd89887782e219971425a862
+      - POSTGRES_PASSWORD=a
       - POSTGRES_DB=highlights
     volumes:
       - db_data:/var/lib/postgresql/data
