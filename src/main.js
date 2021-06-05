@@ -2,6 +2,7 @@ const gameEventSelector = require('./game-event-selector');
 const gameLoader = require('./game-loader');
 const Story = require('./story');
 const apiUrl = 'https://highlights.sibr.dev/api';
+const siteUrl = 'https://highlights.sibr.dev';
 
 let story;
 let inPreview = false;
@@ -74,8 +75,8 @@ const showStoryLink = (storyURL) => {
   $('.game-events__header .story-url')
     .removeClass('d-none')
     .find('a')
-    .attr('href', `${apiUrl}/story?${storyURL}`)
-    .text(`${apiUrl}/story?${storyURL}`);
+    .attr('href', `${siteUrl}/story?id=${storyURL}`)
+    .text(`${siteUrl}/story?id=${storyURL}`);
 };
 
 const onSaveAndPublish = (hls) => {
