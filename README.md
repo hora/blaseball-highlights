@@ -1,4 +1,4 @@
-# Blaseball Highlights (working title)
+# Blaseball Highlights
 
 ## Installation
 
