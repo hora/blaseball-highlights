@@ -107,7 +107,7 @@ class Visual {
 
     // set the matchup text above the diamond
     $('.diamond-header .matchup')
-      .text(`${highlight.gameEvent.data.homeTeamName} vs. ${highlight.gameEvent.data.awayTeamName}`);
+      .text(`${highlight.gameEvent.data.awayTeamName} at ${highlight.gameEvent.data.homeTeamName}`);
     $('#diamond .game-name')
       .text(`Season ${highlight.gameEvent.data.season + 1}, Day ${highlight.gameEvent.data.day + 1}`);
 
