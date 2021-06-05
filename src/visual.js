@@ -136,11 +136,12 @@ class Visual {
         $home
           .next('.vs-logo-citation')
           .empty()
+          .text('by ')
           .append(
             $('<a>')
               .attr('href', homeTeamData.homeLogoCreditURL)
               .attr('target', '_blank')
-              .text(`by ${homeTeamData.homeLogoCredit}`)
+              .text(`${homeTeamData.homeLogoCredit}`)
           );
       } else {
         $home
@@ -158,11 +159,12 @@ class Visual {
         $away
           .next('.vs-logo-citation')
           .empty()
+          .text('by ')
           .append(
             $('<a>')
               .attr('href', awayTeamData.homeLogoCreditURL)
               .attr('target', '_blank')
-              .text(`by ${awayTeamData.homeLogoCredit}`)
+              .text(`${awayTeamData.homeLogoCredit}`)
           );
       } else {
         $away
@@ -223,11 +225,12 @@ class Visual {
         $custom
           .find('.custom__citation')
           .empty()
+          .text('by ')
           .append(
             $('<a>')
               .attr('href', highlight.visualMeta.creatorLink)
               .attr('target', '_blank')
-              .text(`by ${highlight.visualMeta.creator}`)
+              .text(`${highlight.visualMeta.creator}`)
           );
       } else {
       $custom
