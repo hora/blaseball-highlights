@@ -8,6 +8,7 @@ class Highlight {
     this.gameEvent = settings.gameEvent;
     this.mlustard = settings.mlustard;
     this.visual = settings.visual;
+    this.visualMeta = settings.visualMeta;
     this.commentary = settings.commentary || this.generateCommentary();
   }
 
@@ -31,7 +32,18 @@ class Highlight {
       //gameEvent: gameEvent.data,
       //mlustard: mlustard,
     //});
-  };
+  }
+
+  makeJSON() {
+   return {
+      blaseball_event_id: this.id,
+      description: this.commentary,
+      visual: {
+        type: this.visual,
+        meta: this.visualMeta,
+      },
+    };
+  }
 
 }
 

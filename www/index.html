@@ -31,11 +31,13 @@
 
   <div class="main-container centered">
 
-  <div id="game-event-form" class="container game-chooser">
+  <h2 class="loading-story">Loading ...</h2>
 
-    <h2>1. Choose a game</h2>
+  <div id="game-load" class="game-load container game-chooser d-none">
 
-    <form id="game-event-form">
+    <h2>1. Load a game</h2>
+
+    <form id="game-load-form" class="game-load-form">
 
       <label for="game-id" class="">
         Enter a game ID or the game's
@@ -44,7 +46,7 @@
       </label>
       <p class="error-msg d-none">Oops! Something went wrong. Check the game
       ID/URL and try again.</p>
-      <input id="game-id" type="text" class="" placeholder=""></input>
+      <input id="game-load-form__game-id" type="text" class="" placeholder=""></input>
       <button type="submit" class="">Load Game Events</button>
 
       <div class="loading d-none" role="status">
@@ -52,60 +54,107 @@
       </div>
 
     </form>
+  </div> <!-- game-load -->
 
-  </div>
+  <div id="game-events" class="game-events container d-none">
 
-  <div id="game-events-choose" class="container">
+    <h2>2. Select game events to highlight</h2>
 
-    <h2>2. Choose game events to highlight</h2>
+    <p class="game-events__info">Waiting for a game to be loaded.</p>
 
-    <p class="game-events-choose__info">Waiting on you to choose a game.</p>
+    <div class="game-events__container d-none">
 
-    <div class="game-events-choose__container d-none">
-
-      <h3 class="game-events-choose__header">
+      <h3 class="game-events__game-header">
         <span class="game-name"></span> –
         <span class="matchup"></span>
       </h3>
+      <h4 class="game-events__game-subheader">
+        Starting pitchers:
+        <span class="home-pitcher"></span> and
+        <span class="away-pitcher"></span>
+      </h4>
 
-      <div class="scroll-to-container">
-        <span>Jump to:</span>
-        <ul class="">
-          <li class="scroll-to inning">next Half-inning</li>
-          <li class="scroll-to strikeout d-none">next Strikeout</li>
-          <li class="scroll-to hit d-none">next Hit</li>
-          <li class="scroll-to steal d-none">next Steal</li>
-          <li class="scroll-to special d-none">next Special</li>
-          <li class="scroll-to max d-none">next Maximum Blaseball</li>
-          <li class="scroll-to score d-none">next Score</li>
-        </ul>
-      </div>
+      <div class="game-events__header">
+        <div class="game-event-control-wrapper">
+          <div class="game-events-control">
+            <input id="check-all" type="checkbox" name="select all events">
+            <label for="check-all">Select all events</label>
+          </div>
 
-      <form id="game-events-choose__form">
-        <div id="game-events-choose__form-items">
-          <div class="check-all-cursed">
-            <input id="check-all" type="checkbox" name="check all game events">
-            <label for="check-all">Choose all events</label>
+          <div class="scroll-to-container">
+            <span>Jump to:</span>
+            <ul class="">
+              <li class="scroll-to inning">next Half-inning</li>
+              <li class="scroll-to strikeout d-none">next Strikeout</li>
+              <li class="scroll-to hit d-none">next Hit</li>
+              <li class="scroll-to steal d-none">next Steal</li>
+              <li class="scroll-to special d-none">next Special</li>
+              <li class="scroll-to max d-none">next Maximum Blaseball</li>
+              <li class="scroll-to score d-none">next Score</li>
+            </ul>
+          </div>
+
+          <div class="buttons-wrapper">
+            <button type="submit" class="save-story" disabled>
+              Save &#38; Publish Story
+            </button>
+            <div class="loading text-center d-none" role="status">
+              <span class="">Saving...</span>
+            </div>
+            <div class="success text-center d-none" role="status">
+              <span class="">💾 Saved!</span>
+            </div>
+            <button type="button" class="preview-story" disabled>
+              Preview Story
+            </button>
+
           </div>
         </div>
-        <button type="submit" class="">
-          Generate Highlights!
-        </button>
+        <div class="messages">
+          <p class="error-msg d-none">Oops! Something went wrong. Try again, but
+          hit us up in the SIBR Discord if you keep seeing this message.</p>
+          <p class="story-url d-none">Published at: <a href="" target="_blank"></a></p>
+        </div>
+
+      </div>
+
+      <form id="game-events__form" class="game-events__form">
+        <table class="">
+          <colgroup>
+            <col class="game-event-check">
+            <col class="game-event-update">
+            <col class="game-event-visual">
+            <col class="game-event-game-status">
+            <col class="game-event-preview">
+          </colgroup>
+          <thead>
+          </thead>
+
+          <tbody id="game-events__form-items">
+          </tbody>
+        </table>
       </form>
     </div>
 
-  </div>
+  </div> <!-- #game-events -->
 
-  <div id="visuals" class="container text-center d-none">
+  <button type="button" id="exit-preview" class="d-none">Exit Preview</button>
+  <div id="visuals" class="container text-center d-none centered-small">
     <div id="matchup">
 
       <div class="game-matchup">
         <h2 class="game-name text-center"></h2>
 
         <div class="vs-logo-container">
-          <img class="vs-logo vs-logo__home" src="">
+          <div>
+            <img class="vs-logo vs-logo__home" src="">
+            <p class="vs-logo-citation"></p>
+          </div>
           <span class="vs-text">vs.</span>
-          <img class="vs-logo vs-logo__away" src="">
+          <div>
+            <img class="vs-logo vs-logo__away" src="">
+            <p class="vs-logo-citation"></p>
+          </div>
         </div>
       </div>
 
@@ -177,44 +226,52 @@
         </svg>
       </div>
 
-        <div id="diamond__image">
-          <img src="" class="diamond-logo">
-          <p class="player-on-diamond batting"></p>
-          <p class="player-on-diamond second"></p>
-          <p class="player-on-diamond third"></p>
-          <p class="player-on-diamond first"></p>
-          <p class="player-on-diamond mound"></p>
+      <div id="diamond__image">
+        <img src="" class="diamond-logo">
+        <p class="player-on-diamond batting"></p>
+        <p class="player-on-diamond second"></p>
+        <p class="player-on-diamond third"></p>
+        <p class="player-on-diamond first"></p>
+        <p class="player-on-diamond mound"></p>
 
-          <ul id="diamond__scoreboard" class="scoreboard">
-            <li class="scoreboard-teams">
-              <div class="scoreboard-teams__home">
-                <span></span><span></span>
-              </div>
-              <div class="scoreboard-teams__away">
-                <span></span><span></span>
-              </div>
-            </li>
-            <li class="scoreboard-bases">
-            </li>
-            <li class="scoreboard-count">
-              <div class="scoreboard-count__count">
-                <span></span> - <span></span>
-              </div>
-              <div class="scoreboard-count__outs">
-                <span></span> out
-              </div>
-            </li>
-            <li class="scoreboard-other">
-              <div class="scoreboard-other__inning">
-                <span></span>
-                <span></span>
-              </div>
-              <div class="scoreboard-other__weather"><span></span></div>
-            </li>
-          </ul>
+        <ul id="diamond__scoreboard" class="scoreboard">
+          <li class="scoreboard-teams">
+            <div class="scoreboard-teams__home">
+              <span></span><span></span>
+            </div>
+            <div class="scoreboard-teams__away">
+              <span></span><span></span>
+            </div>
+          </li>
+          <li class="scoreboard-bases">
+          </li>
+          <li class="scoreboard-count">
+            <div class="scoreboard-count__count">
+              <span></span> - <span></span>
+            </div>
+            <div class="scoreboard-count__outs">
+              <span></span> out
+            </div>
+          </li>
+          <li class="scoreboard-other">
+            <div class="scoreboard-other__inning">
+              <span></span>
+              <span></span>
+            </div>
+            <div class="scoreboard-other__weather"><span></span></div>
+          </li>
+        </ul>
       </div>
 
+    </div> <!-- #diamond -->
+
+    <div id="custom" class="d-none">
+      <img class="" src="" alt="">
+      <p class="custom__citation"></p>
     </div>
+
+    </div>
+
   </div>
 
   <button id="download-story" type="button" class="btn btn-primary d-none">
@@ -225,7 +282,7 @@
 
   <div id="highlights-dialog__container" class="d-none">
 
-    <div id="highlights-dialog__text" class="centered">
+    <div id="highlights-dialog__text" class="centered-small">
       <p id="highlights-dialog__text-one" class="animation-finished"></p>
       <p id="highlights-dialog__text-two" class="animation-finished"></p>
       <div id="highlights-dialog__prev" class="dialog-control"></div>
@@ -233,10 +290,117 @@
     </div>
 
   </div>
-  <div id="highlights-json" class="d-none" data=""></div>
 
   <script src="jquery-3.6.0.slim.min.js"></script>
   <script src="app.js"></script>
+
+  <!-- don't wanna mess around with a non-tr template, but for this to be valid
+  html, it's gotta snuggle inside a table -->
+  <table class="d-none">
+  <tr id="game-event__template" class="game-event d-none">
+
+    <td class="game-event-check">
+      <input type="checkbox" id="" class="game-event-check__input">
+    </td>
+
+    <td class="game-event-update">
+      <textarea class="game-event-update__textarea"></textarea>
+    </td>
+
+    <td class="game-event-visual">
+      <label for="visual-select">Choose a visual for this event:</label>
+      <select id="visual-select" class="visual-select" name="visual">
+        <option value="diamond" selected>Diamond</option>
+        <option value="matchup">Matchup</option>
+        <option value="custom">Custom</option>
+      </select>
+
+      <!-- source:
+        https://medium.com/@nagachaitanyakonada/image-upload-functionality-cd497a5bba54
+      -->
+      <form id="custom-visual-form" class="custom-visual-form d-none">
+        <label for="custom-visual__input">
+          Upload a custom image for this event:
+        </label>
+        <input type="file" class="custom-visual__input"
+                     id="custom-visual__input" accept="image/png, image/jpeg,
+                     image/jpg">
+
+        <img src="#" class="visual-preview visual-preview-custom d-none">
+
+        <div class="custom-visual__image-meta d-none">
+          <label for="image-meta__title">
+            Title
+          </label>
+          <input id="image-meta__title" class="image-meta__title" type="text">
+
+          <label for="image-meta__id">
+            Image description
+          </label>
+          <input id="image-meta__id" class="image-meta__id" type="text">
+
+          <label for="image-meta__creator">
+            Creator (if known)
+          </label>
+          <input id="image-meta__creator" class="image-meta__creator" type="text">
+
+          <label for="image-meta__link">
+            Creator homepage (optional)
+          </label>
+          <input id="image-meta__link" class="image-meta__link" type="text">
+
+        </div>
+
+        <p class="error-msg d-none"></p>
+      </form>
+
+    </td>
+
+    <td class="game-event-game-status">
+      <ul class="scoreboard scoreboard-small">
+        <li class="scoreboard-teams">
+          <div class="scoreboard-teams__home">
+            <span></span><span></span>
+          </div>
+          <div class="scoreboard-teams__away">
+            <span></span><span></span>
+          </div>
+        </li>
+        <li class="scoreboard-bases">
+        </li>
+        <li class="scoreboard-count">
+          <div class="scoreboard-count__count">
+            <span></span> - <span></span>
+          </div>
+          <div class="scoreboard-count__outs">
+            <span></span> out
+          </div>
+        </li>
+      </ul>
+    </td>
+
+    <td class="game-event-preview">
+      <a href="#" class="game-event-preview__link disabled">
+        Preview
+      </a>
+    </td>
+
+  </tr>
+
+  <tr id="inning-header__template" class="interesting inning d-none">
+    <td colspan="5">
+      <span></span>
+    </td>
+  </tr>
+
+  <tr id="inning-info__template" class="inning-info d-none">
+    <td colspan="5">
+      <span class="fielding"></span>
+      <span class="batting"></span>
+    </td>
+  </tr>
+
+  </table>
 
 </body>
 </html>

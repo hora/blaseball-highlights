@@ -27,6 +27,10 @@ button {
   color: white;
 }
 
+button[disabled] {
+  background-color: gray;
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-weight: 300;
 }
@@ -37,6 +41,12 @@ ul {
   margin: 0 0 10px 0;
 }
 
+td {
+  padding: 10px 10px;
+  font-size: 18px;
+  vertical-align: top;
+}
+
 .main-container {
   margin-bottom: 50px; /* to allow for fixed dialog */
   padding-top: 50px;
@@ -44,6 +54,12 @@ ul {
 }
 
 .centered {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.centered-small {
   max-width: 720px;
   margin-left: auto;
   margin-right: auto;
@@ -74,32 +90,124 @@ h3 {
   margin-bottom: 10px;
 }
 
-#game-events-choose__form-items {
-  height: 330px;
-  overflow-y: scroll;
+.game-events__game-subheader {
+  margin-top: 10px;
+}
+
+.game-events__header {
+  background-color: #003049;
+  width: 100%;
+}
+
+.game-events__header.sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  box-shadow: 0 0 5px rgba(0,0,0,0.8);
+  background-color: #00283c;
+  z-index: 1000;
+}
+
+.game-events__header.sticky + .game-events__form {
+  padding-top: 100px;
+}
+
+.game-events__header .loading {
+  height: 43px;
+}
+
+.game-events__header .messages {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.game-events__header .messages p {
+  margin: 0;
+  padding: 0;
+}
+
+.game-event-control-wrapper {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  display: flex;
+}
+
+.game-events-control {
+  width: 260px;
+  margin-right: 20px;
+  margin-top: 15px;
+}
+
+.buttons-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 400px;
+  margin-top: 15px;
+}
+
+.buttons-wrapper button {
+  margin-bottom: 7px;
+}
+
+#game-events__form-items {
   padding: 20px;
   background-color: #33596d;
 }
 
-.game-event__container {
-  padding-top: .5rem;
-  padding-bottom: .5rem;
-  margin-bottom: .5rem;
-  font-size: 1.1rem;
+col.game-event-check {
+  width: 4%;
 }
 
-.game-event__container:hover {
-  background-color: #eee;
+col.game-event-update {
+  width: 30%;
 }
 
-.game-event__container.interesting {
+col.game-event-visual {
+  width: 35%;
+}
+
+col.game-event-game-status {
+  width: 22%;
+}
+
+.game-event-update__textarea {
+  padding: 5px;
+}
+
+/* the last one doesn't need to be specified */
+/*col.game-event-preview {*/
+  /*width: 9%;*/
+/*}*/
+
+/*.game-event {*/
+  /*padding-top: .5rem;*/
+  /*padding-bottom: .5rem;*/
+  /*margin-bottom: .5rem;*/
+  /*font-size: 1.1rem;*/
+/*}*/
+
+.game-event:hover,
+.game-event.interesting:hover {
+  background-color: #00283c;
+  color: white;
+}
+
+.game-event.interesting {
   background-color: pink;
-  font-weight: 600;
   color: #003049;
 }
 
-.game-event__container .form-check {
-  padding-left: 2em;
+.game-event-visual img {
+  max-height: 250px;
+  max-width: 300px;
+  margin-top: 16px;
+}
+
+.game-event-visual select {
+  display: block;
+  margin-top: 4px;
 }
 
 .circle {
@@ -116,16 +224,6 @@ h3 {
 
 .circle.empty {
   border: 2px solid black;
-}
-
-.balls-count,
-.strikes-count {
-  margin-right: 4px;
-}
-
-.bases-occupied {
-  margin-left: 6px;
-  margin-right: 8px;
 }
 
 .diamond {
@@ -299,6 +397,13 @@ h3 {
   justify-content: center;
 }
 
+.scoreboard-small {
+  margin: 0;
+  padding: 4px 0;
+  position: static;
+  width: 180px;
+}
+
 .scoreboard li {
   padding-left: 5px;
   padding-right: 5px;
@@ -340,6 +445,11 @@ h3 {
   width: 80px;
 }
 
+#custom img {
+  max-width: 720px;
+  max-height: 460px;
+}
+
 .game-chooser input {
   display: block;
   width: 100%;
@@ -370,6 +480,7 @@ h3 {
 
 .scroll-to-container {
   display: flex;
+  margin-top: 15px;
 }
 
 
@@ -380,3 +491,41 @@ h3 {
 .d-none {
   display: none !important;
 }
+
+.game-event-preview__link.disabled {
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  cursor: default;
+}
+
+.custom-visual__input {
+  width: 100%;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.custom-visual-form {
+  margin-top: 16px;
+}
+
+.custom-visual-form label,
+.custom-visual-form input {
+  display: block;
+}
+
+.custom-visual-form input {
+  line-height: 1;
+  font-size: 18px;
+  padding: 5px;
+}
+
+#exit-preview {
+  margin-bottom: 8px;
+}
+
+.custom__citation,
+.vs-logo-citation {
+  font-size: 14px;
+  margin-top: 0;
+}
+

@@ -1,385 +1,481 @@
-const mlustard = require('mlustard');
-
 const Highlight = require('./highlight');
 const util = require('./util');
+const teamsData = require('../lib/teams-data');
 
-let gameEvents = {};
-let highlights = [];
-
-const getRandomGame = () => {
-  const games = [
-    // internet series championship games, starting season 2
-    'https://reblase.sibr.dev/game/97d88b9e-406d-4f31-a18f-2a3b903edc03',
-    'https://reblase.sibr.dev/game/b38e0917-43da-470c-a7bb-5712368a2492',
-    'https://reblase.sibr.dev/game/628a2ddb-f608-411b-8d2e-2768cd36d58b',
-    'https://reblase.sibr.dev/game/52f6274e-e0dc-4c23-87e8-686f6d2b2bbf',
-    'https://reblase.sibr.dev/game/10538840-1f72-4a90-98e5-724a9dc5d061',
-    'https://reblase.sibr.dev/game/9d85897e-e689-4eeb-b2ae-b69679a3ebc7',
-    'https://reblase.sibr.dev/game/ee35a868-b004-449f-a99c-6a40ca54b382',
-    'https://reblase.sibr.dev/game/06566f8d-3d14-4956-b054-36dc981fd589',
-    'https://reblase.sibr.dev/game/704ddf2f-3fe2-48b3-b674-b94765f70d01',
-    'https://reblase.sibr.dev/game/47bcac42-f651-4fc9-9f93-5567a7b10daf',
-    'https://reblase.sibr.dev/game/0f19d78d-c27d-4146-863d-b55e6dae1679',
-    'https://reblase.sibr.dev/game/1506b88f-1fea-4ba1-9256-1ebb030cdcae',
-    'https://reblase.sibr.dev/game/b2cafd20-a799-48f6-abd7-c99bd79a6bd1',
-    'https://reblase.sibr.dev/game/2bc6e86e-8d25-4e37-9026-780d8b6969c5',
-    'https://reblase.sibr.dev/game/462481f4-7f97-441c-9fc9-c3dc3c5844a4',
-    'https://reblase.sibr.dev/game/11a8a7d3-460b-4c99-a98a-b0bd1f577073',
-    'https://reblase.sibr.dev/game/823dfcb6-dddb-43f4-90ff-eac05827a82e',
-
-    // other games
-    // s3d100 (riv landry)
-    'https://reblase.sibr.dev/game/aa1b7fde-f077-4e4b-825f-0d1538d02822',
-  ];
-
-  return games[Math.floor(Math.random() * (games.length - 1))];
-};
+let onStartPreview;
+let onEndPreview;
+let onSaveAndPublish;
 
 const isPlayBall = (gameEv) => {
   return gameEv.lastUpdate.indexOf('Play ball') >= 0;
 };
 
-const generateHighlights = (cb) => {
-  $('.game-event__container input:checked').each((_, checked) => {
-    const id = $(checked).attr('id');
-    let visual = 'diamond';
+const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
+  let highlights = [];
 
-    if (isPlayBall(gameEvents[id].ev.data)) {
-      visual = 'matchup';
+  if (savedEvents) {
+
+    const savedEventsObj = {};
+
+    for (let savedEv of savedEvents) {
+      savedEventsObj[savedEv.blaseball_event_id] = savedEv;
     }
 
-    const hl = new Highlight({
-      id: id,
-      gameEvent: gameEvents[id].ev,
-      mlustard: gameEvents[id].mlustard,
-      visual,
+    for (let gameEvId in gameEvents) {
+      const savedEv = savedEventsObj[gameEvId];
+
+      if (savedEv) {
+        const gameEvent = gameEvents[savedEv.blaseball_event_id];
+        const commentary = savedEv.description;
+        const visual = savedEv.visual.type;
+        const visualMeta = savedEv.visual.meta;
+
+        const hl = new Highlight({
+          id: savedEv.blaseball_event_id,
+          gameEvent: gameEvent.ev,
+          mlustard: gameEvent.mlustard,
+          commentary,
+          visual,
+          visualMeta,
+        });
+
+        highlights.push(hl);
+      }
+    }
+
+    console.debug('generateHighlights:', highlights);
+    cb(highlights);
+
+  } else {
+
+    $('#game-events__form-items .game-event-check__input:checked')
+    .each((_, checked) => {
+      const $checked = $(checked);
+      const id = $checked.attr('id');
+      const gameEvent = gameEvents[id];
+      const $gameEv = $checked.closest('.game-event');
+      const commentary = $gameEv.find('.game-event-update__textarea').val();
+      const visual = $gameEv.find('.visual-select').val();
+      const visualMeta = {};
+
+      if (visual === 'custom') {
+        visualMeta.imageData = $gameEv.find('.visual-preview-custom').attr('src');
+        visualMeta.imageTitle = $gameEv.find('.image-meta__title').val();
+        visualMeta.imageDescription = $gameEv.find('.image-meta__id').val();
+        visualMeta.creator = $gameEv.find('.image-meta__creator').val();
+        visualMeta.creatorLink = $gameEv.find('.image-meta__link').val();
+      }
+
+      const hl = new Highlight({
+        id: id,
+        gameEvent: gameEvent.ev,
+        mlustard: gameEvent.mlustard,
+        commentary,
+        visual,
+        visualMeta,
+      });
+
+      highlights.push(hl);
     });
 
-    //const hl = highlight.makeHighlight({
-      //id: id,
-      //gameEvent: gameEvents[id].ev,
-      //mlustard: gameEvents[id].mlustard,
-      //visual,
-    //});
+    console.debug('generateHighlights:', highlights);
+    cb(highlights, startFrom);
+  }
 
-    highlights.push(hl);
-  });
-
-  console.debug('generateHighlights:', highlights);
-  cb(highlights);
 };
 
-const makeCountCircle = (classes) => {
-  return $('<span>').addClass(classes);
-};
-
-const renderGameEv = (gameEv, $container) => {
+const renderGameEv = (gameEv) => {
   const data = gameEv.ev.data;
 
   if (!data.lastUpdate) {
     return;
   }
 
-  // check for half-inning changes
-  if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
-    $('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of 1`)
-      .appendTo($container);
-  } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
-    $('<h3>')
-      .addClass('inning inning-top')
-      .text(`Top of ${data.inning + 1}`)
-      .appendTo($container);
-  } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
-    $('<h3>')
-      .addClass('inning inning-bottom')
-      .text(`Bottom of ${data.inning + 1}`)
-      .appendTo($container);
-  }
-
-  const $gameEv = $('<div>');
-
-  // form stuff
-  const $chContainer = $('<div>');
-  const $check = $('<input>');
-  const $label = $('<label>');
-
-  let update = `${data.lastUpdate} ${data.scoreUpdate || ''}`;
-
-  $check
-    .addClass('game-event__check')
-    .attr('id', gameEv.ev.hash)
-    .attr('type', 'checkbox')
-    .attr('name', 'game event')
-    .val('');
-
-  $label
-    .addClass('')
-    .attr('for', gameEv.ev.hash)
-    .text(update);
-
-  $chContainer
-    .addClass('')
-    .append($check)
-    .append($label);
-
-  // game event info
-  const $gameEvInfo = $('<div>');
-  const $score = $('<span>');
-  const $bases = $('<span>');
-  const $balls = $('<span>');
-  const $strikes = $('<span>');
-  const $outs = $('<span>');
-
+  let ret = [];
+  let inning;
+  let inningClasses;
   let homeEmoji = util.getEmoji('home', data);
   let awayEmoji = util.getEmoji('away', data);
+  let topOfOne = false;
 
-  let score = `${homeEmoji} ${data.homeScore} : ${awayEmoji} ${data.awayScore}`;
-  let bases = '';
+  // check for half-inning changes
+  if (gameEv.mlustard.gameStatus === 'beforeFirstPitch') {
 
-  // fill in balls count
-  for (let ball = 0; ball < data.atBatBalls; ball++) {
-    $balls.append(makeCountCircle('circle full'));
+    inning = 'Top of 1';
+    inningClasses = 'inning-top';
+    // sometimes, the game event doesn't think it's the top of 1 if there are
+    // some events before the first pitch, or something
+    topOfOne = true;
+
+  } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
+
+    inning = `Top of ${data.inning + 1}`;
+    inningClasses = 'inning-top';
+
+  } else if (gameEv.mlustard.gameStatus === 'secondHalfInningStart') {
+
+    inning = `Bottom of ${data.inning + 1}`;
+    inningClasses = 'inning-bottom';
+
   }
 
-  for (let ball = 3; ball > data.atBatBalls; ball--) {
-    $balls.append(makeCountCircle('circle empty'));
+  if (inning) {
+    const $inning = $('#inning-header__template').clone();
+
+    $inning
+      .attr('id', '')
+      .addClass(inningClasses)
+      .removeClass('d-none')
+      .find('span')
+      .text(inning);
+
+    ret.push($inning);
+
+    const $inningInfo = $('#inning-info__template').clone();
+    const fielding = data.topOfInning ? 'home' : 'away';
+    let fieldingTeam;
+    let fieldingEmoji;
+    let pitcher;
+    let battingTeam;
+    let battingEmoji;
+
+    if (data.topOfInning || topOfOne) { // home fielding
+      fieldingTeam = data.homeTeamName;
+      fieldingEmoji = homeEmoji;
+      pitcher = data.homePitcherName || 'home-pitcher-placeholder';
+      battingTeam = data.awayTeamName;
+      battingEmoji = awayEmoji;
+    } else { // away fielding
+      fieldingTeam = data.awayTeamName;
+      fieldingEmoji = awayEmoji;
+      pitcher = data.awayPitcherName;
+      battingTeam = data.homeTeamName;
+      battingEmoji = homeEmoji;
+    }
+
+    $inningInfo
+      .attr('id', '')
+      .removeClass('d-none')
+      .find('.fielding')
+      .text(`${fieldingEmoji}${fieldingTeam} fielding, with ${pitcher} pitching`);
+
+    $inningInfo
+      .find('.batting')
+      .text(`${battingEmoji}${battingTeam} batting`);
+
+    ret.push($inningInfo);
   }
 
-  // fill in strikes count
-  for (let strike = 0; strike < data.atBatStrikes; strike++) {
-    $strikes.append(makeCountCircle('circle full'));
+  const $gameEv = $('#game-event__template').clone();
+
+  $gameEv
+    .find('.game-event-check__input')
+    .attr('id', gameEv.ev.hash);
+
+  $gameEv
+    .find('textarea')
+    .val(`${data.lastUpdate} ${data.scoreUpdate || ''}`);
+
+  // update visual select options and ids
+  const $visualSelect = $gameEv.find('.visual-select');
+
+  $visualSelect.attr('id', `visual-select-${gameEv.ev.hash}`);
+  if (isPlayBall(gameEv.ev.data)) {
+    $visualSelect.val('matchup').change();
+  } else {
+    $gameEv.find('.visual-preview-diamond').removeClass('d-none');
   }
 
-  for (let strike = 2; strike > data.atBatStrikes; strike--) {
-    $strikes.append(makeCountCircle('circle empty'));
-  }
+  const $customForm = $gameEv.find('.custom-visual-form');
 
-  // fill in outs count
-  for (let out = 0; out < data.halfInningOuts; out++) {
-    $outs.append(makeCountCircle('circle full'));
-  }
+  $customForm.attr('id', `custom-visual-form-${gameEv.ev.hash}`);
+  // todo: there's more than 1 input, fix this
+  $customForm
+    .find('label')
+    .attr('for', `custom-visual__input-${gameEv.ev.hash}`);
+  $customForm
+    .find('input')
+    .attr('id', `custom-visual__input-${gameEv.ev.hash}`);
 
-  for (let out = 2; out > data.halfInningOuts; out--) {
-    $outs.append(makeCountCircle('circle empty'));
-  }
+  // game status
+  const $gameStatus = $gameEv.find('.game-event-game-status');
 
-  // fill in base diamonds
+  // score
+  const $homeScore = $gameStatus.find('.scoreboard-teams__home span');
+  const $awayScore = $gameStatus.find('.scoreboard-teams__away span');
+
+  $homeScore.first().text(teamsData[data.homeTeam].shorthand);
+  $homeScore.last().text(data.homeScore);
+
+  $awayScore.first().text(teamsData[data.awayTeam].shorthand);
+  $awayScore.last().text(data.awayScore);
+
+  // bases are from third to first
+  const $bases = $gameStatus.find('.scoreboard-bases');
+  $bases.empty();
   $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.third.playerName));
   $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.second.playerName));
   $bases.append(util.makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
-  // todo: deal with 4 bases
-  //$bases.append(makeBaseDiamond(gameEv.mlustard.baseRunners.first.playerName));
 
-  $score
-    .text(score);
-  $balls
-    .attr('title', 'Balls')
-    .addClass('balls-count');
-  $strikes
-    .attr('title', 'Strikes')
-    .addClass('strikes-count');
-  $outs
-    .attr('title', 'Outs')
-    .addClass('outs-count');
-  $bases
-    .attr('title', 'Bases occupied')
-    .addClass('bases-occupied');
-
-  $gameEvInfo
-    .addClass('')
-    .append($score)
-    .append($bases)
-    .append($balls)
-    .append($strikes)
-    .append($outs);
-
-  let containerClasses = ['game-event__container'];
+  // count
+  const $count = $gameStatus.find('.scoreboard-count__count span');
+  $count.first().text(data.atBatBalls);
+  $count.last().text(data.atBatStrikes);
+  const $outs = $gameStatus.find('.scoreboard-count__outs span');
+  $outs.text(data.halfInningOuts);
 
   // highlight interesting events
-  // todo: when refactoring this whole cursed file, also don't do so many
-  // dom lookups here
+  let containerClasses = [];
+
   if (gameEv.mlustard.out && gameEv.mlustard.outMeta.kind === 'strike') {
-
-    containerClasses.push('interesting strikeout');
-    $('.scroll-to.strikeout').removeClass('d-none');
-
+    containerClasses.push('strikeout');
   }
 
   if (gameEv.mlustard.hit) {
-
-    containerClasses.push('interesting hit');
-    $('.scroll-to.hit').removeClass('d-none');
-
+    containerClasses.push('hit');
   }
 
   if (gameEv.mlustard.steal && gameEv.mlustard.stealMeta.success) {
-
-    containerClasses.push('interesting steal');
-    $('.scroll-to.steal').removeClass('d-none');
-
+    containerClasses.push('steal');
   }
 
   if (gameEv.mlustard.special) {
-
-    containerClasses.push('interesting special');
-    $('.scroll-to.special').removeClass('d-none');
-
+    containerClasses.push('special');
   }
 
   if (gameEv.mlustard.maximumBlaseball) {
-
-    containerClasses.push('interesting max');
-    $('.scroll-to.max').removeClass('d-none');
-
+    containerClasses.push('max');
   }
 
   if (gameEv.mlustard.runsScored || gameEv.mlustard.unrunsScored) {
+    containerClasses.push('score');
+  }
 
-    containerClasses.push('interesting score');
-    $('.scroll-to.score').removeClass('d-none');
+  if (containerClasses.length) {
+    containerClasses.forEach((className) => {
+      $(`.scroll-to.${className}`).removeClass('d-none');
+    });
 
+    containerClasses.push('interesting');
   }
 
   $gameEv
-    .addClass(containerClasses)
-    .append($chContainer)
-    .append($gameEvInfo);
+    .attr('id', '')
+    .removeClass('d-none')
+    .addClass(containerClasses);
 
-  return $gameEv;
+  ret.push($gameEv);
+
+  return ret;
 };
 
-const renderGameEvs = () => {
-  stopLoading();
-  $('.game-events-choose__container').removeClass('d-none');
-  $('.game-events-choose__info').addClass('d-none');
+// set game title and matchup
+let headerRendered = false;
 
-  const $container = $('#game-events-choose__form-items');
+const headerNotRendered = (gameEv) => {
+  return !headerRendered && gameEv.ev.data.homePitcherName && gameEv.ev.data.awayPitcherName;
+};
 
-  // set game title and matchup
-  let headerRendered = false;
-  // gotta render some general stuff too (home vs away, s#d#, weather)
-  // also: label for the select, and the select itself
+const renderHeader = (gameEv) => {
+  let homeEmoji = util.getEmoji('home', gameEv.ev.data);
+  let awayEmoji = util.getEmoji('away', gameEv.ev.data);
+
+  $('.game-events__game-header .game-name')
+    .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
+  $('.game-events__game-header .matchup')
+    .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
+  $('.game-events__game-subheader .home-pitcher')
+    .text(`${homeEmoji} ${gameEv.ev.data.homePitcherName}`);
+  $('.game-events__game-subheader .away-pitcher')
+    .text(`${awayEmoji} ${gameEv.ev.data.awayPitcherName}`);
+
+  headerRendered = true;
+};
+
+let hpReady = false;
+
+const homePitcherReady = (gameEv) => {
+  if (hpReady) return false;
+
+  return gameEv.ev.data.homePitcherName;
+};
+
+const updateHomePitcher = (gameEv) => {
+  // hack: since at this point we know the home pitcher, check if we need to
+  // update it in the table of game events for the top of 1st
+  const $firstInning = $('#game-events__form-items .inning-info .fielding');
+
+  if (!$firstInning.length) {
+    return;
+  }
+
+  $firstInning
+    .text($firstInning.text().replace('home-pitcher-placeholder', gameEv.ev.data.homePitcherName));
+  hpReady = true;
+};
+
+const render = (settings) => {
+  gameEvents = settings.gameEvents;
+  onStartPreview = settings.onStartPreview;
+  onEndPreview = settings.onEndPreview;
+  onSaveAndPublish = settings.onSaveAndPublish;
+  const savedEvents = settings.savedEvents;
+
+  $('.game-events__container').removeClass('d-none');
+  $('.game-events__info').addClass('d-none');
+
+  const $container = $('#game-events__form-items');
+  $container.empty();
+  headerRendered = false;
+
   for (let id in gameEvents) {
     let gameEv = gameEvents[id];
 
-    if (!headerRendered) {
-      $('.game-events-choose__header .game-name')
-        .text(`Season ${gameEv.ev.data.season + 1}, Day ${gameEv.ev.data.day + 1}`);
-      $('.game-events-choose__header .matchup')
-        .text(`${gameEv.ev.data.homeTeamName} vs. ${gameEv.ev.data.awayTeamName}`);
-      headerRendered = true;
+    if (headerNotRendered(gameEv)) {
+      renderHeader(gameEv);
     }
 
-    let $gameEv = renderGameEv(gameEv, $container);
+    if (homePitcherReady(gameEv)) {
+      updateHomePitcher(gameEv);
+    }
+
+    let $gameEv = renderGameEv(gameEv);
 
     if ($gameEv) {
       $container.append($gameEv);
     }
   }
-};
 
-const getGameEvents = (gameId, nextPage) => {
-  let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${gameId}`;
+  // this is gross, but duct tape is easier (for now shhhh)
+  if (savedEvents) {
+    $('.game-events__header .buttons-wrapper button').prop('disabled', true);
 
-  if (nextPage) {
-    gamesURL += `&page=${nextPage}`;
+    for (let savedEv of savedEvents) {
+      const $check = $(`#${savedEv.blaseball_event_id}`);
+
+      // so this is cursed: if we got to the page by editing an old story,
+      // then decided to load a new game, we still have savedEvents; but, they
+      // won't find any checked events
+      if ($check.length) {
+        $check.prop('checked', true);
+        $('.game-events__header .buttons-wrapper button').prop('disabled', false);
+        $gameEv = $check.closest('.game-event');
+        $gameEv.find('.game-event-update__textarea').val(savedEv.description);
+        $gameEv.find('.game-event-preview__link').removeClass('disabled');
+        $gameEv.find('.visual-select').val(savedEv.visual.type);
+
+        if (savedEv.visual.type === 'custom') {
+          const $custom = $gameEv.find('.custom-visual-form');
+
+          $custom
+            .find('.visual-preview-custom')
+            .attr('src', savedEv.visual.meta.imageData)
+            .removeClass('d-none');
+          $custom
+            .find('.image-meta__title').val(savedEv.visual.meta.imageTitle);
+          $custom
+            .find('.image-meta__id').val(savedEv.visual.meta.imageDescription);
+          $custom
+            .find('.image-meta__creator').val(savedEv.visual.meta.creator);
+          $custom
+            .find('.image-meta__link').val(savedEv.visual.meta.creatorLink);
+          $custom.removeClass('d-none');
+          $custom.find('.custom-visual__image-meta').removeClass('d-none');
+        }
+
+      }
+    }
   }
 
-  startLoading();
-
-  fetch(gamesURL)
-    .then((resp) => {
-      if (!resp.ok) {
-        throw new Error('Bad response from server');
-      }
-
-      return resp.json();
-    })
-    .then((data) => {
-      for (let gameEv of data.data) {
-        gameEvents[gameEv.hash] = {
-          ev: gameEv,
-          mlustard: mlustard.analyzeGameEvent(gameEv.data),
-        };
-      }
-
-      if (data.nextPage) {
-        getGameEvents(gameId, data.nextPage);
-      } else {
-        // done loading all game events
-        renderGameEvs();
-        console.debug('getGameEvents done:', gameEvents);
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-      $('#game-event-form .error-msg').removeClass('d-none');
-      stopLoading();
-    });
-
+  bindHandlers(gameEvents);
 };
 
-const startLoading = () => {
-  const $gameEvForm = $('#game-event-form');
+const bindSaveAndPublish = (gameEvents) => {
+  const $highlightsSelectForm = $('#game-events__form');
 
-  $gameEvForm.find('.error-msg').addClass('d-none');
-  $gameEvForm.find('button').addClass('d-none');
-  $gameEvForm.find('.loading').removeClass('d-none');
+  $highlightsSelectForm.off('submit').on('submit', (evt) => {
+    evt.preventDefault();
+    generateHighlights(onSaveAndPublish, gameEvents);
+  });
+
+  $('.save-story').off('click').on('click', (evt) => {
+    generateHighlights(onSaveAndPublish, gameEvents);
+  });
 };
 
-const stopLoading = () => {
-  const $gameEvForm = $('#game-event-form');
+const bindPreview = (gameEvents) => {
+  const $highlightsSelectForm = $('#game-events__form');
 
-  $gameEvForm.find('button').removeClass('d-none');
-  $gameEvForm.find('.loading').addClass('d-none');
-};
+  $('.preview-story').off('click').on('click', (ev) => {
+    generateHighlights(onStartPreview, gameEvents);
+  });
 
-const init = (highlightsReadyCb) => {
-  const $gameEvForm = $('#game-event-form');
-  const $gameInput = $('#game-id');
+  $highlightsSelectForm.find('.game-event-preview__link').off('click').on('click', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
 
-  // focus on game input
-  $gameInput.focus();
+    const $link = $(evt.target);
 
-  // pick a random interesting game as the placeholder for the input
-  $gameInput.attr('placeholder', getRandomGame());
-
-  $gameEvForm.on('submit', (ev) => {
-    ev.preventDefault();
-
-    let gameVal = $gameInput.val();
-
-    if (!gameVal) {
-      gameVal = $gameInput.attr('placeholder');
+    if ($link.hasClass('disabled')) {
+      return;
     }
 
-    const gameId = gameVal.split('/').pop();
-    getGameEvents(gameId);
+    const id = $link
+      .closest('.game-event').find('.game-event-check__input').attr('id');
+
+    generateHighlights(onStartPreview, gameEvents, id);
   });
+};
 
-  const $highlightsSelectForm = $('#game-events-choose__form');
+const togglePreviewAll = () => {
+  const state = $('.game-event-check__input:checked').length;
 
-  $highlightsSelectForm.on('submit', (ev) => {
-    ev.preventDefault();
-    generateHighlights(highlightsReadyCb);
-  });
+  $('.preview-story')
+    .prop('disabled', !state);
+  $('.save-story')
+    .prop('disabled', !state);
+};
 
+const togglePreview = ($checkbox) => {
+  let state = $checkbox.is(':checked');
+
+  $checkbox
+    .closest('.game-event')
+    .find('.game-event-preview__link')
+    .toggleClass('disabled', !state);
+};
+
+const bindCheckboxes = () => {
   const $checkAll = $('#check-all');
 
-  $('#check-all').on('change', () => {
+  $('#check-all').off('change').on('change', () => {
     let state = $checkAll.is(':checked');
 
-    $('.game-event__check').each((_, ch) => {
-      $(ch).attr('checked', state);
+    $('.game-event-check__input').each((_, ch) => {
+      const $ch = $(ch);
+
+      $ch.prop('checked', state);
+      togglePreview($ch);
     });
+
+    togglePreviewAll();
   });
 
-  $('.scroll-to').on('click', (evt) => {
+  $('#game-events__form-items').off('change').on('change', '.game-event-check__input', (evt) => {
+    const $ch = $(evt.target);
+
+    togglePreview($ch);
+    togglePreviewAll();
+  });
+};
+
+const bindJumpButtons = () => {
+  $('.scroll-to').off('click').on('click', (evt) => {
     const $button = $(evt.target);
-    const $itemsContainer = $('#game-events-choose__form-items')
-    const $items = $itemsContainer.children(':not(.check-all-cursed)');
+    const $itemsContainer = $('#game-events__form-items')
+    //const containerOffTop = $itemsContainer.offset().top;
+    const $items = $itemsContainer.children();
+    const headerHeight = $('.game-events__header').outerHeight();
 
     let lookup = '.interesting';
 
@@ -396,16 +492,17 @@ const init = (highlightsReadyCb) => {
     } else if ($button.hasClass('score')) {
       lookup += '.score';
     } else if ($button.hasClass('inning')) {
-      lookup = '#game-events-choose__form .inning';
+      lookup += '.inning';
     }
 
-    // if the form hasn't been scrolled much, search from the first event
-    // otherwise, search from first element in view onwards
+    // find the first game event in view
     let $firstInView = $items.filter((_, el) => {
       const $el = $(el);
-      return ($el.offset().top - 450) > 0 && ($el.offset().top - 450 < 100);
+      return ($el.offset().top > window.pageYOffset + headerHeight) && ($el.offset().top < window.pageYOffset + $el.outerHeight() + headerHeight);
     });
 
+    // if the page hasn't been scrolled beyond the start of the game events,
+    // the first in view will be the first from the top
     if (!$firstInView.length) {
       $firstInView = $items.first();
     }
@@ -418,14 +515,103 @@ const init = (highlightsReadyCb) => {
       $lookup = $(lookup).first();
     }
 
-    $itemsContainer
-      .scrollTop(0)
-      .scrollTop($lookup.offset().top - $itemsContainer.offset().top);
+
+    $(window)
+      .scrollTop($lookup.offset().top - headerHeight);
+  });
+};
+
+const bindStickyHeader = () => {
+  const $stickyHeader = $('.game-events__header');
+  const stickyOffset = $stickyHeader.offset().top;
+
+  $(window).off('scroll').on('scroll', () => {
+    $stickyHeader.toggleClass('sticky', window.pageYOffset > stickyOffset);
+  });
+};
+
+const bindVisuals = () => {
+  $('.custom-visual-form').off('submit').on('submit', (evt) => {
+    evt.preventDefault();
+    evt.stopPropagation();
+    return false;
   });
 
+  $('.visual-select').off('change').on('change', (evt) => {
+    const $select = $(evt.target);
+    const val = $select.val();
+    const $visual = $select.closest('.game-event-visual');
+
+    $visual.find('.visual-preview').addClass('d-none');
+
+    if (val === 'custom') {
+      const $preview = $visual.find('.visual-preview-custom');
+
+      $visual.find('.custom-visual-form').removeClass('d-none');
+
+      if ($preview.attr('src') !== '#') {
+        $preview.removeClass('d-none');
+      }
+    } else {
+      $visual.find('.custom-visual-form').addClass('d-none');
+    }
+  });
+
+  $('.custom-visual__input').off('change').on('change', (evt) => {
+    const file = evt.target.files[0];
+    const $input = $(evt.target);
+    const $form = $input.parent();
+    const $preview = $input.closest('.game-event-visual').find('.visual-preview-custom');
+
+    if (validateImage(file, $form)) {
+      handleUploadedImage(file, $preview);
+    }
+  });
+};
+
+const validateImage = (file, $form) => {
+  const $error = $form.find('.error-msg').addClass('d-none');
+
+  if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+    $error
+      .text('Sorry, only .png and .jp(e)g images are supported')
+      .removeClass('d-none');
+
+    return false;
+  }
+
+  if (file.size > 1000000) {
+    $error
+      .text('Sorry, the image has to be smaller than 1MB')
+      .removeClass('d-none');
+
+    return false;
+  }
+
+  return true;
+};
+
+const handleUploadedImage = (file, $preview) => {
+  const reader = new FileReader();
+
+  reader.addEventListener('load', (evt) => {
+    $preview.attr('src', reader.result).removeClass('d-none');
+    $preview.next('.custom-visual__image-meta').removeClass('d-none');
+  });
+  reader.readAsDataURL(file);
+};
+
+const bindHandlers = (gameEvents) => {
+  bindSaveAndPublish(gameEvents);
+  bindPreview(gameEvents);
+  bindCheckboxes();
+  bindJumpButtons();
+  bindStickyHeader();
+  bindVisuals();
 };
 
 module.exports = {
-  init,
+  render,
+  generateHighlights,
 };
 
