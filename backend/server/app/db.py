@@ -1,7 +1,7 @@
 import asyncpg
 import uuid, secrets, json
 from quart import Quart
-
+from werkzeug.security import generate_password_hash, check_password_hash
 
 class HighlightDB:
     def __init__(self, app: Quart, uri: str) -> None:
@@ -164,15 +164,15 @@ class HighlightDB:
         """,
             "",
             user_id,
-            user_token,
+            generate_password_hash(user_token)
         )
 
         return {"user_id": user_id, "user_token": user_token}
 
     async def check_user_token(self, user, conn):
         row = await conn.fetchrow(
-            "SELECT * FROM users WHERE user_id = $1 AND user_token = $2",
+            "SELECT * FROM users WHERE user_id = $1",
             user["user_id"],
-            user["user_token"],
         )
-        return row != None
+
+        return check_password_hash(row["user_token"],user["user_token"])
