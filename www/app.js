@@ -6416,7 +6416,7 @@ var tracery = function() {
         }
     };
 
-    tracery.baseEngModifiers = baseEngModifiers; 
+    tracery.baseEngModifiers = baseEngModifiers;
     // Externalize
     tracery.TraceryNode = TraceryNode;
 

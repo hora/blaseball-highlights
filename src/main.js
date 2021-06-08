@@ -217,4 +217,3 @@ const initApp = () => {
 };
 
 initApp();
-
