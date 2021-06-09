@@ -107,6 +107,36 @@ const renderGameEv = (gameEv) => {
     // some events before the first pitch, or something
     topOfOne = true;
 
+    // also render the story title and user name if it's before first pitch
+    const $title = $('#story-title__template').clone();
+
+    $title
+      .attr('id', '')
+      .removeClass('d-none');
+
+    $title
+      .find('label')
+      .first()
+      .attr('for', `story-title${gameEv.ev.gameId}`);
+
+    $title
+      .find('input')
+      .first()
+      .attr('placeholder', `Season ${data.season + 1}, Day ${data.day + 1} - ${data.awayTeamName} at ${data.homeTeamName}`)
+      .attr('id', `story-title${gameEv.ev.gameId}`);
+
+    $title
+      .find('label')
+      .last()
+      .attr('for', `story-creator${gameEv.ev.gameId}`);
+
+    $title
+      .find('input')
+      .last()
+      .attr('id', `story-creator${gameEv.ev.gameId}`);
+
+    ret.push($title);
+
   } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
 
     inning = `Top of ${data.inning + 1}`;
