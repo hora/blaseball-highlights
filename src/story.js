@@ -8,6 +8,7 @@ class Story {
     this.id = settings.id;
     this.curHighlight = 0;
     this.title = settings.title || this.generateTitle();
+    this.creator = settings.creator;
     this.dialog = new Dialog();
     this.visual = new Visual();
     this.setGameId();
@@ -174,6 +175,7 @@ class Story {
 
     if (user.user_id) {
       ret.user = user;
+      ret.user.username = this.creator;
     }
 
     for (let highlight of this.highlights) {

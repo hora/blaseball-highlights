@@ -43,8 +43,11 @@ const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
       }
     }
 
+    let title = null;
+    let creator = null;
+
     console.debug('generateHighlights:', highlights);
-    cb(highlights);
+    cb(highlights, null, title, creator);
 
   } else {
 
@@ -78,8 +81,21 @@ const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
       highlights.push(hl);
     });
 
+    const $title = $('#game-events__form-items .story-title__input');
+    const $creator = $('#game-events__form-items .story-creator__input');
+    let title = $title.val();
+    let creator = $creator.val();
+
+    if (!title) {
+      title = $title.attr('placeholder');
+    }
+
+    if (!creator) {
+      creator = 'Anonymous';
+    }
+
     console.debug('generateHighlights:', highlights);
-    cb(highlights, startFrom);
+    cb(highlights, startFrom, title, creator);
   }
 
 };

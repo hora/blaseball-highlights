@@ -7,10 +7,12 @@ const siteUrl = 'https://highlights.sibr.dev';
 let story;
 let inPreview = false;
 
-const startStory = (hls, startFrom) => {
+const startStory = (hls, startFrom, title, creator) => {
   story = new Story({
     highlights: hls,
     id: getStoryId(),
+    title,
+    creator,
   });
 
   $('.loading-story').addClass('d-none');
@@ -18,13 +20,13 @@ const startStory = (hls, startFrom) => {
   story.start(startFrom);
 };
 
-const onStartPreview = (hls, startFrom) => {
+const onStartPreview = (hls, startFrom, title) => {
 
   $('#game-load').addClass('d-none');
   $('#game-events').addClass('d-none');
   $('#exit-preview').removeClass('d-none');
 
-  startStory(hls, startFrom);
+  startStory(hls, startFrom, title);
   inPreview = true;
 };
 
@@ -79,12 +81,14 @@ const showStoryLink = (storyURL) => {
     .text(`${siteUrl}/story?id=${storyURL}`);
 };
 
-const onSaveAndPublish = (hls) => {
+const onSaveAndPublish = (hls, startFrom, title, creator) => {
   showSaving();
 
   story = new Story({
     highlights: hls,
     id: getStoryId(),
+    title,
+    creator,
   });
 
   const data = story.makeJSON();
