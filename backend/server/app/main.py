@@ -1,10 +1,11 @@
 from db import *
 from PIL import Image
-from quart import Quart, request, render_template
+from quart import Quart, Response, request, render_template
 import os
 import aiohttp
 import io
 import base64
+import cairosvg
 
 app = Quart(__name__)
 db = HighlightDB(app, os.environ["DATABASE_URL"])
@@ -129,12 +130,20 @@ async def get():
     r = await db.get_story_and_events(id)
     return r, r["status"]
 
+@app.route("/<id>")
+async def share(id):
+    story = (await db.get_story(id))["story"]
+    async with aiohttp.ClientSession() as session:
+        async with session.get(
+            f'https://www.blaseball.com/database/gameById/{story["game_id"]}'
+        ) as res:
+            game = await res.json()
+            return await render_template('meta.html.j2',game=game,story=story), 301, {"Location": f"https://highlights.sibr.dev/story?id={story['story_id']}"}
 
 @app.route("/image/<id>")
 async def generate_image(id):
-    story = (await db.get_story(id))['story']
+    story = (await db.get_story(id))["story"]
     async with aiohttp.ClientSession() as session:
-        print(story)
         async with session.get(
             f'https://www.blaseball.com/database/gameById/{story["game_id"]}'
         ) as res:
@@ -143,24 +152,44 @@ async def generate_image(id):
             awayteam = {}
 
             hometeam_image_io = io.BytesIO()
-            Image.open(teams[game["homeTeam"]]["homeLogoURL"]).save(hometeam_image_io,format="PNG")
-            hometeam["image"] = f"data:image/png;base64,{base64.b64encode(hometeam_image_io.getvalue()).decode()}"
+            Image.open(teams[game["homeTeam"]]["homeLogoURL"]).save(
+                hometeam_image_io, format="PNG"
+            )
+            hometeam[
+                "image"
+            ] = f"data:image/png;base64,{base64.b64encode(hometeam_image_io.getvalue()).decode()}"
             hometeam["artist"] = teams[game["homeTeam"]]["homeLogoCredit"]
 
             awayteam_image_io = io.BytesIO()
-            Image.open(teams[game["awayTeam"]].get("awayLogoURL",teams[game["awayTeam"]]["homeLogoURL"])).save(awayteam_image_io,format="PNG")
-            awayteam["image"] = f"data:image/png;base64,{base64.b64encode(awayteam_image_io.getvalue()).decode()}"
-            awayteam["artist"] = teams[game["awayTeam"]].get("homeLogoCredit",teams[game["awayTeam"]]["homeLogoCredit"])
-            return await render_template(
+            Image.open(
+                teams[game["awayTeam"]].get(
+                    "awayLogoURL", teams[game["awayTeam"]]["homeLogoURL"]
+                )
+            ).save(awayteam_image_io, format="PNG")
+
+            awayteam[
+                "image"
+            ] = f"data:image/png;base64,{base64.b64encode(awayteam_image_io.getvalue()).decode()}"
+
+            awayteam["artist"] = teams[game["awayTeam"]].get(
+                "homeLogoCredit", teams[game["awayTeam"]]["homeLogoCredit"]
+            )
+
+            svg = await render_template(
                 "card-plain.svg.j2",
                 hometeam=hometeam,
                 awayteam=awayteam,
-                story={'title': "<test>",'author': "<test>"},
-                game=game
+                story=story,
+                game=game,
             )
 
-
-
+            return (
+                cairosvg.svg2png(
+                    bytestring=svg.encode("utf8"), parent_width=2048, parent_height=1024
+                ),
+                200,
+                {"Content-Type": "image/png"},
+            )
 
 
 if __name__ == "__main__":
