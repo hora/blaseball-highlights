@@ -138,7 +138,7 @@ async def share(id):
             f'https://www.blaseball.com/database/gameById/{story["game_id"]}'
         ) as res:
             game = await res.json()
-            return await render_template('meta.html.j2',game=game,story=story), 301, {"Location": f"https://highlights.sibr.dev/story?id={story['story_id']}"}
+            return await render_template('meta.html.j2',game=game,story=story)
 
 @app.route("/image/<id>")
 async def generate_image(id):
