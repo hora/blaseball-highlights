@@ -39,7 +39,7 @@ teams = {
     },
     "747b8e4a-7e50-4638-a973-ea7950a3e739": {
         "homeLogoCredit": "jrfbz",
-        "homeLogoURL": "./app/images/lgo-tigers.png",
+        "homeLogoURL": "./app/images/logo-tigers.png",
     },
     "7966eb04-efcc-499b-8f03-d13916330531": {
         "homeLogoCredit": "Lucky Penny on " "Discord",
