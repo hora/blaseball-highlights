@@ -1,7 +1,7 @@
 const gameEventSelector = require('./game-event-selector');
 const gameLoader = require('./game-loader');
 const Story = require('./story');
-const apiUrl = '/api';
+const apiUrl = 'https://highlights.sibr.dev/api';
 
 let story;
 let inPreview = false;
