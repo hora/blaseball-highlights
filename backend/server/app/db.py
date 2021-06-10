@@ -39,7 +39,7 @@ class HighlightDB:
                 if not (await self.check_user_token(user, conn)):
                     return {"status": 403, "reason": "invalid user token/id"}
             else:
-                user = await self.create_user(conn)
+                user = await self.create_user(conn,username=story["username"])
 
             await conn.execute(
                 """
@@ -167,7 +167,7 @@ class HighlightDB:
             res["status"] = 200
             return res
 
-    async def create_user(self, conn):
+    async def create_user(self, conn, username = ""):
         user_token = secrets.token_urlsafe(64)
         user_id = ""
         while True:
@@ -181,7 +181,7 @@ class HighlightDB:
             INSERT INTO users (username, user_id, user_token)
             VALUES ($1, $2, $3)
         """,
-            "",
+            username,
             user_id,
             generate_password_hash(user_token)
         )
