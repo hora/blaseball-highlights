@@ -1,15 +1,14 @@
-FROM tiangolo/uvicorn-gunicorn:python3.8-alpine3.10
+FROM tiangolo/uvicorn-gunicorn:python3.8-slim
 
 WORKDIR /
 
-RUN apk add --no-cache \
-    wget build-base cairo-dev cairo cairo-tools \
-    jpeg-dev zlib-dev freetype-dev lcms2-dev openjpeg-dev tiff-dev tk-dev tcl-dev
+RUN apt-get update && apt-get install wget librsvg2.2 unzip --no-install-recommends -y
 
-RUN wget https://github.com/mozilla/Fira/archive/refs/tags/4.202.tar.gz
-RUN tar zxvf 4.202.tar.gz Fira-4.202/ttf
-RUN mv Fira-4.202/ttf /usr/local/share/fonts
+RUN wget -O fira.zip https://fonts.google.com/download?family=Fira%20Sans%20Condensed
+RUN unzip fira.zip -d /usr/local/share/fonts/
 RUN fc-cache
+
+WORKDIR /
 
 COPY ./app/requirements.txt /
 RUN python3 -m pip install -r requirements.txt
