@@ -184,7 +184,7 @@ class Visual {
 
     // if game data hasn't been set, or if the game has changed,
     // update the game data
-    if (this.gameID !== highlight.gameEvent.gameId) {
+    if (highlight.gameEvent && (this.gameID !== highlight.gameEvent.gameId)) {
       this.setGameData(highlight);
     }
 
@@ -199,6 +199,10 @@ class Visual {
         this.showMatchup(highlight);
         break;
 
+      case 'title':
+        this.showTitle(highlight);
+        break;
+
       case 'diamond':
       default:
         this.showDiamond(highlight);
@@ -210,6 +214,7 @@ class Visual {
     $('#custom').addClass('d-none');
     $('#matchup').addClass('d-none');
     $('#diamond').addClass('d-none');
+    $('#title').addClass('d-none');
   }
 
   showCustom(highlight) {
@@ -251,6 +256,15 @@ class Visual {
     }
 
     $('#matchup').removeClass('d-none');
+  }
+
+  showTitle(highlight) {
+    const $title = $('#title');
+
+    $title.find('h1').text(highlight.storyTitle);
+    $title.find('h3').text(`by ${highlight.storyCreator}`);
+
+    $title.removeClass('d-none');
   }
 
   showDiamond(highlight) {

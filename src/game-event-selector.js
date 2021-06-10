@@ -43,11 +43,8 @@ const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
       }
     }
 
-    let title = null;
-    let creator = null;
-
     console.debug('generateHighlights:', highlights);
-    cb(highlights, null, title, creator);
+    cb(highlights, null, null, null);
 
   } else {
 
@@ -138,7 +135,7 @@ const renderGameEv = (gameEv) => {
     $title
       .find('input')
       .first()
-      .attr('placeholder', `Season ${data.season + 1}, Day ${data.day + 1} - ${data.awayTeamName} at ${data.homeTeamName}`)
+      .attr('placeholder', `${data.awayTeamName} at ${data.homeTeamName}`)
       .attr('id', `story-title${gameEv.ev.gameId}`);
 
     $title
@@ -365,7 +362,8 @@ const render = (settings) => {
   onStartPreview = settings.onStartPreview;
   onEndPreview = settings.onEndPreview;
   onSaveAndPublish = settings.onSaveAndPublish;
-  const savedEvents = settings.savedEvents;
+  const storyData = settings.storyData;
+  const savedEvents = storyData?.events || [];
 
   $('.game-events__container').removeClass('d-none');
   $('.game-events__info').addClass('d-none');
@@ -393,7 +391,7 @@ const render = (settings) => {
   }
 
   // this is gross, but duct tape is easier (for now shhhh)
-  if (savedEvents) {
+  if (savedEvents.length) {
     $('.game-events__header .buttons-wrapper button').prop('disabled', true);
 
     for (let savedEv of savedEvents) {
@@ -403,6 +401,12 @@ const render = (settings) => {
       // then decided to load a new game, we still have savedEvents; but, they
       // won't find any checked events
       if ($check.length) {
+
+        // ughhhh.. this should only happen once but .. well here we are
+        $('#game-events__form-items .story-title__input').val(storyData.story.title);
+        $('#game-events__form-items .story-creator__input').val(storyData.user.username);
+
+
         $check.prop('checked', true);
         $('.game-events__header .buttons-wrapper button').prop('disabled', false);
         $gameEv = $check.closest('.game-event');

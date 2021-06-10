@@ -20,13 +20,13 @@ const startStory = (hls, startFrom, title, creator) => {
   story.start(startFrom);
 };
 
-const onStartPreview = (hls, startFrom, title) => {
+const onStartPreview = (hls, startFrom, title, creator) => {
 
   $('#game-load').addClass('d-none');
   $('#game-events').addClass('d-none');
   $('#exit-preview').removeClass('d-none');
 
-  startStory(hls, startFrom, title);
+  startStory(hls, startFrom, title, creator);
   inPreview = true;
 };
 
@@ -183,7 +183,7 @@ const initApp = () => {
             onStartPreview,
             onEndPreview,
             onSaveAndPublish,
-            savedEvents: storyData.events,
+            storyData: storyData,
           });
         }, storyData.story.game_id);
 
@@ -195,7 +195,7 @@ const initApp = () => {
           gameEventSelector
             .generateHighlights((hls) => {
                 console.debug('Starting story')
-                startStory(hls, null);
+                startStory(hls, null, storyData.story.title, storyData.user.username);
             }, gameEvents, null, storyData.events);
         }, storyData.story.game_id);
       }

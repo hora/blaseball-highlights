@@ -1,5 +1,6 @@
 const Visual = require('./visual');
 const Dialog = require('./dialog');
+const Highlight = require('./highlight');
 const teamsData = require('../lib/teams-data');
 
 class Story {
@@ -12,23 +13,32 @@ class Story {
     this.dialog = new Dialog();
     this.visual = new Visual();
     this.setGameId();
+    this.makeTitleHighlight();
 
     console.debug('new story with highlights', this.highlights);
   }
 
   generateTitle() {
-    // Home-nickname vs. Away-nickname, Sn Dnnn
+    // Away-nickname at Home-nickname, Sn Dnnn
     const gameEv = this.highlights[0].gameEvent.data;
     const homeNick = gameEv.homeTeamNickname || '';
     const awayNick = gameEv.awayTeamNickname || '';
-    const season = gameEv.season + 1;
-    const day = gameEv.day + 1;
 
-    return `${homeNick} vs. ${awayNick}, S${season} D${day}`;
+    return `${awayNick} at ${homeNick}`;
   }
 
   setGameId() {
     this.gameId = this.highlights[0].gameEvent.gameId || '';
+  }
+
+  makeTitleHighlight() {
+    const titleHl = new Highlight({
+      visual: 'title',
+      storyTitle: this.title,
+      storyCreator: this.creator,
+    });
+
+    this.highlights.unshift(titleHl);
   }
 
   start(startFrom) {
@@ -131,7 +141,6 @@ class Story {
   }
 
   startCurrent() {
-    //const current = this.highlights[this.curHighlight];
     const current = this.currentHighlight();
 
     this.visual.showFor(current);
