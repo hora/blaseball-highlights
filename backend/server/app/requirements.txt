@@ -1,3 +1,7 @@
 quart
 asyncpg
 quart-cors
+pillow
+aiohttp
+wand
+cairosvg

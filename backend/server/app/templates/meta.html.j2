@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html prefix="og: https://ogp.me/ns#">
+  <head>
+    <meta charset="utf-8">
+    <meta property="og:url" content="https://highlights.sibr.dev/story?id={{story.story_id}}">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="{{ story.title }}">
+    <meta property="og:description" content="{{ game.awayTeamNickname }} vs. {{ game.homeTeamNickname }} | Day {{ game.day }}, Season {{ game.season }}">
+    <meta property="og:image" content="https://highlights.sibr.dev/api/image/{{story.story_id}}">
+    <meta property="og:image:secure_url" content="https://highlights.sibr.dev/api/image/{{story.story_id}}" />
+        <!-- Twitter Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:domain" content="highlights.sibr.dev">
+    <meta name="twitter:url" content="https://highlights.sibr.dev/story?id={{story.story_id}}">
+    <meta name="twitter:title" content="{{ story.title }}">
+    <meta name="twitter:description" content="{{ game.awayTeamNickname }} at {{ game.homeTeamNickname }} | Day {{ game.day }}, Season {{ game.season }}">
+    <meta name="twitter:image" content="https://highlights.sibr.dev/api/image/{{story.story_id}}">
+    <meta name="twitter:creator" content="{{ story.author }}">
+  </head>
+  <body>
+    <script>
+      window.location.replace("https://highlights.sibr.dev/story?id={{story.story_id}}");
+    </script>
+  </body>
+</html>

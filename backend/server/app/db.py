@@ -39,7 +39,7 @@ class HighlightDB:
                 if not (await self.check_user_token(user, conn)):
                     return {"status": 403, "reason": "invalid user token/id"}
             else:
-                user = await self.create_user(conn)
+                user = await self.create_user(conn,username=story["username"])
 
             await conn.execute(
                 """
@@ -118,7 +118,7 @@ class HighlightDB:
 
             return {"status": 200}
 
-    async def get_story(self, id):
+    async def get_story_and_events(self, id):
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow("SELECT * FROM stories WHERE story_id = $1", id)
             if not row:
@@ -148,7 +148,26 @@ class HighlightDB:
             res["status"] = 200
             return res
 
-    async def create_user(self, conn):
+    async def get_story(self,id):
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow("SELECT * FROM stories WHERE story_id = $1", id)
+            if not row:
+                return {"status": 404, "reason": "story id not found"}
+
+            res = {
+                "story": {
+                    "story_id": row["story_id"],
+                    "game_id": row["game_id"],
+                    "user_id": row["user_id"],
+                    "title": row["title"],
+                },
+                "events": [],
+            }
+
+            res["status"] = 200
+            return res
+
+    async def create_user(self, conn, username = ""):
         user_token = secrets.token_urlsafe(64)
         user_id = ""
         while True:
@@ -162,7 +181,7 @@ class HighlightDB:
             INSERT INTO users (username, user_id, user_token)
             VALUES ($1, $2, $3)
         """,
-            "",
+            username,
             user_id,
             generate_password_hash(user_token)
         )
