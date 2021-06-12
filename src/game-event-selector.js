@@ -232,7 +232,8 @@ const renderGameEv = (gameEv) => {
   const $customForm = $gameEv.find('.custom-visual-form');
 
   $customForm.attr('id', `custom-visual-form-${gameEv.ev.hash}`);
-  // todo: there's more than 1 input, fix this
+  // todo: this picks up the all the inputs, including the image + all the image
+  // meta (title, alt, etc)
   $customForm
     .find('label')
     .attr('for', `custom-visual__input-${gameEv.ev.hash}`);
@@ -404,7 +405,7 @@ const render = (settings) => {
 
         // ughhhh.. this should only happen once but .. well here we are
         $('#game-events__form-items .story-title__input').val(storyData.story.title);
-        $('#game-events__form-items .story-creator__input').val(storyData.user.username);
+        $('#game-events__form-items .story-creator__input').val(storyData.story.username);
 
 
         $check.prop('checked', true);

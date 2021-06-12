@@ -1,6 +1,7 @@
 from db import *
 from PIL import Image
 from quart import Quart, Response, request, render_template
+from quart_cors import route_cors
 import os
 import aiohttp
 import io
@@ -113,15 +114,17 @@ teams = {
 
 
 @app.route("/submit", methods=["POST"])
+@route_cors(allow_methods=["POST"],allow_origin=["*"])
 async def submit():
     data = await request.get_json()
     r = await db.create_story(
-        data["story"], data["events"], user=data.get("user", None)
+        data["story"], data["events"], data["user"]
     )
     return r, r["status"]
 
 
 @app.route("/story", methods=["GET"])
+@route_cors(allow_methods=["GET"],allow_origin=["*"])
 async def get():
     id = request.args.get("id", None)
     if not id:
@@ -131,6 +134,7 @@ async def get():
     return r, r["status"]
 
 @app.route("/<id>")
+@route_cors(allow_methods=["GET"],allow_origin=["*"])
 async def share(id):
     story = (await db.get_story(id))["story"]
     async with aiohttp.ClientSession() as session:
@@ -141,6 +145,7 @@ async def share(id):
             return await render_template('meta.html.j2',game=game,story=story)
 
 @app.route("/image/<id>")
+@route_cors(allow_methods=["GET"],allow_origin=["*"])
 async def generate_image(id):
     story = (await db.get_story(id))["story"]
     async with aiohttp.ClientSession() as session:

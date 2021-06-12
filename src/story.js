@@ -156,10 +156,16 @@ class Story {
   }
 
   getUser() {
-    return {
-      user_id: window.localStorage.getItem('id'),
-      user_token: window.localStorage.getItem('token'),
+    let ret = {
+      username: this.creator,
     };
+
+    if (window.localStorage.getItem('id')) {
+      ret.user_id = window.localStorage.getItem('id');
+      ret.user_token = window.localStorage.getItem('token');
+    }
+
+    return ret;
   }
 
   setUser(id, token) {
@@ -181,14 +187,12 @@ class Story {
     }
 
     const user = this.getUser();
-
-    if (user.user_id) {
-      ret.user = user;
-      ret.user.username = this.creator;
-    }
+    ret.user = user;
 
     for (let highlight of this.highlights) {
-      ret.events.push(highlight.makeJSON());
+      if (highlight.visual !== 'title') {
+        ret.events.push(highlight.makeJSON());
+      }
     }
 
     return JSON.stringify(ret);

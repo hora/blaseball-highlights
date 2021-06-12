@@ -1,8 +1,10 @@
 const gameEventSelector = require('./game-event-selector');
 const gameLoader = require('./game-loader');
 const Story = require('./story');
-const apiUrl = 'https://highlights.sibr.dev/api';
-const siteUrl = 'https://highlights.sibr.dev';
+//const baseUrl = 'http://localhost:8000';
+const baseUrl = 'https://highlights.sibr.dev';
+const apiUrl = `${baseUrl}/api`;
+const siteUrl = `${baseUrl}`;
 
 let story;
 let inPreview = false;
@@ -99,7 +101,7 @@ const onSaveAndPublish = (hls, startFrom, title, creator) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    cors: 'no-cors',
+    //cors: 'no-cors',
     method: 'POST',
     body: data,
   })
@@ -195,7 +197,7 @@ const initApp = () => {
           gameEventSelector
             .generateHighlights((hls) => {
                 console.debug('Starting story')
-                startStory(hls, null, storyData.story.title, storyData.user.username);
+                startStory(hls, null, storyData.story.title, storyData.story.username);
             }, gameEvents, null, storyData.events);
         }, storyData.story.game_id);
       }
