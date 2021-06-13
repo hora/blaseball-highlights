@@ -6,6 +6,9 @@ import aiohttp
 import io
 import base64
 import cairosvg
+import emoji
+import re
+import jinja2
 
 app = Quart(__name__)
 db = HighlightDB(app, os.environ["DATABASE_URL"])
@@ -176,6 +179,11 @@ async def generate_image(id):
             awayteam["artist"] = teams[game["awayTeam"]].get(
                 "awayLogoCredit", teams[game["awayTeam"]]["homeLogoCredit"]
             )
+
+            def replace_emoji(match):
+                return r"""<tspan style="font-family:'Twitter Color Emoji';-inkscape-font-specification:'Twitter Color Emoji'">""" + match.group(0) + r"</tspan>"
+
+            user["username"] = emoji.get_emoji_regexp().sub(replace_emoji, jinja2.escape(user["username"]))
 
             svg = await render_template(
                 "card-plain.svg.j2",
