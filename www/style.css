@@ -547,3 +547,10 @@ col.game-event-game-status {
   margin-top: 4px;
 }
 
+#title {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  height: 460px;
+}
+
