@@ -44,7 +44,7 @@ const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
     }
 
     console.debug('generateHighlights:', highlights);
-    cb(highlights);
+    cb(highlights, null, null, null);
 
   } else {
 
@@ -78,8 +78,21 @@ const generateHighlights = (cb, gameEvents, startFrom, savedEvents) => {
       highlights.push(hl);
     });
 
+    const $title = $('#game-events__form-items .story-title__input');
+    const $creator = $('#game-events__form-items .story-creator__input');
+    let title = $title.val();
+    let creator = $creator.val();
+
+    if (!title) {
+      title = $title.attr('placeholder');
+    }
+
+    if (!creator) {
+      creator = 'Anonymous';
+    }
+
     console.debug('generateHighlights:', highlights);
-    cb(highlights, startFrom);
+    cb(highlights, startFrom, title, creator);
   }
 
 };
@@ -106,6 +119,36 @@ const renderGameEv = (gameEv) => {
     // sometimes, the game event doesn't think it's the top of 1 if there are
     // some events before the first pitch, or something
     topOfOne = true;
+
+    // also render the story title and user name if it's before first pitch
+    const $title = $('#story-title__template').clone();
+
+    $title
+      .attr('id', '')
+      .removeClass('d-none');
+
+    $title
+      .find('label')
+      .first()
+      .attr('for', `story-title${gameEv.ev.gameId}`);
+
+    $title
+      .find('input')
+      .first()
+      .attr('placeholder', `${data.awayTeamName} at ${data.homeTeamName}`)
+      .attr('id', `story-title${gameEv.ev.gameId}`);
+
+    $title
+      .find('label')
+      .last()
+      .attr('for', `story-creator${gameEv.ev.gameId}`);
+
+    $title
+      .find('input')
+      .last()
+      .attr('id', `story-creator${gameEv.ev.gameId}`);
+
+    ret.push($title);
 
   } else if (gameEv.mlustard.gameStatus === 'firstHalfInningStart' && data.inning) {
 
@@ -189,7 +232,8 @@ const renderGameEv = (gameEv) => {
   const $customForm = $gameEv.find('.custom-visual-form');
 
   $customForm.attr('id', `custom-visual-form-${gameEv.ev.hash}`);
-  // todo: there's more than 1 input, fix this
+  // todo: this picks up the all the inputs, including the image + all the image
+  // meta (title, alt, etc)
   $customForm
     .find('label')
     .attr('for', `custom-visual__input-${gameEv.ev.hash}`);
@@ -319,7 +363,8 @@ const render = (settings) => {
   onStartPreview = settings.onStartPreview;
   onEndPreview = settings.onEndPreview;
   onSaveAndPublish = settings.onSaveAndPublish;
-  const savedEvents = settings.savedEvents;
+  const storyData = settings.storyData;
+  const savedEvents = storyData?.events || [];
 
   $('.game-events__container').removeClass('d-none');
   $('.game-events__info').addClass('d-none');
@@ -347,7 +392,7 @@ const render = (settings) => {
   }
 
   // this is gross, but duct tape is easier (for now shhhh)
-  if (savedEvents) {
+  if (savedEvents.length) {
     $('.game-events__header .buttons-wrapper button').prop('disabled', true);
 
     for (let savedEv of savedEvents) {
@@ -357,6 +402,12 @@ const render = (settings) => {
       // then decided to load a new game, we still have savedEvents; but, they
       // won't find any checked events
       if ($check.length) {
+
+        // ughhhh.. this should only happen once but .. well here we are
+        $('#game-events__form-items .story-title__input').val(storyData.story.title);
+        $('#game-events__form-items .story-creator__input').val(storyData.story.username);
+
+
         $check.prop('checked', true);
         $('.game-events__header .buttons-wrapper button').prop('disabled', false);
         $gameEv = $check.closest('.game-event');

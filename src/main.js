@@ -1,16 +1,20 @@
 const gameEventSelector = require('./game-event-selector');
 const gameLoader = require('./game-loader');
 const Story = require('./story');
-const apiUrl = 'https://highlights.sibr.dev/api';
-const siteUrl = 'https://highlights.sibr.dev';
+//const baseUrl = 'http://localhost:8000';
+const baseUrl = 'https://highlights.sibr.dev';
+const apiUrl = `${baseUrl}/api`;
+const siteUrl = `${baseUrl}`;
 
 let story;
 let inPreview = false;
 
-const startStory = (hls, startFrom) => {
+const startStory = (hls, startFrom, title, creator) => {
   story = new Story({
     highlights: hls,
     id: getStoryId(),
+    title,
+    creator,
   });
 
   $('.loading-story').addClass('d-none');
@@ -18,13 +22,13 @@ const startStory = (hls, startFrom) => {
   story.start(startFrom);
 };
 
-const onStartPreview = (hls, startFrom) => {
+const onStartPreview = (hls, startFrom, title, creator) => {
 
   $('#game-load').addClass('d-none');
   $('#game-events').addClass('d-none');
   $('#exit-preview').removeClass('d-none');
 
-  startStory(hls, startFrom);
+  startStory(hls, startFrom, title, creator);
   inPreview = true;
 };
 
@@ -79,12 +83,14 @@ const showStoryLink = (storyURL) => {
     .text(`${siteUrl}/story?id=${storyURL}`);
 };
 
-const onSaveAndPublish = (hls) => {
+const onSaveAndPublish = (hls, startFrom, title, creator) => {
   showSaving();
 
   story = new Story({
     highlights: hls,
     id: getStoryId(),
+    title,
+    creator,
   });
 
   const data = story.makeJSON();
@@ -95,7 +101,7 @@ const onSaveAndPublish = (hls) => {
     headers: {
       'Content-Type': 'application/json',
     },
-    cors: 'no-cors',
+    //cors: 'no-cors',
     method: 'POST',
     body: data,
   })
@@ -179,7 +185,7 @@ const initApp = () => {
             onStartPreview,
             onEndPreview,
             onSaveAndPublish,
-            savedEvents: storyData.events,
+            storyData: storyData,
           });
         }, storyData.story.game_id);
 
@@ -191,7 +197,7 @@ const initApp = () => {
           gameEventSelector
             .generateHighlights((hls) => {
                 console.debug('Starting story')
-                startStory(hls, null);
+                startStory(hls, null, storyData.story.title, storyData.story.username);
             }, gameEvents, null, storyData.events);
         }, storyData.story.game_id);
       }

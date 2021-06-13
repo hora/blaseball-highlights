@@ -116,7 +116,7 @@ teams = {
 async def submit():
     data = await request.get_json()
     r = await db.create_story(
-        data["story"], data["events"], user=data.get("user", None)
+        data["story"], data["events"], data["user"]
     )
     return r, r["status"]
 

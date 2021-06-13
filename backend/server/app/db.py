@@ -19,11 +19,11 @@ class HighlightDB:
     async def _after_serving(self) -> None:
         await self._pool.close()
 
-    async def create_story(self, story, events, user=None):
-        user_existed = user != None
+    async def create_story(self, story, events, user):
+        user_existed = "user_id" in user
 
         if "story_id" in story:
-            return await self.edit_story(story, events, user=user)
+            return await self.edit_story(story, events, user)
 
         async with self._pool.acquire() as conn:
             while True:
@@ -35,11 +35,13 @@ class HighlightDB:
                     story["story_id"] = story_id
                     break
 
-            if user:
+            if user_existed:
                 if not (await self.check_user_token(user, conn)):
                     return {"status": 403, "reason": "invalid user token/id"}
+
+                await self.edit_user(user)
             else:
-                user = await self.create_user(conn)
+                user = await self.create_user(conn,username=user["username"])
 
             await conn.execute(
                 """
@@ -81,7 +83,7 @@ class HighlightDB:
         else:
             return {"status": 200, "story_id": story["story_id"]}
 
-    async def edit_story(self, story, events, user=None):
+    async def edit_story(self, story, events, user):
         async with self._pool.acquire() as conn:
             row = await conn.fetchrow(
                 "SELECT * FROM stories WHERE story_id = $1", story["story_id"]
@@ -93,6 +95,18 @@ class HighlightDB:
                 await self.check_user_token(user, conn)
             ):
                 return {"status": 401, "reason": "invalid user token/id"}
+
+            await self.edit_user(user)
+
+            await conn.execute(
+                """
+                UPDATE stories
+                SET title = $1
+                WHERE story_id= $2
+            """,
+                story["title"],
+                story["story_id"]
+            )
 
             processed_events = []
             for event in events:
@@ -130,6 +144,7 @@ class HighlightDB:
                     "game_id": row["game_id"],
                     "user_id": row["user_id"],
                     "title": row["title"],
+                    "username": "",
                 },
                 "events": [],
             }
@@ -144,6 +159,11 @@ class HighlightDB:
                         "visual": json.loads(event["visual"]),
                     }
                 )
+
+            for user in await conn.fetch(
+                "SELECT * FROM users WHERE user_id = $1", row["user_id"]
+            ):
+                res["story"]["username"] = user["username"]
 
             res["status"] = 200
             return res
@@ -167,7 +187,7 @@ class HighlightDB:
             res["status"] = 200
             return res
 
-    async def create_user(self, conn):
+    async def create_user(self, conn, username = ""):
         user_token = secrets.token_urlsafe(64)
         user_id = ""
         while True:
@@ -181,12 +201,35 @@ class HighlightDB:
             INSERT INTO users (username, user_id, user_token)
             VALUES ($1, $2, $3)
         """,
-            "",
+            username,
             user_id,
             generate_password_hash(user_token)
         )
 
         return {"user_id": user_id, "user_token": user_token}
+
+    async def edit_user(self, user):
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT * FROM users WHERE user_id = $1", user["user_id"]
+            )
+            if not row:
+                return {"status": 404, "reason": "user not found"}
+
+            if not (
+                await self.check_user_token(user, conn)
+            ):
+                return {"status": 401, "reason": "invalid user token/id"}
+
+            await conn.execute(
+                """
+                UPDATE users
+                SET username = $1
+                WHERE user_id= $2
+            """,
+                user["username"],
+                user["user_id"]
+            )
 
     async def check_user_token(self, user, conn):
         row = await conn.fetchrow(
