@@ -529,3 +529,21 @@ col.game-event-game-status {
   margin-top: 0;
 }
 
+.story-title-wrapper {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.story-title-wrapper div:first-child {
+  width: 50%;
+}
+
+.story-title-wrapper div:last-child {
+  margin-left: 50px;
+}
+
+.story-title input {
+  width: 100%;
+  margin-top: 4px;
+}
+

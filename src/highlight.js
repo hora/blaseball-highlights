@@ -10,6 +10,10 @@ class Highlight {
     this.visual = settings.visual;
     this.visualMeta = settings.visualMeta;
     this.commentary = settings.commentary || this.generateCommentary();
+
+    // this is a hack i'm not happy about. at all.
+    this.storyTitle = settings.storyTitle || '';
+    this.storyCreator = settings.storyCreator || '';
   }
 
   generateCommentary() {
@@ -17,6 +21,10 @@ class Highlight {
     // scoreUpdate if present
 
     let ret = '';
+
+    if (!this.gameEvent || !this.gameEvent.data) {
+      return ret;
+    }
 
     if (this.gameEvent.data.lastUpdate) {
       ret += this.gameEvent.data.lastUpdate;
