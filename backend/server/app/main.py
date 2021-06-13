@@ -172,7 +172,7 @@ async def generate_image(id):
             ] = f"data:image/png;base64,{base64.b64encode(awayteam_image_io.getvalue()).decode()}"
 
             awayteam["artist"] = teams[game["awayTeam"]].get(
-                "homeLogoCredit", teams[game["awayTeam"]]["homeLogoCredit"]
+                "awayLogoCredit", teams[game["awayTeam"]]["homeLogoCredit"]
             )
 
             svg = await render_template(
