@@ -1,5 +1,6 @@
 const Visual = require('./visual');
 const Dialog = require('./dialog');
+const Highlight = require('./highlight');
 const teamsData = require('../lib/teams-data');
 
 class Story {
@@ -8,26 +9,36 @@ class Story {
     this.id = settings.id;
     this.curHighlight = 0;
     this.title = settings.title || this.generateTitle();
+    this.creator = settings.creator;
     this.dialog = new Dialog();
     this.visual = new Visual();
     this.setGameId();
+    this.makeTitleHighlight();
 
     console.debug('new story with highlights', this.highlights);
   }
 
   generateTitle() {
-    // Home-nickname vs. Away-nickname, Sn Dnnn
+    // Away-nickname at Home-nickname, Sn Dnnn
     const gameEv = this.highlights[0].gameEvent.data;
     const homeNick = gameEv.homeTeamNickname || '';
     const awayNick = gameEv.awayTeamNickname || '';
-    const season = gameEv.season + 1;
-    const day = gameEv.day + 1;
 
-    return `${homeNick} vs. ${awayNick}, S${season} D${day}`;
+    return `${awayNick} at ${homeNick}`;
   }
 
   setGameId() {
     this.gameId = this.highlights[0].gameEvent.gameId || '';
+  }
+
+  makeTitleHighlight() {
+    const titleHl = new Highlight({
+      visual: 'title',
+      storyTitle: this.title,
+      storyCreator: this.creator,
+    });
+
+    this.highlights.unshift(titleHl);
   }
 
   start(startFrom) {
@@ -130,7 +141,6 @@ class Story {
   }
 
   startCurrent() {
-    //const current = this.highlights[this.curHighlight];
     const current = this.currentHighlight();
 
     this.visual.showFor(current);
@@ -146,10 +156,16 @@ class Story {
   }
 
   getUser() {
-    return {
-      user_id: window.localStorage.getItem('id'),
-      user_token: window.localStorage.getItem('token'),
+    let ret = {
+      username: this.creator,
     };
+
+    if (window.localStorage.getItem('id')) {
+      ret.user_id = window.localStorage.getItem('id');
+      ret.user_token = window.localStorage.getItem('token');
+    }
+
+    return ret;
   }
 
   setUser(id, token) {
@@ -171,13 +187,12 @@ class Story {
     }
 
     const user = this.getUser();
-
-    if (user.user_id) {
-      ret.user = user;
-    }
+    ret.user = user;
 
     for (let highlight of this.highlights) {
-      ret.events.push(highlight.makeJSON());
+      if (highlight.visual !== 'title') {
+        ret.events.push(highlight.makeJSON());
+      }
     }
 
     return JSON.stringify(ret);
