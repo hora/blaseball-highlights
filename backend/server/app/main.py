@@ -133,16 +133,18 @@ async def get():
 @app.route("/<id>")
 async def share(id):
     story = (await db.get_story(id))["story"]
+    user = (await db.get_user(story["user_id"]))
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f'https://www.blaseball.com/database/gameById/{story["game_id"]}'
         ) as res:
             game = await res.json()
-            return await render_template('meta.html.j2',game=game,story=story)
+            return await render_template('meta.html.j2',game=game,story=story,user=user)
 
 @app.route("/image/<id>")
 async def generate_image(id):
     story = (await db.get_story(id))["story"]
+    user = (await db.get_user(story["user_id"]))
     async with aiohttp.ClientSession() as session:
         async with session.get(
             f'https://www.blaseball.com/database/gameById/{story["game_id"]}'
@@ -181,6 +183,7 @@ async def generate_image(id):
                 awayteam=awayteam,
                 story=story,
                 game=game,
+                user=user
             )
 
             return (

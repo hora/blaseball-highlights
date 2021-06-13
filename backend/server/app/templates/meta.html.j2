@@ -6,7 +6,7 @@
     <meta property="og:type" content="website">
     <meta property="og:title" content="{{ story.title }}">
     <meta property="og:description" content="{{ game.awayTeamNickname }} vs. {{
-    game.homeTeamNickname }} | Day {{ game.day+1 }}, Season {{ game.season+1 }}">
+    game.homeTeamNickname }} | Day {{ game.day+1 }}, Season {{ game.season+1 }} | by {{ user.username }}">
     <meta property="og:image" content="https://highlights.sibr.dev/api/image/{{story.story_id}}">
     <meta property="og:image:secure_url" content="https://highlights.sibr.dev/api/image/{{story.story_id}}" />
         <!-- Twitter Meta Tags -->
@@ -17,7 +17,7 @@
     <meta name="twitter:description" content="{{ game.awayTeamNickname }} at {{
     game.homeTeamNickname }} | Day {{ game.day+1 }}, Season {{ game.season+1 }}">
     <meta name="twitter:image" content="https://highlights.sibr.dev/api/image/{{story.story_id}}">
-    <meta name="twitter:creator" content="{{ story.username }}">
+    <meta name="twitter:creator" content="{{ user.username }}">
   </head>
   <body>
     <script>

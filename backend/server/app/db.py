@@ -188,6 +188,14 @@ class HighlightDB:
 
         return {"user_id": user_id, "user_token": user_token}
 
+    async def get_user(self, user_id):
+        async with self._pool.acquire() as conn:
+            row = await conn.fetchrow(
+                "SELECT * FROM users WHERE user_id = $1",
+                user_id,
+            )
+            return {"username": row["username"], "user_id": row["user_id"]}
+
     async def check_user_token(self, user, conn):
         row = await conn.fetchrow(
             "SELECT * FROM users WHERE user_id = $1",
