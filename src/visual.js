@@ -141,6 +141,7 @@ class Visual {
             $('<a>')
               .attr('href', homeTeamData.homeLogoCreditURL)
               .attr('target', '_blank')
+              .attr('rel', 'noopener noreferrer')
               .text(`${homeTeamData.homeLogoCredit}`)
           );
       } else {
@@ -164,6 +165,7 @@ class Visual {
             $('<a>')
               .attr('href', awayTeamData.homeLogoCreditURL)
               .attr('target', '_blank')
+              .attr('rel', 'noopener noreferrer')
               .text(`${awayTeamData.homeLogoCredit}`)
           );
       } else {
@@ -235,6 +237,7 @@ class Visual {
             $('<a>')
               .attr('href', highlight.visualMeta.creatorLink)
               .attr('target', '_blank')
+              .attr('rel', 'noopener noreferrer')
               .text(`${highlight.visualMeta.creator}`)
           );
       } else {
