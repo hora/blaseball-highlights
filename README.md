@@ -24,7 +24,7 @@ Todo: update these instructions for using the backend locally with Docker.
 
 ## Contributors
 
-- [alisww](https://github.com/alisww)
+- [emily-signet](https://github.com/emily-signet)
 - [hora](https://github.com/hora)
 
 ## Acknowledgments
