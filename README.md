@@ -1,6 +1,6 @@
 # Highlights
 
-[Highlights](https://highlights.sibr.dev/) is a tool for telling [Blaseball](https://www.blaseball.com/) stories based on historical game data.
+[Highlights](https://highlights.sibr.dev/) is a tool for telling [Blaseball](https://www.blaseball.com/) stories based on historical game data. Check out [The Figueroabowl](https://highlights.sibr.dev/story?id=2jMm9B76VVoV5VMP), a sample story!
 
 ## Installation
 
