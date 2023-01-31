@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
+
+const formReducer = (state: any, evt: any) => {
+  return {
+    ...state,
+    [evt.name]: evt.value
+  }
+}
 
 function StoryDataLoader() {
-  function getRandomGame() {
+  const [loading, setLoading] = useState(false);
+  const [hasErrors, setHasErrors] = useState(false);
+  const [formData, dispatchFormData] = useReducer(formReducer, {});
+
+  function getRandomGame(): string {
     const games = [
       // internet series championship games, starting season 2
       'https://reblase.sibr.dev/game/97d88b9e-406d-4f31-a18f-2a3b903edc03',
@@ -32,25 +43,50 @@ function StoryDataLoader() {
     return games[Math.floor(Math.random() * (games.length - 1))];
   }
 
+  const loadGameEvents = (evt: FormEvent) => {
+    evt.preventDefault();
+    setLoading(true);
+
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  }
+
+  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
+    dispatchFormData({
+      name: evt.target.name,
+      value: evt.target.value
+    });
+  }
+
   return (
     <div className="StoryDataLoader">
       <h2>Load a game</h2>
 
-      <form className="GameLoadForm">
+      <form className="GameLoadForm" onSubmit={loadGameEvents}>
 
         <label htmlFor="game-id">
           Enter a game ID or the game's <a href="https://reblase.sibr.dev/">Reblase</a> link
+          <input id="game-id" name="game-id" type="text" placeholder={getRandomGame()} onChange={handleChange}></input>
         </label>
 
-        <p className="error-msg d-none">Oops! Something went wrong. Check the game
-        ID/URL and try again.</p>
+        {hasErrors &&
+          <p className="error-msg d-none">Oops! Something went wrong. Check the game
+          ID/URL and try again.</p>
+        }
 
-        <input id="game-id" type="text" placeholder={getRandomGame()}></input>
         <button type="submit">Load Game Events</button>
 
-        <div className="loading d-none" role="status">
-          <span className="">Loading...</span>
-        </div>
+        {loading &&
+          <div className="loading" role="status">
+             <ul>
+               {Object.entries(formData).map(([name, value]) => (
+                   <li key={name}><><strong>{name}:</strong>{value}</></li>
+               ))}
+             </ul>
+            <span className="">Loading...</span>
+          </div>
+        }
 
       </form>
     </div>
