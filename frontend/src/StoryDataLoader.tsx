@@ -1,4 +1,9 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
+import { useQuery } from 'react-query';
+
+type GameEvent = {
+  id: string;
+};
 
 const formReducer = (state: any, evt: any) => {
   return {
@@ -8,8 +13,6 @@ const formReducer = (state: any, evt: any) => {
 }
 
 function StoryDataLoader() {
-  const [loading, setLoading] = useState(false);
-  const [hasErrors, setHasErrors] = useState(false);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
   function getRandomGame(): string {
@@ -45,11 +48,9 @@ function StoryDataLoader() {
 
   const loadGameEvents = (evt: FormEvent) => {
     evt.preventDefault();
-    setLoading(true);
 
-    setTimeout(() => {
-      setLoading(false);
-    }, 3000);
+    console.log(formData["game-id"]);
+    refetch();
   }
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -58,6 +59,32 @@ function StoryDataLoader() {
       value: evt.target.value
     });
   }
+
+  async function fetchGameUpdates() {
+    let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}`;
+
+    const response = await fetch(gamesURL);
+
+    if (!response.ok) {
+      throw new Error("Problem fetching data");
+    }
+
+    const gameEvent = await response.json();
+
+    return gameEvent;
+  }
+
+  const {
+    isIdle,
+    isLoading,
+    isError,
+    data,
+    error,
+    refetch,
+    isFetching,
+  } = useQuery('gameUpdates', fetchGameUpdates, {
+    enabled: false
+  });
 
   return (
     <div className="StoryDataLoader">
@@ -70,25 +97,28 @@ function StoryDataLoader() {
           <input id="game-id" name="game-id" type="text" placeholder={getRandomGame()} onChange={handleChange}></input>
         </label>
 
-        {hasErrors &&
-          <p className="error-msg d-none">Oops! Something went wrong. Check the game
-          ID/URL and try again.</p>
-        }
-
         <button type="submit">Load Game Events</button>
 
-        {loading &&
-          <div className="loading" role="status">
-             <ul>
-               {Object.entries(formData).map(([name, value]) => (
-                   <li key={name}><><strong>{name}:</strong>{value}</></li>
-               ))}
-             </ul>
-            <span className="">Loading...</span>
-          </div>
-        }
+        <div className="loading" role="status">
+           <ul>
+             {Object.entries(formData).map(([name, value]) => (
+                 <li key={name}><><strong>{name}:</strong>{value}</></li>
+             ))}
+           </ul>
+        </div>
 
       </form>
+
+      {isIdle? (
+        'Not ready...'
+      ) : isLoading? (
+        <span className="">Loading...</span>
+      ) : isError? (
+        <p className="error-msg d-none">Oops! Something went wrong. Check the game ID/URL and try again.</p>
+      ) : (
+        <p>{data.data[0].data.awayPitcherName}</p>
+      )}
+
     </div>
   );
 }
