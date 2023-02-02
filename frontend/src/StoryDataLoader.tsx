@@ -71,6 +71,11 @@ function StoryDataLoader() {
 
     const gameEvent = await response.json();
 
+    //console.log(gameEvent);
+    //gameEvent.data.forEach((gE: any) => {
+      //console.log(gE.hash);
+    //});
+
     return gameEvent;
   }
 
@@ -83,6 +88,7 @@ function StoryDataLoader() {
     refetch,
     isFetching,
   } = useQuery('gameUpdates', fetchGameUpdates, {
+  //} = useQuery<GameEvent, Error>('gameUpdates', fetchGameUpdates, {
     enabled: false
   });
 
@@ -99,14 +105,6 @@ function StoryDataLoader() {
 
         <button type="submit">Load Game Events</button>
 
-        <div className="loading" role="status">
-           <ul>
-             {Object.entries(formData).map(([name, value]) => (
-                 <li key={name}><><strong>{name}:</strong>{value}</></li>
-             ))}
-           </ul>
-        </div>
-
       </form>
 
       {isIdle? (
@@ -116,7 +114,11 @@ function StoryDataLoader() {
       ) : isError? (
         <p className="error-msg d-none">Oops! Something went wrong. Check the game ID/URL and try again.</p>
       ) : (
-        <p>{data.data[0].data.awayPitcherName}</p>
+        <ul>
+          {data.data.map((gameEvent: any) => {
+            return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
+          })}
+        </ul>
       )}
 
     </div>
