@@ -1,5 +1,6 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
-import { useQuery } from 'react-query';
+//import { useQuery } from 'react-query';
+import { useInfiniteQuery } from 'react-query';
 
 type GameEvent = {
   id: string;
@@ -60,8 +61,12 @@ function StoryDataLoader() {
     });
   }
 
-  async function fetchGameUpdates() {
-    let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}`;
+  async function fetchGameUpdates(nextPage: any) {
+    let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}&page=${nextPage.pageParam || ''}`;
+
+    //if (nextPage.pageParam) {
+      //gamesURL += `${nextPage.pageParam}`;
+    //}
 
     const response = await fetch(gamesURL);
 
@@ -70,11 +75,6 @@ function StoryDataLoader() {
     }
 
     const gameEvent = await response.json();
-
-    //console.log(gameEvent);
-    //gameEvent.data.forEach((gE: any) => {
-      //console.log(gE.hash);
-    //});
 
     return gameEvent;
   }
@@ -86,10 +86,20 @@ function StoryDataLoader() {
     data,
     error,
     refetch,
-    isFetching,
-  } = useQuery('gameUpdates', fetchGameUpdates, {
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage
+  } = useInfiniteQuery('gameUpdates', fetchGameUpdates, {
   //} = useQuery<GameEvent, Error>('gameUpdates', fetchGameUpdates, {
-    enabled: false
+    enabled: false,
+    getNextPageParam: (lastPage, pages) => {
+      return lastPage.nextPage;
+    },
+    //onSuccess: (data: any) => {
+      //if (hasNextPage) {
+        //fetchNextPage();
+      //}
+    //}
   });
 
   return (
@@ -114,11 +124,18 @@ function StoryDataLoader() {
       ) : isError? (
         <p className="error-msg d-none">Oops! Something went wrong. Check the game ID/URL and try again.</p>
       ) : (
+        <div>
         <ul>
-          {data.data.map((gameEvent: any) => {
-            return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
+          {data.pages.map((group, i) => {
+            return (<React.Fragment key={i}>
+              {group.data.map((gameEvent: any) => {
+                return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
+              })}
+            </React.Fragment>);
           })}
         </ul>
+          <button onClick={() => hasNextPage && fetchNextPage()}>load more</button>
+        </div>
       )}
 
     </div>
