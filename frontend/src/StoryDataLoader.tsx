@@ -1,10 +1,12 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
 //import { useQuery } from 'react-query';
-import { useInfiniteQuery } from 'react-query';
+import { QueryClient } from 'react-query';
 
 type GameEvent = {
   id: string;
 };
+
+const queryClient = new QueryClient();
 
 const formReducer = (state: any, evt: any) => {
   return {
@@ -47,11 +49,14 @@ function StoryDataLoader() {
     return games[Math.floor(Math.random() * (games.length - 1))];
   }
 
-  const loadGameEvents = (evt: FormEvent) => {
+  async function loadGameEvents(evt: FormEvent) {
     evt.preventDefault();
 
     console.log(formData["game-id"]);
-    refetch();
+
+    const data = await queryClient.fetchQuery('gameUpdates', fetchGameUpdates);
+
+    console.log(data);
   }
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -61,46 +66,64 @@ function StoryDataLoader() {
     });
   }
 
-  async function fetchGameUpdates(nextPage: any) {
-    let gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}&page=${nextPage.pageParam || ''}`;
+  async function fetchGameUpdates() {
+    const gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}`;
+    let paginatedGameEvents: unknown[] = [];
 
-    //if (nextPage.pageParam) {
-      //gamesURL += `${nextPage.pageParam}`;
-    //}
+    async function getPaginatedEvents(nextPage: string) {
+      let fetchURL = gamesURL;
 
-    const response = await fetch(gamesURL);
+      if (nextPage) {
+        fetchURL += `&page=${nextPage}`;
+      }
 
-    if (!response.ok) {
-      throw new Error("Problem fetching data");
-    }
+      const response = await fetch(fetchURL);
 
-    const gameEvent = await response.json();
+      if (!response.ok) {
+        throw new Error("Problem fetching data");
+      }
 
-    return gameEvent;
+      const gameEvents = await response.json();
+
+      for (let gameEv of gameEvents.data) {
+        paginatedGameEvents.push(gameEv);
+      }
+
+      if (gameEvents.nextPage) {
+        await getPaginatedEvents(gameEvents.nextPage);
+      } else {
+        // done loading all game events
+        return;
+      }
+    };
+
+    await getPaginatedEvents('');
+
+    return paginatedGameEvents;
   }
 
-  const {
-    isIdle,
-    isLoading,
-    isError,
-    data,
-    error,
-    refetch,
-    fetchNextPage,
-    hasNextPage,
-    isFetchingNextPage
-  } = useInfiniteQuery('gameUpdates', fetchGameUpdates, {
+  //const {
+    //isIdle,
+    //isLoading,
+    //isError,
+    //data,
+    //error,
+    //refetch,
+    //fetchNextPage,
+    //hasNextPage,
+    //isFetchingNextPage
+  //} = useInfiniteQuery('gameUpdates', fetchGameUpdates, {
   //} = useQuery<GameEvent, Error>('gameUpdates', fetchGameUpdates, {
-    enabled: false,
-    getNextPageParam: (lastPage, pages) => {
-      return lastPage.nextPage;
-    },
+    //enabled: false,
+    //getNextPageParam: (lastPage, pages) => {
+      //return lastPage.nextPage;
+    //},
     //onSuccess: (data: any) => {
       //if (hasNextPage) {
         //fetchNextPage();
       //}
     //}
-  });
+  //});
 
   return (
     <div className="StoryDataLoader">
@@ -116,27 +139,6 @@ function StoryDataLoader() {
         <button type="submit">Load Game Events</button>
 
       </form>
-
-      {isIdle? (
-        'Not ready...'
-      ) : isLoading? (
-        <span className="">Loading...</span>
-      ) : isError? (
-        <p className="error-msg d-none">Oops! Something went wrong. Check the game ID/URL and try again.</p>
-      ) : (
-        <div>
-        <ul>
-          {data.pages.map((group, i) => {
-            return (<React.Fragment key={i}>
-              {group.data.map((gameEvent: any) => {
-                return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
-              })}
-            </React.Fragment>);
-          })}
-        </ul>
-          <button onClick={() => hasNextPage && fetchNextPage()}>load more</button>
-        </div>
-      )}
 
     </div>
   );
