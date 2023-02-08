@@ -1,5 +1,4 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
-//import { useQuery } from 'react-query';
 import { QueryClient } from 'react-query';
 
 type GameEvent = {
@@ -16,6 +15,9 @@ const formReducer = (state: any, evt: any) => {
 }
 
 function StoryDataLoader() {
+  const [isLoading, setIsLoading] = useState(false);
+  //const [hasErrors, setHasErrors] = useState(false);
+  const [gameEvents, setGameEvents] = useState([] as unknown[]);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
   function getRandomGame(): string {
@@ -52,11 +54,15 @@ function StoryDataLoader() {
   async function loadGameEvents(evt: FormEvent) {
     evt.preventDefault();
 
-    console.log(formData["game-id"]);
+    setIsLoading(true);
 
     const data = await queryClient.fetchQuery('gameUpdates', fetchGameUpdates);
 
-    console.log(data);
+    setIsLoading(false);
+
+    setGameEvents(data);
+
+    console.log('game events', data);
   }
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +98,6 @@ function StoryDataLoader() {
       if (gameEvents.nextPage) {
         await getPaginatedEvents(gameEvents.nextPage);
       } else {
-        // done loading all game events
         return;
       }
     };
@@ -101,29 +106,6 @@ function StoryDataLoader() {
 
     return paginatedGameEvents;
   }
-
-  //const {
-    //isIdle,
-    //isLoading,
-    //isError,
-    //data,
-    //error,
-    //refetch,
-    //fetchNextPage,
-    //hasNextPage,
-    //isFetchingNextPage
-  //} = useInfiniteQuery('gameUpdates', fetchGameUpdates, {
-  //} = useQuery<GameEvent, Error>('gameUpdates', fetchGameUpdates, {
-    //enabled: false,
-    //getNextPageParam: (lastPage, pages) => {
-      //return lastPage.nextPage;
-    //},
-    //onSuccess: (data: any) => {
-      //if (hasNextPage) {
-        //fetchNextPage();
-      //}
-    //}
-  //});
 
   return (
     <div className="StoryDataLoader">
@@ -136,10 +118,18 @@ function StoryDataLoader() {
           <input id="game-id" name="game-id" type="text" placeholder={getRandomGame()} onChange={handleChange}></input>
         </label>
 
-        <button type="submit">Load Game Events</button>
+        <button type="submit" disabled={isLoading}>Load Game Events</button>
 
+        {isLoading &&
+          <p>Loading...</p>
+        }
+
+        <ul>
+          {gameEvents.map((gameEvent: any) => {
+            return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
+          })}
+        </ul>
       </form>
-
     </div>
   );
 }
