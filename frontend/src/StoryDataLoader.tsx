@@ -1,11 +1,10 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
 import { QueryClient } from 'react-query';
 
-type GameEvent = {
-  id: string;
-};
+import { Game } from './lib/game';
 
 const queryClient = new QueryClient();
+const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
 
 const formReducer = (state: any, evt: any) => {
   return {
@@ -17,6 +16,7 @@ const formReducer = (state: any, evt: any) => {
 function StoryDataLoader() {
   const [isLoading, setIsLoading] = useState(false);
   //const [hasErrors, setHasErrors] = useState(false);
+  const [game, setGame] = useState({} as Game);
   const [gameEvents, setGameEvents] = useState([] as unknown[]);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
@@ -56,13 +56,16 @@ function StoryDataLoader() {
 
     setIsLoading(true);
 
-    const data = await queryClient.fetchQuery('gameUpdates', fetchGameUpdates);
+    const gameData = await queryClient.fetchQuery('game', fetchGame);
+    const gameEventsData = await queryClient.fetchQuery('gameEvents', fetchGameEvents);
 
     setIsLoading(false);
 
-    setGameEvents(data);
+    console.log('game', gameData?.items[0]);
+    console.log('game events', gameEventsData);
 
-    console.log('game events', data);
+    setGame(new Game(gameData?.items[0]));
+    setGameEvents(gameEventsData);
   }
 
   const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -72,12 +75,26 @@ function StoryDataLoader() {
     });
   }
 
-  async function fetchGameUpdates() {
-    const gamesURL = `https://api.sibr.dev/chronicler/v1/games/updates?game=${formData["game-id"]}`;
+  async function fetchGame() {
+    const gameURL = `${CHRONICLER_BASE_URL}/entities?kind=game&count=1&id=${formData["game-id"]}`;
+
+    const response = await fetch(gameURL);
+
+    if (!response.ok) {
+      throw new Error("Problem fetching data");
+    }
+
+    const gameData = await response.json();
+
+    return gameData;
+  }
+
+  async function fetchGameEvents() {
+    const gameEventsURL = `${CHRONICLER_BASE_URL}/game-events?game_id=${formData["game-id"]}`;
     let paginatedGameEvents: unknown[] = [];
 
     async function getPaginatedEvents(nextPage: string) {
-      let fetchURL = gamesURL;
+      let fetchURL = gameEventsURL;
 
       if (nextPage) {
         fetchURL += `&page=${nextPage}`;
@@ -91,12 +108,12 @@ function StoryDataLoader() {
 
       const gameEvents = await response.json();
 
-      for (let gameEv of gameEvents.data) {
+      for (let gameEv of gameEvents.items) {
         paginatedGameEvents.push(gameEv);
       }
 
-      if (gameEvents.nextPage) {
-        await getPaginatedEvents(gameEvents.nextPage);
+      if (gameEvents.next_page) {
+        await getPaginatedEvents(gameEvents.next_page);
       } else {
         return;
       }
@@ -120,16 +137,19 @@ function StoryDataLoader() {
 
         <button type="submit" disabled={isLoading}>Load Game Events</button>
 
-        {isLoading &&
-          <p>Loading...</p>
-        }
-
-        <ul>
-          {gameEvents.map((gameEvent: any) => {
-            return (<li key={gameEvent.hash}>{gameEvent.data.lastUpdate}</li>);
-          })}
-        </ul>
       </form>
+      {isLoading &&
+        <p>Loading...</p>
+      }
+
+      {game.id &&
+        <h3>{game.season.era}, Season {game.season.number}</h3>
+      }
+      <ul>
+        {gameEvents.map((gameEvent: any, i) => {
+          return (<li key={i}>{gameEvent.data.displayText}</li>);
+        })}
+      </ul>
     </div>
   );
 }
