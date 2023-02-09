@@ -12,12 +12,12 @@ export class Game {
   homeTeam: Team;
 
   season: Season;
-  day: number;
+  dayRaw: number;
   weather: string;
 
   constructor(data?: any) {
     this.data = data?.data || {};
-    this.id = data?.entity_id || '';
+    this.id = data?.entity_id;
 
     this.awayPitcher = new Player(this.data?.awayPitcher);
     this.homePitcher = new Player(this.data?.homePitcher);
@@ -25,8 +25,12 @@ export class Game {
     this.homeTeam = new Team(this.data?.homeTeam);
 
     this.season = new Season(this.data?.seasonId);
-    this.day = this.data?.day;
+    this.dayRaw = this.data?.day;
     this.weather = this.data?.weather.name;
+  }
+
+  public get day() : number {
+    return this.dayRaw + 1;
   }
 }
 

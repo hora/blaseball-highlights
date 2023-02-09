@@ -3,6 +3,8 @@ import { QueryClient } from 'react-query';
 
 import { Game } from './lib/game';
 
+import StoryPreview from './StoryPreview';
+
 const queryClient = new QueryClient();
 const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
 
@@ -14,41 +16,20 @@ const formReducer = (state: any, evt: any) => {
 }
 
 function StoryDataLoader() {
+  const [reblasePlaceholder, setReblasePlaceholder] = useState(getRandomGame());
   const [isLoading, setIsLoading] = useState(false);
-  //const [hasErrors, setHasErrors] = useState(false);
   const [game, setGame] = useState({} as Game);
   const [gameEvents, setGameEvents] = useState([] as unknown[]);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
   function getRandomGame(): string {
     const games = [
-      // internet series championship games, starting season 2
-      'https://reblase.sibr.dev/game/97d88b9e-406d-4f31-a18f-2a3b903edc03',
-      'https://reblase.sibr.dev/game/b38e0917-43da-470c-a7bb-5712368a2492',
-      'https://reblase.sibr.dev/game/628a2ddb-f608-411b-8d2e-2768cd36d58b',
-      'https://reblase.sibr.dev/game/52f6274e-e0dc-4c23-87e8-686f6d2b2bbf',
-      'https://reblase.sibr.dev/game/10538840-1f72-4a90-98e5-724a9dc5d061',
-      'https://reblase.sibr.dev/game/9d85897e-e689-4eeb-b2ae-b69679a3ebc7',
-      'https://reblase.sibr.dev/game/ee35a868-b004-449f-a99c-6a40ca54b382',
-      'https://reblase.sibr.dev/game/06566f8d-3d14-4956-b054-36dc981fd589',
-      'https://reblase.sibr.dev/game/704ddf2f-3fe2-48b3-b674-b94765f70d01',
-      'https://reblase.sibr.dev/game/47bcac42-f651-4fc9-9f93-5567a7b10daf',
-      'https://reblase.sibr.dev/game/0f19d78d-c27d-4146-863d-b55e6dae1679',
-      'https://reblase.sibr.dev/game/1506b88f-1fea-4ba1-9256-1ebb030cdcae',
-      'https://reblase.sibr.dev/game/b2cafd20-a799-48f6-abd7-c99bd79a6bd1',
-      'https://reblase.sibr.dev/game/2bc6e86e-8d25-4e37-9026-780d8b6969c5',
-      'https://reblase.sibr.dev/game/462481f4-7f97-441c-9fc9-c3dc3c5844a4',
-      'https://reblase.sibr.dev/game/11a8a7d3-460b-4c99-a98a-b0bd1f577073',
-      'https://reblase.sibr.dev/game/823dfcb6-dddb-43f4-90ff-eac05827a82e',
-      'https://reblase.sibr.dev/game/f7ad7826-ca6e-49c2-818e-190408b046fe',
-      // up to 19
-
-      // other games
-      // s3d100 (riv landry)
-      'https://reblase.sibr.dev/game/aa1b7fde-f077-4e4b-825f-0d1538d02822',
+      // final internet series game in the coronation era, by season
+      'https://reblase.sibr.dev/experimental/game/2376b471-2aba-49fb-957d-18a6897ebb74',
+      'https://reblase.sibr.dev/experimental/game/47096007-48f8-428f-bb38-3ef1f7af71e7',
     ];
 
-    return games[Math.floor(Math.random() * (games.length - 1))];
+    return games[Math.floor(Math.random() * (games.length))];
   }
 
   async function loadGameEvents(evt: FormEvent) {
@@ -61,22 +42,27 @@ function StoryDataLoader() {
 
     setIsLoading(false);
 
-    console.log('game', gameData?.items[0]);
-    console.log('game events', gameEventsData);
-
     setGame(new Game(gameData?.items[0]));
     setGameEvents(gameEventsData);
   }
 
-  const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
+  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
     dispatchFormData({
       name: evt.target.name,
       value: evt.target.value
     });
   }
 
+  function getGameID() : string {
+    let input = formData["game-id"];
+
+    input = input || reblasePlaceholder;
+
+    return input.split('/').pop();
+  }
+
   async function fetchGame() {
-    const gameURL = `${CHRONICLER_BASE_URL}/entities?kind=game&count=1&id=${formData["game-id"]}`;
+    const gameURL = `${CHRONICLER_BASE_URL}/entities?kind=game&count=1&id=${getGameID()}`;
 
     const response = await fetch(gameURL);
 
@@ -90,7 +76,7 @@ function StoryDataLoader() {
   }
 
   async function fetchGameEvents() {
-    const gameEventsURL = `${CHRONICLER_BASE_URL}/game-events?game_id=${formData["game-id"]}`;
+    const gameEventsURL = `${CHRONICLER_BASE_URL}/game-events?game_id=${getGameID()}`;
     let paginatedGameEvents: unknown[] = [];
 
     async function getPaginatedEvents(nextPage: string) {
@@ -132,7 +118,7 @@ function StoryDataLoader() {
 
         <label htmlFor="game-id">
           Enter a game ID or the game's <a href="https://reblase.sibr.dev/">Reblase</a> link
-          <input id="game-id" name="game-id" type="text" placeholder={getRandomGame()} onChange={handleChange}></input>
+          <input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
         </label>
 
         <button type="submit" disabled={isLoading}>Load Game Events</button>
@@ -143,13 +129,8 @@ function StoryDataLoader() {
       }
 
       {game.id &&
-        <h3>{game.season.era}, Season {game.season.number}</h3>
+        <StoryPreview game={game} />
       }
-      <ul>
-        {gameEvents.map((gameEvent: any, i) => {
-          return (<li key={i}>{gameEvent.data.displayText}</li>);
-        })}
-      </ul>
     </div>
   );
 }
