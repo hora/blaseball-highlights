@@ -1,8 +1,8 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-//import logo from './logo.svg';
-import './App.css';
+import './tailwind.css';
+
 import StoryCreator from './StoryCreator';
 
 const queryClient = new QueryClient();
