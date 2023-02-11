@@ -11,6 +11,7 @@ module.exports = {
       },
       colors: {
         'navy-blue': '#003049',
+        'sea-green': '#2a9d8f',
       },
     },
   },

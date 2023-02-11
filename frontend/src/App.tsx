@@ -9,7 +9,7 @@ const queryClient = new QueryClient();
 
 function App() {
   return (
-    <div className="App">
+    <div className="App text-white text-xl max-w-4xl mx-auto py-10">
       <QueryClientProvider client={queryClient}>
         <StoryCreator />
       </QueryClientProvider>

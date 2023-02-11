@@ -4,6 +4,7 @@ import { QueryClient } from 'react-query';
 import { Game } from './lib/game';
 
 import StoryPreview from './StoryPreview';
+import Button from './Button';
 
 const queryClient = new QueryClient();
 const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
@@ -112,7 +113,7 @@ function StoryDataLoader() {
 
   return (
     <div className="StoryDataLoader">
-      <h2>Load a game</h2>
+      <h2 className="text-3xl text-center">Load a game</h2>
 
       <form className="GameLoadForm" onSubmit={loadGameEvents}>
 
@@ -121,7 +122,7 @@ function StoryDataLoader() {
           <input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
         </label>
 
-        <button type="submit" disabled={isLoading}>Load Game Events</button>
+        <Button text="Load Game Events" btnType="submit" disabled={isLoading} />
 
       </form>
       {isLoading &&
