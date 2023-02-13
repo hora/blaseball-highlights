@@ -113,13 +113,13 @@ function StoryDataLoader() {
 
   return (
     <div className="StoryDataLoader">
-      <h2 className="text-3xl text-center">Load a game</h2>
+      <h2 className="text-3xl text-center my-6">Load a game</h2>
 
       <form className="GameLoadForm" onSubmit={loadGameEvents}>
 
-        <label htmlFor="game-id">
-          Enter a game ID or the game's <a href="https://reblase.sibr.dev/">Reblase</a> link
-          <input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
+        <label htmlFor="game-id" className="">
+          Enter a game ID or the game's <a className="underline" href="https://reblase.sibr.dev/">Reblase</a> link
+          <input className="rounded-sm border-none p-2.5 block mt-2.5 mb-4 w-full" id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
         </label>
 
         <Button text="Load Game Events" btnType="submit" disabled={isLoading} />
