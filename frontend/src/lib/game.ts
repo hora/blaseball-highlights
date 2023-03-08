@@ -1,6 +1,7 @@
 import { Player} from './player';
 import { Team } from './team';
 import { Season } from './season';
+import { GameEvent, GameEventProps } from './game-event';
 
 export class Game {
   data: any;
@@ -15,6 +16,8 @@ export class Game {
   dayRaw: number;
   weather: string;
 
+  gameEvents: GameEvent[];
+
   constructor(data?: any) {
     this.data = data?.data || {};
     this.id = data?.entity_id;
@@ -27,10 +30,61 @@ export class Game {
     this.season = new Season(this.data?.seasonId);
     this.dayRaw = this.data?.day;
     this.weather = this.data?.weather.name;
+
+    this.gameEvents = [];
   }
 
   public get day() : number {
     return this.dayRaw + 1;
+  }
+
+  public buildGameEvents(gameEvents : any[]) {
+    let currGameEvent;
+    let gameEventProps : GameEventProps = {
+      displayText: '',
+      homeScore: 0,
+      awayScore: 0,
+      strikes: 0,
+      balls: 0,
+      outs: 0,
+      baserunners: [] as Player[],
+    };
+
+    for (let gameEvent of gameEvents) {
+      if (!gameEvent?.data?.displayText) {
+        continue;
+      }
+
+      if (
+        gameEvent?.data?.changedState &&
+        Object.keys(gameEvent?.data?.changedState).length
+        ) {
+
+        let newState = gameEvent.data.changedState;
+
+        gameEventProps.homeScore = newState.homeScore || gameEventProps.homeScore;
+        gameEventProps.awayScore = newState.awayScore || gameEventProps.awayScore;
+        gameEventProps.strikes = newState.strikes || gameEventProps.strikes;
+        gameEventProps.balls = newState.balls || gameEventProps.balls;
+        gameEventProps.outs = newState.outs || gameEventProps.outs;
+
+        if (newState.baserunners) {
+          gameEventProps.baserunners = [] as Player[];
+
+          for (let baserunner of newState.baserunners) {
+            gameEventProps.baserunners.push(new Player(baserunner));
+          }
+        }
+      }
+
+      gameEventProps.displayText = gameEvent?.data?.displayText;
+      currGameEvent = new GameEvent(gameEvent, gameEventProps);
+
+      this.gameEvents.push(currGameEvent);
+    }
+
+    console.log(this.gameEvents);
+
   }
 }
 

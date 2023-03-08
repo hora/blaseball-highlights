@@ -43,8 +43,11 @@ function StoryDataLoader() {
 
     setIsLoading(false);
 
+    const game = new Game(gameData?.items[0]);
+    game.buildGameEvents(gameEventsData);
+
     setGame(new Game(gameData?.items[0]));
-    setGameEvents(gameEventsData);
+    //setGameEvents(gameEventsData);
   }
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {
@@ -122,7 +125,9 @@ function StoryDataLoader() {
           <input className="rounded-sm border-none p-2.5 block mt-2.5 mb-4 w-full" id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
         </label>
 
-        <Button text="Load Game Events" btnType="submit" disabled={isLoading} />
+        {!isLoading &&
+          <Button text="Load Game Events" btnType="submit" disabled={isLoading} />
+        }
 
       </form>
       {isLoading &&
