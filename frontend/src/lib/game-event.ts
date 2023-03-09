@@ -9,7 +9,10 @@ export interface GameEventProps {
   strikes: number;
   balls: number;
   outs: number;
-  baserunners: Player[];
+}
+
+export interface Baserunners {
+  [index: number]: Player;
 }
 
 export class GameEvent {
@@ -19,7 +22,7 @@ export class GameEvent {
   strikes: number;
   balls: number;
   outs: number;
-  baserunners: Player[];
+  baserunners: Baserunners;
   mlustard: MlustardAnalysis;
 
   constructor(raw: any, data: GameEventProps) {
@@ -29,9 +32,17 @@ export class GameEvent {
     this.strikes = data.strikes;
     this.balls = data.balls;
     this.outs = data.outs;
-    this.baserunners = data.baserunners;
+    this.baserunners = {};
 
     this.mlustard = analyzeGameEvent(raw);
+  }
+
+  public addBaserunner(baserunner: Player) {
+    if (!baserunner.base) {
+      return;
+    }
+
+    this.baserunners[baserunner.base] = baserunner;
   }
 
 }

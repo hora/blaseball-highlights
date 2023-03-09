@@ -20,14 +20,13 @@ function StoryDataLoader() {
   const [reblasePlaceholder, setReblasePlaceholder] = useState(getRandomGame());
   const [isLoading, setIsLoading] = useState(false);
   const [game, setGame] = useState({} as Game);
-  const [gameEvents, setGameEvents] = useState([] as unknown[]);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
   function getRandomGame(): string {
     const games = [
       // final internet series game in the coronation era, by season
       'https://reblase.sibr.dev/experimental/game/2376b471-2aba-49fb-957d-18a6897ebb74',
-      'https://reblase.sibr.dev/experimental/game/47096007-48f8-428f-bb38-3ef1f7af71e7',
+      //'https://reblase.sibr.dev/experimental/game/47096007-48f8-428f-bb38-3ef1f7af71e7',
     ];
 
     return games[Math.floor(Math.random() * (games.length))];
@@ -46,8 +45,7 @@ function StoryDataLoader() {
     const game = new Game(gameData?.items[0]);
     game.buildGameEvents(gameEventsData);
 
-    setGame(new Game(gameData?.items[0]));
-    //setGameEvents(gameEventsData);
+    setGame(game);
   }
 
   function handleChange(evt: ChangeEvent<HTMLInputElement>) {

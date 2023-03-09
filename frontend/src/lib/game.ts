@@ -47,8 +47,9 @@ export class Game {
       strikes: 0,
       balls: 0,
       outs: 0,
-      baserunners: [] as Player[],
     };
+
+    let baserunners = [] as Player[];
 
     for (let gameEvent of gameEvents) {
       if (!gameEvent?.data?.displayText) {
@@ -67,18 +68,23 @@ export class Game {
         gameEventProps.strikes = newState.strikes || gameEventProps.strikes;
         gameEventProps.balls = newState.balls || gameEventProps.balls;
         gameEventProps.outs = newState.outs || gameEventProps.outs;
-
-        if (newState.baserunners) {
-          gameEventProps.baserunners = [] as Player[];
-
-          for (let baserunner of newState.baserunners) {
-            gameEventProps.baserunners.push(new Player(baserunner));
-          }
-        }
       }
 
       gameEventProps.displayText = gameEvent?.data?.displayText;
       currGameEvent = new GameEvent(gameEvent, gameEventProps);
+
+      if (gameEvent?.data?.changedState?.baserunners) {
+        baserunners = [] as Player[];
+
+        for (let baserunner of gameEvent.data.changedState.baserunners) {
+          baserunners.push(new Player(baserunner));
+          currGameEvent.addBaserunner(new Player(baserunner));
+        }
+      } else {
+        for (let baserunner of baserunners) {
+          currGameEvent.addBaserunner(new Player(baserunner));
+        }
+      }
 
       this.gameEvents.push(currGameEvent);
     }
