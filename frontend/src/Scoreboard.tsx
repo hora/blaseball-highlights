@@ -19,8 +19,8 @@ interface ScoreboardProps {
 
 function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, balls, strikes, outs } : ScoreboardProps) {
   return (
-    <ul className="Scoreboard border border-solid border-dark-blue rounded-md bg-white text-dark-blue w-44 flex items-center justify-center text-base py-1 px-0 m-0 leading-4">
-      <li className="p-1 font-semibold">
+    <ul className="Scoreboard border border-solid border-dark-blue rounded-md bg-white text-dark-blue w-[198px] flex items-center justify-between text-base py-1 px-0 m-0 leading-4">
+      <li className="ml-1 p-1 font-semibold">
         <div className="flex justify-between">
           <span className="my-1">{awayTeam.shorthand}</span>
           <span className="bg-faded-orange p-1 ml-2">{awayScore}</span>
