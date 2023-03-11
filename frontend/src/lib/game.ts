@@ -52,10 +52,6 @@ export class Game {
     let baserunners = [] as Player[];
 
     for (let gameEvent of gameEvents) {
-      if (!gameEvent?.data?.displayText) {
-        continue;
-      }
-
       if (
         gameEvent?.data?.changedState &&
         Object.keys(gameEvent?.data?.changedState).length
