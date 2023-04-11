@@ -5,6 +5,7 @@ import { Game } from 'lib/game';
 
 import StoryDataPicker from 'components/creator/StoryDataPicker';
 import Button from 'components/elements/Button';
+import Input from 'components/elements/Input';
 
 const queryClient = new QueryClient();
 const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
@@ -123,7 +124,7 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
 
         <label htmlFor="game-id" className="">
           Enter a game ID or the game's <a className="underline" href="https://reblase.sibr.dev/">Reblase</a> link
-          <input className="rounded-sm border-none p-2.5 block mt-2.5 mb-4 w-full" id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} onChange={handleChange}></input>
+          <Input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} classes="w-full" onChange={handleChange} />
         </label>
 
         {!isLoading &&

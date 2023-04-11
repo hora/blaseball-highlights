@@ -13,19 +13,21 @@ interface GameEventProps {
 
 function GameEventComponent({ gameEvent, game } : GameEventProps) {
   return (
-    <div className="GameEventComponent">
-      <p>{gameEvent.displayText}</p>
-      <Scoreboard
-        homeTeam={game.homeTeam}
-        awayTeam={game.awayTeam}
-        homeScore={gameEvent.homeScore}
-        awayScore={gameEvent.awayScore}
-        baserunners={gameEvent.baserunners}
-        balls={gameEvent.balls}
-        strikes={gameEvent.strikes}
-        outs={gameEvent.outs}
-      />
-    </div>
+    <tr className="GameEventComponent">
+      <td>{gameEvent.displayText}</td>
+      <td>
+        <Scoreboard
+          homeTeam={game.homeTeam}
+          awayTeam={game.awayTeam}
+          homeScore={gameEvent.homeScore}
+          awayScore={gameEvent.awayScore}
+          baserunners={gameEvent.baserunners}
+          balls={gameEvent.balls}
+          strikes={gameEvent.strikes}
+          outs={gameEvent.outs}
+        />
+      </td>
+    </tr>
   );
 }
 
