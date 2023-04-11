@@ -9,6 +9,10 @@ import Button from 'components/elements/Button';
 const queryClient = new QueryClient();
 const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
 
+interface StoryDataLoaderProps {
+  setGame: (game: Game) => void;
+}
+
 const formReducer = (state: any, evt: any) => {
   return {
     ...state,
@@ -16,10 +20,9 @@ const formReducer = (state: any, evt: any) => {
   }
 }
 
-function StoryDataLoader() {
+function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
   const [reblasePlaceholder, setReblasePlaceholder] = useState(getRandomGame());
   const [isLoading, setIsLoading] = useState(false);
-  const [game, setGame] = useState({} as Game);
   const [formData, dispatchFormData] = useReducer(formReducer, {});
 
   function getRandomGame(): string {
@@ -131,8 +134,6 @@ function StoryDataLoader() {
       {isLoading &&
         <p>Loading...</p>
       }
-
-      <StoryDataPicker game={game} />
     </div>
   );
 }
