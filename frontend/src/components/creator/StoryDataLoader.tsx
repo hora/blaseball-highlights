@@ -1,10 +1,10 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
 import { QueryClient } from 'react-query';
 
-import { Game } from './lib/game';
+import { Game } from 'lib/game';
 
-import StoryPreview from './StoryPreview';
-import Button from './Button';
+import StoryDataPicker from 'components/creator/StoryDataPicker';
+import Button from 'components/elements/Button';
 
 const queryClient = new QueryClient();
 const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
@@ -114,7 +114,7 @@ function StoryDataLoader() {
 
   return (
     <div className="StoryDataLoader">
-      <h2 className="text-3xl text-center my-6">Load a game</h2>
+      <h2 className="text-3xl text-center my-6">1. Load a game</h2>
 
       <form className="GameLoadForm" onSubmit={loadGameEvents}>
 
@@ -132,9 +132,7 @@ function StoryDataLoader() {
         <p>Loading...</p>
       }
 
-      {game.id &&
-        <StoryPreview game={game} />
-      }
+      <StoryDataPicker game={game} />
     </div>
   );
 }

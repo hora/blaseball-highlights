@@ -1,9 +1,9 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import './tailwind.css';
+import 'tailwind.css';
 
-import StoryCreator from './StoryCreator';
+import StoryCreator from 'components/creator/StoryCreator';
 
 const queryClient = new QueryClient();
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import StoryDataLoader from './StoryDataLoader';
+import StoryDataLoader from 'components/creator/StoryDataLoader';
 
 function StoryCreator() {
   return (

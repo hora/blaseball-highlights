@@ -1,9 +1,9 @@
 import React  from 'react';
 
-import { GameEvent } from './lib/game-event';
-import { Game } from './lib/game';
+import { GameEvent } from 'lib/game-event';
+import { Game } from 'lib/game';
 
-import Scoreboard from './Scoreboard';
+import Scoreboard from 'components/common/Scoreboard';
 
 
 interface GameEventProps {
