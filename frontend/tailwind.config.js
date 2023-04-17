@@ -15,6 +15,10 @@ module.exports = {
         'sea-green': '#2a9d8f',
         'faded-orange': '#ff9770',
         'pink': '#ffc0cb',
+        'faded-blue': '#33596d',
+      },
+      lineHeight: {
+        'extra-tight': '1.15',
       },
     },
   },

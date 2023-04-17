@@ -3,7 +3,8 @@ import React  from 'react';
 import { Game } from 'lib/game';
 import { GameEvent } from 'lib/game-event';
 
-import GameEventComponent from 'components/creator/GameEventComponent';
+import Input from 'components/elements/Input';
+import GameEventRow from 'components/creator/GameEventRow';
 
 interface StoryDataPickerTableProps {
   game: Game;
@@ -43,7 +44,7 @@ function StoryDataPickerTable({ game} : StoryDataPickerTableProps) {
 
 
   return (
-    <table className="StoryDataPickerTable">
+    <table className="StoryDataPickerTable w-full text-lg border-separate">
       <colgroup>
         <col />
         <col />
@@ -52,22 +53,41 @@ function StoryDataPickerTable({ game} : StoryDataPickerTableProps) {
         <col />
       </colgroup>
 
-      <tbody>
+      <tbody className="bg-faded-blue">
         <tr>
-        <td colSpan={5}>
-          <div>
-            <div>
+        <td colSpan={5} className="p-2.5">
+          <div className="flex justify-start">
+            <div className="w-1/2">
               <label htmlFor="story-title">Story title</label>
-              <input id="story-title" placeholder={''} type="text" />
+              <Input id="story-title" type="text" placeholder={`${game.awayTeam.name} at ${game.homeTeam.name}`} classes="w-full"/>
             </div>
-            <div>
+            <div className="ml-[50px]">
+              <label htmlFor="story-creator">Creator</label>
+              <Input id="story-creator" type="text" placeholder="Enter a username" classes="w-full" />
             </div>
           </div>
         </td>
         </tr>
 
-        {game.gameEvents.filter(hasDisplayText).map((gameEvent, i) =>
-          <GameEventComponent key={i} gameEvent={gameEvent} game={game} />
+        {game.gameEvents.filter(hasDisplayText).map((gameEvent, i) => {
+          return (
+            <React.Fragment key={i}>
+
+            { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' &&
+                <tr><td colSpan={5}>Top of 1</td></tr>}
+
+            { gameEvent.mlustard.gameStatus === 'firstHalfInningStart' &&
+                <tr><td colSpan={5}>Top of X</td></tr>}
+
+            { gameEvent.mlustard.gameStatus === 'secondHalfInningStart' &&
+                <tr><td colSpan={5}>Bottom of X</td></tr>}
+
+            <GameEventRow key={i} gameEvent={gameEvent} game={game} />
+
+            </React.Fragment>
+          );
+        }
+
         )}
       </tbody>
     </table>

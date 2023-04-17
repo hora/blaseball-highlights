@@ -21,11 +21,11 @@ function StoryDataPicker({ game } : StoryDataPickerProps) {
         <h3 className="font-semibold">
           {game.season.era}, Season {game.season.number}, Day {game.day}
           <span> – </span>
-           <Emoji emojiCode={game.homeTeam.emoji}/> {game.homeTeam.name} vs. <Emoji emojiCode={game.awayTeam.emoji}/> {game.awayTeam.name}
+          <Emoji emojiCode={game.awayTeam.emoji}/> {game.awayTeam.name} at <Emoji emojiCode={game.homeTeam.emoji}/> {game.homeTeam.name}
         </h3>
-        <h4>Starting Pitchers: <Emoji emojiCode={game.homeTeam.emoji}/> {game.homePitcher.name}
+        <h4>Starting Pitchers: <Emoji emojiCode={game.awayTeam.emoji}/> {game.awayPitcher.name}
           <span> and </span>
-          <Emoji emojiCode={game.awayTeam.emoji}/> {game.awayPitcher.name}
+          <Emoji emojiCode={game.homeTeam.emoji}/> {game.homePitcher.name}
         </h4>
 
         <StoryDataPickerToolbox />
