@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useState }  from 'react';
 
 import { GameEvent } from 'lib/game-event';
 import { Game } from 'lib/game';
@@ -13,10 +13,16 @@ interface GameEventProps {
 }
 
 function GameEventRow({ gameEvent, game } : GameEventProps) {
+  const [isChecked, setIsChecked] = useState(false);
+
+  const onCheck = () => {
+    setIsChecked(!isChecked);
+  }
+
   return (
     <tr className="GameEventRow">
       <td className="p-2.5 align-top">
-        <Input type="checkbox" classes=""/>
+        <Input type="checkbox" classes="" checked={isChecked} onChange={onCheck} />
       </td>
       <td className="p-2.5 align-top">
         <textarea className="text-black p-[5px]" defaultValue={gameEvent.displayText} />
@@ -42,7 +48,7 @@ function GameEventRow({ gameEvent, game } : GameEventProps) {
         />
       </td>
       <td className="p-2.5 align-top">
-        <a className="underline" href="#">Preview</a>
+        <a className={isChecked ? 'underline' : 'cursor-default text-white/50'} href="#">Preview</a>
       </td>
     </tr>
   );
