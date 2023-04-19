@@ -12,6 +12,7 @@ module.exports = {
       colors: {
         'navy-blue': '#003049',
         'dark-blue': '#142c61',
+        'darker-blue': '#00283c',
         'sea-green': '#2a9d8f',
         'faded-orange': '#ff9770',
         'pink': '#ffc0cb',
@@ -20,6 +21,9 @@ module.exports = {
       lineHeight: {
         'extra-tight': '1.15',
       },
+    },
+    data: {
+      sticky: 'sticky="true"',
     },
   },
   plugins: [],

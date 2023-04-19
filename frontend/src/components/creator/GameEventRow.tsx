@@ -19,8 +19,39 @@ function GameEventRow({ gameEvent, game } : GameEventProps) {
     setIsChecked(!isChecked);
   }
 
+  const getRowClasses = () : string => {
+    let rowClasses = 'GameEventRow';
+
+    if (gameEvent.mlustard.out && gameEvent.mlustard.outMeta.kind === 'strike') {
+      rowClasses += ' strike';
+    }
+
+    if (gameEvent.mlustard.hit) {
+      rowClasses += ' hit';
+    }
+
+    if (gameEvent.mlustard.steal && gameEvent.mlustard.stealMeta.success) {
+      rowClasses += ' steal';
+    }
+
+    if (gameEvent.mlustard.special) {
+      rowClasses += ' special';
+    }
+
+    if (gameEvent.mlustard.score) {
+      rowClasses +=  ' score';
+    }
+
+    if (rowClasses !== 'GameEventRow') {
+      rowClasses += ' bg-pink text-navy-blue';
+    }
+
+    return rowClasses;
+  }
+
+
   return (
-    <tr className="GameEventRow">
+    <tr className={getRowClasses()}>
       <td className="p-2.5 align-top">
         <Input type="checkbox" classes="" checked={isChecked} onChange={onCheck} />
       </td>
