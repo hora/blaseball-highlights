@@ -46,6 +46,8 @@ function GameEventRow({ gameEvent, game } : GameEventProps) {
       rowClasses += ' bg-pink text-navy-blue';
     }
 
+    rowClasses += ' hover:bg-darker-blue hover:text-white';
+
     return rowClasses;
   }
 
