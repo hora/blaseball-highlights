@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 
 import { GameEvent } from 'lib/game-event';
 import { Game } from 'lib/game';
@@ -6,14 +6,26 @@ import { Game } from 'lib/game';
 import Input from 'components/elements/Input';
 import Scoreboard from 'components/common/Scoreboard';
 
+interface InterestingEvents {
+  [index: string]: boolean;
+}
 
 interface GameEventProps {
   gameEvent: GameEvent;
   game: Game;
+  updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
 }
 
-function GameEventRow({ gameEvent, game } : GameEventProps) {
+function GameEventRow({ gameEvent, game, updateInterestingEvents } : GameEventProps) {
   const [isChecked, setIsChecked] = useState(false);
+  const [interestingEvents, setInterestingEvents] = useState({
+    'halfInning': true,
+    'strike': false,
+    'hit': false,
+    'steal': false,
+    'special': false,
+    'score': false
+  } as InterestingEvents);
 
   const onCheck = () => {
     setIsChecked(!isChecked);
@@ -24,22 +36,27 @@ function GameEventRow({ gameEvent, game } : GameEventProps) {
 
     if (gameEvent.mlustard.out && gameEvent.mlustard.outMeta.kind === 'strike') {
       rowClasses += ' strike';
+      !interestingEvents.strike && setInterestingEvents(prevState => {return {...prevState, 'strike': true }});
     }
 
     if (gameEvent.mlustard.hit) {
       rowClasses += ' hit';
+      !interestingEvents.hit && setInterestingEvents(prevState => {return {...prevState, 'hit': true }});
     }
 
     if (gameEvent.mlustard.steal && gameEvent.mlustard.stealMeta.success) {
       rowClasses += ' steal';
+      !interestingEvents.steal && setInterestingEvents(prevState => {return {...prevState, 'steal': true }});
     }
 
     if (gameEvent.mlustard.special) {
       rowClasses += ' special';
+      !interestingEvents.special && setInterestingEvents(prevState => {return {...prevState, 'special': true }});
     }
 
     if (gameEvent.mlustard.score) {
       rowClasses +=  ' score';
+      !interestingEvents.score && setInterestingEvents(prevState => {return {...prevState, 'score': true }});
     }
 
     if (rowClasses !== 'GameEventRow') {
@@ -51,6 +68,20 @@ function GameEventRow({ gameEvent, game } : GameEventProps) {
     return rowClasses;
   }
 
+  useEffect(() => {
+    // only update events that were found in this row
+    // otherwise what we haven't found will override what may have been found
+    // in another row
+    const updated = Object.keys(interestingEvents).reduce((upd, k) => {
+      if (interestingEvents[k]) {
+        upd[k] = interestingEvents[k];
+      }
+
+      return upd;
+    }, {} as InterestingEvents);
+
+    updateInterestingEvents(updated);
+  }, [interestingEvents]);
 
   return (
     <tr className={getRowClasses()}>

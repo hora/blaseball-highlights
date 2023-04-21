@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useState }  from 'react';
 
 import { Game } from 'lib/game';
 
@@ -10,7 +10,26 @@ interface StoryDataPickerProps {
   game: Game;
 }
 
+interface InterestingEvents {
+  [index: string]: boolean;
+}
+
 function StoryDataPicker({ game } : StoryDataPickerProps) {
+  const [interestingEvents, setInterestingEvents] = useState({
+    'halfInning': true,
+    'strike': false,
+    'hit': false,
+    'steal': false,
+    'special': false,
+    'score': false
+  } as InterestingEvents);
+
+  const updateInterestingEvents = (newState: InterestingEvents) => {
+    setInterestingEvents(prevState => {
+      return {...prevState, ...newState};
+    });
+  };
+
   return (
     <div className="StoryDataPicker">
       <h2 className="text-3xl text-center my-6">2. Select game events to highlight</h2>
@@ -28,8 +47,8 @@ function StoryDataPicker({ game } : StoryDataPickerProps) {
           <Emoji emojiCode={game.homeTeam.emoji}/> {game.homePitcher.name}
         </h4>
 
-        <StoryDataPickerToolbox />
-        <StoryDataPickerTable game={game} />
+        <StoryDataPickerToolbox interestingEvents={interestingEvents} />
+        <StoryDataPickerTable game={game} updateInterestingEvents={updateInterestingEvents} />
 
         </div>
       :

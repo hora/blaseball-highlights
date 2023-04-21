@@ -6,11 +6,16 @@ import { GameEvent } from 'lib/game-event';
 import Input from 'components/elements/Input';
 import GameEventRow from 'components/creator/GameEventRow';
 
-interface StoryDataPickerTableProps {
-  game: Game;
+interface InterestingEvents {
+  [index: string]: boolean;
 }
 
-function StoryDataPickerTable({ game} : StoryDataPickerTableProps) {
+interface StoryDataPickerTableProps {
+  game: Game;
+  updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
+}
+
+function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPickerTableProps) {
   function hasDisplayText(gameEvent: GameEvent) : boolean {
     return !!gameEvent.displayText
   }
@@ -82,7 +87,7 @@ function StoryDataPickerTable({ game} : StoryDataPickerTableProps) {
             { gameEvent.mlustard.gameStatus === 'secondHalfInningStart' &&
                 <tr><td colSpan={5}>Bottom of X</td></tr>}
 
-            <GameEventRow key={i} gameEvent={gameEvent} game={game} />
+            <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} />
 
             </React.Fragment>
           );

@@ -2,7 +2,15 @@ import React, { useState, useEffect }  from 'react';
 
 import Button from 'components/elements/Button';
 
-function StoryDataPickerToolbox() {
+interface InterestingEvents {
+  [index: string]: boolean;
+}
+
+interface StoryDataPickerToolboxProps {
+  interestingEvents: InterestingEvents;
+}
+
+function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxProps) {
   const [canSave, setCanSave] = useState(false);
   const [canPreview, setCanPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -69,12 +77,12 @@ function StoryDataPickerToolbox() {
       <div className="mt-3 flex">
         <span className="w-[120px]">Jump to:</span>
         <ul className="mb-2.5" onClick={scrollTo}>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="inning">next half-inning</li>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="strike">next strikeout</li>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="hit">next hit</li>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="steal">next steal</li>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="special">next special</li>
-          <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="score">next score</li>
+          { interestingEvents.halfInning && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="inning">next half-inning</li>}
+          { interestingEvents.strike && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="strike">next strikeout</li>}
+          { interestingEvents.hit && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="hit">next hit</li>}
+          { interestingEvents.steal && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="steal">next steal</li>}
+          { interestingEvents.special && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="special">next special</li>}
+          { interestingEvents.score && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="score">next score</li>}
         </ul>
       </div>
 
