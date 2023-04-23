@@ -59,11 +59,11 @@ export class Game {
 
         let newState = gameEvent.data.changedState;
 
-        gameEventProps.homeScore = newState.homeScore || gameEventProps.homeScore;
-        gameEventProps.awayScore = newState.awayScore || gameEventProps.awayScore;
-        gameEventProps.strikes = newState.strikes || gameEventProps.strikes;
-        gameEventProps.balls = newState.balls || gameEventProps.balls;
-        gameEventProps.outs = newState.outs || gameEventProps.outs;
+        gameEventProps.homeScore = (newState.homeScore >= 0 ? newState.homeScore : gameEventProps.homeScore);
+        gameEventProps.awayScore = (newState.awayScore >= 0 ? newState.awayScore : gameEventProps.awayScore);
+        gameEventProps.strikes = (newState.strikes >= 0 ? newState.strikes : gameEventProps.strikes);
+        gameEventProps.balls = (newState.balls >= 0 ? newState.balls : gameEventProps.balls);
+        gameEventProps.outs = (newState.outs >= 0 ? newState.outs : gameEventProps.outs);
       }
 
       gameEventProps.displayText = gameEvent?.data?.displayText;
