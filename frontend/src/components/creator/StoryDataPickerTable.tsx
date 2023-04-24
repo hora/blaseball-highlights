@@ -61,7 +61,7 @@ function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPicke
 
       <tbody className="bg-faded-blue">
         <tr>
-        <td colSpan={5} className="p-2.5">
+        <td colSpan={5} className="p-2.5 ">
           <div className="flex justify-start">
             <div className="w-1/2">
               <label htmlFor="story-title">Story title</label>
@@ -101,9 +101,9 @@ function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPicke
           }
 
           inningHeader = (<React.Fragment>
-                <tr className="inning"><td colSpan={5}>{tOrB} of {gameEvent.inning + 1}</td></tr>
+                <tr className="inning"><td className="p-2.5 align-top" colSpan={5}>{tOrB} of {gameEvent.inning + 1}</td></tr>
                 <tr className="">
-                  <td colSpan={5}>
+                  <td colSpan={5} className="p-2.5 align-top">
                     <span>
                       <Emoji emojiCode={fielderEmoji}/> fielding, with {pitcher} pitching
                     </span>
@@ -119,12 +119,6 @@ function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPicke
             <React.Fragment key={i}>
 
             { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
-
-            { gameEvent.mlustard.gameStatus === 'firstHalfInningStart' &&
-                <tr className="inning"><td colSpan={5}>Top of X</td></tr>}
-
-            { gameEvent.mlustard.gameStatus === 'secondHalfInningStart' &&
-                <tr className="inning"><td colSpan={5}>Bottom of X</td></tr>}
 
             <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} />
 
