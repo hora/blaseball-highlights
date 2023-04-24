@@ -34,6 +34,9 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
   const scrollTo = (ev: React.MouseEvent<HTMLUListElement>) => {
     const target = ev.target as HTMLLIElement;
     const lookFor = target.getAttribute('data-scroll') || '';
+
+    if (!lookFor) return;
+
     const toolbox = document.getElementsByClassName('StoryDataPickerToolbox')[0] as HTMLDivElement;
     const headerHeight = toolbox.offsetHeight;
 
@@ -46,7 +49,7 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
     let found;
     let el = firstInView;
 
-    while (el = el.nextSibling as HTMLTableRowElement) {
+    while (el = el?.nextSibling as HTMLTableRowElement) {
       if (el.classList.contains(lookFor)) {
         found = el;
         break;
@@ -55,7 +58,7 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
 
     // look for the first starting from the top of the page
     if (!found) {
-      found = document.getElementsByClassName(`GameEventRow ${lookFor}`)[0] as HTMLTableRowElement;
+      found = document.getElementsByClassName('StoryDataPickerTable')[0].querySelectorAll(`.${lookFor}`)[0] as HTMLTableRowElement;
     }
 
     if (found) {
