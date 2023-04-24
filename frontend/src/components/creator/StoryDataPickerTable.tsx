@@ -4,6 +4,7 @@ import { Game } from 'lib/game';
 import { GameEvent } from 'lib/game-event';
 
 import Input from 'components/elements/Input';
+import Emoji from 'components/elements/Emoji';
 import GameEventRow from 'components/creator/GameEventRow';
 
 interface InterestingEvents {
@@ -75,19 +76,60 @@ function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPicke
         </tr>
 
         {game.gameEvents.filter(hasDisplayText).map((gameEvent, i) => {
+          let inningHeader;
+          let tOrB = '';
+          let fielderEmoji = '';
+          let pitcher = '';
+          let batterEmoji = '';
+
+          switch (gameEvent.mlustard.gameStatus) {
+            case 'beforeFirstPitch':
+            case 'secondHalfInningEnd':
+              tOrB = 'Top';
+              fielderEmoji = game.homeTeam.emoji;
+              pitcher = game.homePitcher.name;
+              batterEmoji = game.awayTeam.emoji;
+              break;
+            case 'firstHalfInningEnd':
+              tOrB = 'Bottom';
+              fielderEmoji = game.awayTeam.emoji;
+              pitcher = game.awayPitcher.name;
+              batterEmoji = game.homeTeam.emoji;
+              break;
+            default:
+              break;
+          }
+
+          inningHeader = (<React.Fragment>
+                <tr className="inning"><td colSpan={5}>{tOrB} of {gameEvent.inning + 1}</td></tr>
+                <tr className="">
+                  <td colSpan={5}>
+                    <span>
+                      <Emoji emojiCode={fielderEmoji}/> fielding, with {pitcher} pitching
+                    </span>
+                    <span>
+                      <Emoji emojiCode={batterEmoji}/> batting
+                    </span>
+                  </td>
+                </tr>
+              </React.Fragment>
+              )
+
           return (
             <React.Fragment key={i}>
 
-            { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' &&
-                <tr><td colSpan={5}>Top of 1</td></tr>}
+            { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
 
             { gameEvent.mlustard.gameStatus === 'firstHalfInningStart' &&
-                <tr><td colSpan={5}>Top of X</td></tr>}
+                <tr className="inning"><td colSpan={5}>Top of X</td></tr>}
 
             { gameEvent.mlustard.gameStatus === 'secondHalfInningStart' &&
-                <tr><td colSpan={5}>Bottom of X</td></tr>}
+                <tr className="inning"><td colSpan={5}>Bottom of X</td></tr>}
 
             <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} />
+
+            { gameEvent.mlustard.gameStatus === 'firstHalfInningEnd' && inningHeader}
+            { gameEvent.mlustard.gameStatus === 'secondHalfInningEnd' && inningHeader}
 
             </React.Fragment>
           );

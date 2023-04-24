@@ -47,6 +47,7 @@ export class Game {
       strikes: 0,
       balls: 0,
       outs: 0,
+      inning: 0,
     };
 
     let baserunners = [] as Player[];
@@ -64,6 +65,7 @@ export class Game {
         gameEventProps.strikes = (newState.strikes >= 0 ? newState.strikes : gameEventProps.strikes);
         gameEventProps.balls = (newState.balls >= 0 ? newState.balls : gameEventProps.balls);
         gameEventProps.outs = (newState.outs >= 0 ? newState.outs : gameEventProps.outs);
+        gameEventProps.inning = (newState.inning >= 0 ? newState.inning : gameEventProps.inning);
       }
 
       gameEventProps.displayText = gameEvent?.data?.displayText;

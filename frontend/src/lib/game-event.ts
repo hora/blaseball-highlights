@@ -9,6 +9,7 @@ export interface GameEventProps {
   strikes: number;
   balls: number;
   outs: number;
+  inning: number;
 }
 
 export interface Baserunners {
@@ -22,6 +23,7 @@ export class GameEvent {
   strikes: number;
   balls: number;
   outs: number;
+  inning: number;
   baserunners: Baserunners;
   mlustard: MlustardAnalysis;
 
@@ -32,6 +34,7 @@ export class GameEvent {
     this.strikes = data.strikes;
     this.balls = data.balls;
     this.outs = data.outs;
+    this.inning = data.inning;
     this.baserunners = {};
 
     this.mlustard = analyzeGameEvent(raw);
