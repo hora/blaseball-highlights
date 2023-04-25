@@ -1,6 +1,7 @@
 import React, { useState, useEffect }  from 'react';
 
 import Button from 'components/elements/Button';
+import Input from 'components/elements/Input';
 
 interface InterestingEvents {
   [index: string]: boolean;
@@ -73,12 +74,12 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
     <div className="StoryDataPickerToolbox w-full data-sticky:sticky data-sticky:top-0 data-sticky:left-0 data-sticky:bg-darker-blue data-sticky:z-[1000]" data-sticky="false">
     <div className="flex mt-4 max-w-[900px] mx-auto">
       <div className="mt-3 w-64 mr-5">
-        <input id="toolbox-check-all" type="checkbox" name="select all events" />
-        <label htmlFor="toolbox-check-all">Select all events</label>
+        <Input id="toolbox-check-all" type="checkbox" classes="" checked={false} onChange={()=>{return;}} />
+        <label htmlFor="toolbox-check-all" className="ml-2.5">Select all events</label>
       </div>
 
       <div className="mt-3 flex">
-        <span className="w-[120px]">Jump to:</span>
+        <span className="w-[120px] mr-2.5">Jump to:</span>
         <ul className="mb-2.5" onClick={scrollTo}>
           { interestingEvents.halfInning && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="inning">next half-inning</li>}
           { interestingEvents.strike && <li className="text-lg inline-block mr-[5px] mb-[7px] bg-pink text-navy-blue py-[2px] px-[5px] lowercase" data-scroll="strike">next strikeout</li>}
@@ -90,14 +91,14 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
       </div>
 
       <div className="mt-3 w-[400px] flex flex-col">
-        <Button text="Save & Publish Story" btnType="submit" disabled={canSave} classes="mb-[7px]" />
+        <Button text="Save & Publish Story" btnType="submit" disabled={!canSave} classes="mb-[7px]" />
         {isSaving &&
           <div><span>Saving ... </span></div>
         }
         {hasSaved &&
           <div><span>💾 Saved!</span></div>
         }
-        <Button text="Preview Story" btnType="submit" disabled={canPreview} classes="mb-[7px]" />
+        <Button text="Preview Story" btnType="submit" disabled={!canPreview} classes="mb-[7px]" />
       </div>
     </div>
     </div>

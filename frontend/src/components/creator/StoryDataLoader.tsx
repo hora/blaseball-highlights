@@ -123,7 +123,7 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
       <form className="GameLoadForm" onSubmit={loadGameEvents}>
 
         <label htmlFor="game-id" className="">
-          Enter a game ID or the game's <a className="underline" href="https://reblase.sibr.dev/">Reblase</a> link
+          Enter a game ID or the game's <a className="underline" href="https://reblase.sibr.dev/" target="_blank" rel="noopener noreferrer">Reblase</a> link
           <Input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} classes="w-full" onChange={handleChange} />
         </label>
 

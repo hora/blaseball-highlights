@@ -32,7 +32,7 @@ function StoryDataPicker({ game } : StoryDataPickerProps) {
 
   return (
     <div className="StoryDataPicker">
-      <h2 className="text-3xl text-center my-6">2. Select game events to highlight</h2>
+      <h2 className="text-3xl text-center my-6">2. Select & edit game events to highlight</h2>
 
       {game.id ?
         <div>

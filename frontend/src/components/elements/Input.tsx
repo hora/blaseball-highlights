@@ -14,7 +14,7 @@ function Input({ id, name, type, placeholder, classes, onChange, checked } : Inp
   placeholder = placeholder || '';
 
   classes = classes || '';
-  let cmpClasses = `${classes} rounded-sm border-none p-2.5 block mt-2.5 mb-4 leading-extra-tight text-black`;
+  let cmpClasses = `${classes} rounded-sm border-none p-2.5 mt-2.5 mb-4 leading-extra-tight text-black`;
 
   return (
     <input className={cmpClasses} id={id} name={name} type={type} placeholder={placeholder} onChange={onChange} checked={checked}></input>
