@@ -14,9 +14,10 @@ interface InterestingEvents {
 interface StoryDataPickerTableProps {
   game: Game;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
+  checkAll: boolean;
 }
 
-function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPickerTableProps) {
+function StoryDataPickerTable({ game, updateInterestingEvents, checkAll } : StoryDataPickerTableProps) {
   function hasDisplayText(gameEvent: GameEvent) : boolean {
     return !!gameEvent.displayText
   }
@@ -120,7 +121,7 @@ function StoryDataPickerTable({ game, updateInterestingEvents } : StoryDataPicke
 
             { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
 
-            <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} />
+            <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} checkAll={checkAll} />
 
             { gameEvent.mlustard.gameStatus === 'firstHalfInningEnd' && inningHeader}
             { gameEvent.mlustard.gameStatus === 'secondHalfInningEnd' && inningHeader}

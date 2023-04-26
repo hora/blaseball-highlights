@@ -9,9 +9,11 @@ interface InterestingEvents {
 
 interface StoryDataPickerToolboxProps {
   interestingEvents: InterestingEvents;
+  toggleCheckAll: () => void;
+  checkAll: boolean;
 }
 
-function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxProps) {
+function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll } : StoryDataPickerToolboxProps) {
   const [canSave, setCanSave] = useState(false);
   const [canPreview, setCanPreview] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -74,7 +76,7 @@ function StoryDataPickerToolbox({ interestingEvents } : StoryDataPickerToolboxPr
     <div className="StoryDataPickerToolbox w-full data-sticky:sticky data-sticky:top-0 data-sticky:left-0 data-sticky:bg-darker-blue data-sticky:z-[1000]" data-sticky="false">
     <div className="flex mt-4 max-w-[900px] mx-auto">
       <div className="mt-3 w-64 mr-5">
-        <Input id="toolbox-check-all" type="checkbox" classes="" checked={false} onChange={()=>{return;}} />
+        <Input id="toolbox-check-all" type="checkbox" classes="" checked={checkAll} onChange={toggleCheckAll} />
         <label htmlFor="toolbox-check-all" className="ml-2.5">Select all events</label>
       </div>
 

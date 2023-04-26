@@ -14,9 +14,10 @@ interface GameEventProps {
   gameEvent: GameEvent;
   game: Game;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
+  checkAll: boolean;
 }
 
-function GameEventRow({ gameEvent, game, updateInterestingEvents } : GameEventProps) {
+function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : GameEventProps) {
   const [isChecked, setIsChecked] = useState(false);
   const [interestingEvents, setInterestingEvents] = useState({
     'halfInning': true,
@@ -30,6 +31,11 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents } : GameEventPr
   const onCheck = () => {
     setIsChecked(!isChecked);
   }
+
+  // force state change when check all is (un)checked
+  useEffect(() => {
+    setIsChecked(checkAll);
+  }, [checkAll]);
 
   const getRowClasses = () : string => {
     let rowClasses = 'GameEventRow';

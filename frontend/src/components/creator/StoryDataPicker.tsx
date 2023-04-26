@@ -15,6 +15,7 @@ interface InterestingEvents {
 }
 
 function StoryDataPicker({ game } : StoryDataPickerProps) {
+  const [checkAll, setCheckAll] = useState(false);
   const [interestingEvents, setInterestingEvents] = useState({
     'halfInning': true,
     'strike': false,
@@ -29,6 +30,10 @@ function StoryDataPicker({ game } : StoryDataPickerProps) {
       return {...prevState, ...newState};
     });
   };
+
+  const toggleCheckAll = () => {
+    setCheckAll(!checkAll);
+  }
 
   return (
     <div className="StoryDataPicker">
@@ -47,8 +52,8 @@ function StoryDataPicker({ game } : StoryDataPickerProps) {
           <Emoji emojiCode={game.homeTeam.emoji}/> {game.homePitcher.name}
         </h4>
 
-        <StoryDataPickerToolbox interestingEvents={interestingEvents} />
-        <StoryDataPickerTable game={game} updateInterestingEvents={updateInterestingEvents} />
+        <StoryDataPickerToolbox interestingEvents={interestingEvents} checkAll={checkAll} toggleCheckAll={toggleCheckAll} />
+        <StoryDataPickerTable game={game} updateInterestingEvents={updateInterestingEvents} checkAll={checkAll} />
 
         </div>
       :
