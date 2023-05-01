@@ -14,17 +14,10 @@ interface StoryDataLoaderProps {
   setGame: (game: Game) => void;
 }
 
-const formReducer = (state: any, evt: any) => {
-  return {
-    ...state,
-    [evt.name]: evt.value
-  }
-}
-
 function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
   const [reblasePlaceholder, setReblasePlaceholder] = useState(getRandomGame());
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, dispatchFormData] = useReducer(formReducer, {});
+  const [gameID, setGameID] = useState('');
 
   function getRandomGame(): string {
     const games = [
@@ -52,19 +45,14 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
     setGame(game);
   }
 
-  function handleChange(evt: ChangeEvent<HTMLInputElement>) {
-    dispatchFormData({
-      name: evt.target.name,
-      value: evt.target.value
-    });
-  }
+  const updateInput = (evt: ChangeEvent<HTMLInputElement>) => {
+    setGameID(evt.target.value);
+  };
 
   function getGameID() : string {
-    let input = formData["game-id"];
+    let input = gameID || reblasePlaceholder;
 
-    input = input || reblasePlaceholder;
-
-    return input.split('/').pop();
+    return input.split('/').pop() || '';
   }
 
   async function fetchGame() {
@@ -124,7 +112,7 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
 
         <label htmlFor="game-id" className="">
           Enter a game ID or the game's <a className="underline" href="https://reblase.sibr.dev/" target="_blank" rel="noopener noreferrer">Reblase</a> link
-          <Input id="game-id" name="game-id" type="text" placeholder={reblasePlaceholder} classes="w-full" onChange={handleChange} />
+          <Input id="game-id" name="game-id" type="text" value={gameID} placeholder={reblasePlaceholder} classes="w-full" onChange={updateInput} />
         </label>
 
         {!isLoading &&
