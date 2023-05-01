@@ -30,7 +30,6 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
   const [gameID, setGameID] = useState('');
 
   const loadGameEvents = async (evt: FormEvent) => {
-  // async function loadGameEvents(evt: FormEvent) {
     evt.preventDefault();
 
     setIsLoading(true);
