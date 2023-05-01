@@ -14,22 +14,23 @@ interface StoryDataLoaderProps {
   setGame: (game: Game) => void;
 }
 
+const getRandomGame = () : string => {
+  const games = [
+    // final internet series game in the coronation era, by season
+    'https://reblase.sibr.dev/experimental/game/2376b471-2aba-49fb-957d-18a6897ebb74',
+    'https://reblase.sibr.dev/experimental/game/47096007-48f8-428f-bb38-3ef1f7af71e7',
+  ];
+
+  return games[Math.floor(Math.random() * (games.length))];
+}
+
 function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
   const [reblasePlaceholder, setReblasePlaceholder] = useState(getRandomGame());
   const [isLoading, setIsLoading] = useState(false);
   const [gameID, setGameID] = useState('');
 
-  function getRandomGame(): string {
-    const games = [
-      // final internet series game in the coronation era, by season
-      'https://reblase.sibr.dev/experimental/game/2376b471-2aba-49fb-957d-18a6897ebb74',
-      'https://reblase.sibr.dev/experimental/game/47096007-48f8-428f-bb38-3ef1f7af71e7',
-    ];
-
-    return games[Math.floor(Math.random() * (games.length))];
-  }
-
-  async function loadGameEvents(evt: FormEvent) {
+  const loadGameEvents = async (evt: FormEvent) => {
+  // async function loadGameEvents(evt: FormEvent) {
     evt.preventDefault();
 
     setIsLoading(true);
@@ -43,19 +44,19 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
     game.buildGameEvents(gameEventsData);
 
     setGame(game);
-  }
+  };
 
   const updateInput = (evt: ChangeEvent<HTMLInputElement>) => {
     setGameID(evt.target.value);
   };
 
-  function getGameID() : string {
+  const getGameID = () : string => {
     let input = gameID || reblasePlaceholder;
 
     return input.split('/').pop() || '';
   }
 
-  async function fetchGame() {
+  const fetchGame = async () => {
     const gameURL = `${CHRONICLER_BASE_URL}/entities?kind=game&count=1&id=${getGameID()}`;
 
     const response = await fetch(gameURL);
@@ -67,13 +68,13 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
     const gameData = await response.json();
 
     return gameData;
-  }
+  };
 
-  async function fetchGameEvents() {
+  const fetchGameEvents = async () => {
     const gameEventsURL = `${CHRONICLER_BASE_URL}/game-events?game_id=${getGameID()}`;
     let paginatedGameEvents: unknown[] = [];
 
-    async function getPaginatedEvents(nextPage: string) {
+    const getPaginatedEvents = async (nextPage: string) => {
       let fetchURL = gameEventsURL;
 
       if (nextPage) {
@@ -102,7 +103,7 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
     await getPaginatedEvents('');
 
     return paginatedGameEvents;
-  }
+  };
 
   return (
     <div className="StoryDataLoader">
