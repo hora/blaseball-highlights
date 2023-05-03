@@ -24,6 +24,16 @@
       "withTest": false,
       "withStory": false,
       "withLazy": false
+    },
+    "player": {
+      "customTemplates": {
+        "component": "templates/player/TemplateName.tsx"
+      },
+      "path": "src/components/player",
+      "withStyle": false,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false
     }
   }
 }
