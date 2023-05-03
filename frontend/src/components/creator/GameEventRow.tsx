@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import React, { useState, useEffect, ChangeEvent }  from 'react';
 
 import { GameEvent } from 'lib/game-event';
 import { Game } from 'lib/game';
@@ -19,6 +19,8 @@ interface GameEventProps {
 
 function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : GameEventProps) {
   const [isChecked, setIsChecked] = useState(false);
+  const [eventText, setEventText] = useState(gameEvent.displayText);
+  const [visual, setVisual] = useState(gameEvent.mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond');
   const [interestingEvents, setInterestingEvents] = useState({
     'halfInning': true,
     'strike': false,
@@ -89,17 +91,25 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : G
     updateInterestingEvents(updated);
   }, [interestingEvents]);
 
+  const updateEventText = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    setEventText(evt.target.value);
+  }
+
+  const updateVisual = (evt: ChangeEvent<HTMLSelectElement>) => {
+    setVisual(evt.target.value);
+  }
+
   return (
     <tr className={getRowClasses()}>
       <td className="p-2.5 align-top">
         <Input type="checkbox" classes="" checked={isChecked} onChange={onCheck} />
       </td>
       <td className="p-2.5 align-top">
-        <textarea className="text-black p-[5px]" defaultValue={gameEvent.displayText} />
+        <textarea className="text-black p-[5px]" defaultValue={eventText} onChange={updateEventText} />
       </td>
       <td className="p-2.5 align-top">
         <label>Choose a visual for this event:</label>
-        <select className="text-black block mt-1" name="visual" defaultValue={gameEvent.mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond'}>
+        <select className="text-black block mt-1" name="visual" value={visual} onChange={updateVisual} >
           <option value="diamond">Diamond</option>
           <option value="matchup">Matchup</option>
           <option value="custom">Custom</option>
