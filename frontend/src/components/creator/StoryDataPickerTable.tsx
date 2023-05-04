@@ -1,7 +1,6 @@
 import React  from 'react';
 
-import { Game } from 'lib/game';
-import { GameEvent } from 'lib/game-event';
+import { Game, GameEvent } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Emoji from 'components/elements/Emoji';

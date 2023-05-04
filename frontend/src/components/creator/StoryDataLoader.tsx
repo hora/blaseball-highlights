@@ -1,7 +1,8 @@
 import React, { useState, useReducer, FormEvent, ChangeEvent } from 'react';
 import { QueryClient } from 'react-query';
 
-import { Game } from 'lib/game';
+import { Game } from 'lib/models';
+import { makeGame } from 'lib/game';
 
 import StoryDataPicker from 'components/creator/StoryDataPicker';
 import Button from 'components/elements/Button';
@@ -39,8 +40,7 @@ function StoryDataLoader({ setGame } : StoryDataLoaderProps) {
 
     setIsLoading(false);
 
-    const game = new Game(gameData?.items[0]);
-    game.buildGameEvents(gameEventsData);
+    const game = makeGame(gameData?.items[0], gameEventsData);
 
     setGame(game);
   };

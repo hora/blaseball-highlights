@@ -1,25 +1,27 @@
-export class Season {
-  id: string;
-  era: string;
-  number: number;
+import { Season } from './models';
 
-  constructor(seasonID: string) {
-    this.id = seasonID || '';
+const makeSeason = (seasonID: string) : Season => {
+  let seasonNumber = 0;
+  let seasonEra = 'Unknown Era';
 
-    switch (seasonID) {
-      case 'cd1b6714-f4de-4dfc-a030-851b3459d8d1':
-        this.era = 'Coronation Era'
-        this.number = 1;
-        break;
-      case '7af53acf-1fb9-40e8-96c7-ab8308a353f9':
-        this.era = 'Coronation Era'
-        this.number = 2;
-        break;
-      default:
-        this.era = 'Unknown Era'
-        this.number = 0;
-        break;
-    }
+  switch (seasonID) {
+    case 'cd1b6714-f4de-4dfc-a030-851b3459d8d1':
+      seasonEra = 'Coronation Era';
+      seasonNumber = 1;
+      break;
+    case '7af53acf-1fb9-40e8-96c7-ab8308a353f9':
+      seasonEra = 'Coronation Era';
+      seasonNumber = 2;
+      break;
   }
-}
 
+  return {
+    id: seasonID || '',
+    number: seasonNumber,
+    era: seasonEra,
+  };
+};
+
+export {
+  makeSeason,
+}

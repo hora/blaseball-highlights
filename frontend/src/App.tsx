@@ -3,6 +3,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import 'tailwind.css';
 
+import { Game, GameEvent } from 'lib/models';
+
 import StoryCreator from 'components/creator/StoryCreator';
 
 const queryClient = new QueryClient();

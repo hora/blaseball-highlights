@@ -2,7 +2,7 @@ import React  from 'react';
 import clsx from 'clsx';
 import Tooltip from 'rc-tooltip';
 
-import { Player} from 'lib/player';
+import { Player } from 'lib/models';
 
 interface ScoreboardDiamondProps {
   baserunner?: Player;

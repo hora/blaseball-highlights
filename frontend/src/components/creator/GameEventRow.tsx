@@ -1,7 +1,6 @@
 import React, { useState, useEffect, ChangeEvent }  from 'react';
 
-import { GameEvent } from 'lib/game-event';
-import { Game } from 'lib/game';
+import { Game, GameEvent } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Scoreboard from 'components/common/Scoreboard';

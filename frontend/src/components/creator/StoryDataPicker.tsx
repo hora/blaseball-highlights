@@ -1,6 +1,6 @@
 import React, { useState }  from 'react';
 
-import { Game } from 'lib/game';
+import { Game, GameEvent } from 'lib/models';
 
 import Emoji from 'components/elements/Emoji';
 import StoryDataPickerToolbox from 'components/creator/StoryDataPickerToolbox';

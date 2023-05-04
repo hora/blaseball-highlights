@@ -1,8 +1,6 @@
 import React  from 'react';
 
-import { Player} from 'lib/player';
-import { Team } from 'lib/team';
-import { Baserunners } from 'lib/game-event';
+import { Player, Team, Baserunners } from 'lib/models';
 
 import ScoreboardDiamond from 'components/common/ScoreboardDiamond';
 
