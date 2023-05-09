@@ -11,11 +11,11 @@ interface StoryDataPickerToolboxProps {
   interestingEvents: InterestingEvents;
   toggleCheckAll: () => void;
   checkAll: boolean;
+  canSaveStory: boolean;
+  canPreviewStory: boolean;
 }
 
-function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll } : StoryDataPickerToolboxProps) {
-  const [canSave, setCanSave] = useState(false);
-  const [canPreview, setCanPreview] = useState(false);
+function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll, canSaveStory, canPreviewStory } : StoryDataPickerToolboxProps) {
   const [isSaving, setIsSaving] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);
 
@@ -94,14 +94,14 @@ function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll } 
       </div>
 
       <div className="mt-3 w-[400px] flex flex-col">
-        <Button text="Save & Publish Story" btnType="submit" disabled={!canSave} classes="mb-[7px]" />
+        <Button text="Save & Publish Story" btnType="submit" disabled={!canSaveStory} classes="mb-[7px]" />
         {isSaving &&
           <div><span>Saving ... </span></div>
         }
         {hasSaved &&
           <div><span>💾 Saved!</span></div>
         }
-        <Button text="Preview Story" btnType="submit" disabled={!canPreview} classes="mb-[7px]" />
+        <Button text="Preview Story" btnType="submit" disabled={!canPreviewStory} classes="mb-[7px]" />
       </div>
     </div>
     </div>

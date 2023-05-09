@@ -10,13 +10,21 @@ interface StoryCreatorProps {
   gameEvents: GameEvent[];
   setGame: (game: Game) => void;
   updateGameEvents: (action: GameEventsUpdateProps) => void;
+  canSaveStory: boolean;
+  canPreviewStory: boolean;
 }
 
-function StoryCreator({ game, setGame, gameEvents, updateGameEvents } : StoryCreatorProps) {
+function StoryCreator({ game, setGame, gameEvents, updateGameEvents, canSaveStory, canPreviewStory } : StoryCreatorProps) {
   return (
     <div className="StoryCreator">
       <StoryDataLoader setGame={setGame} updateGameEvents={updateGameEvents} />
-      <StoryDataPicker game={game} gameEvents={gameEvents} updateGameEvents={updateGameEvents} />
+      <StoryDataPicker
+        game={game}
+        gameEvents={gameEvents}
+        updateGameEvents={updateGameEvents}
+        canSaveStory={canSaveStory}
+        canPreviewStory={canPreviewStory}
+      />
     </div>
   );
 }

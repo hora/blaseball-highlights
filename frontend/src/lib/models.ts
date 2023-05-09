@@ -92,6 +92,11 @@ export interface SlideProps {
   gameEvent: GameEvent;
 }
 
+export interface SlideUpdateProps {
+  type: string;
+  slides: Slide[];
+}
+
 export interface Story {
   id: string;
   creator: string;

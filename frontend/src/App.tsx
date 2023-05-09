@@ -1,9 +1,9 @@
-import React, { useState, useReducer } from 'react';
+import React, { useState, useReducer, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import 'tailwind.css';
 
-import { StoryProps, Game, GameEvent, GameEventUpdateProps, GameEventsUpdateProps } from 'lib/models';
+import { StoryProps, Game, GameEvent, GameEventUpdateProps, GameEventsUpdateProps, Slide, SlideUpdateProps } from 'lib/models';
 import { makeStory } from 'lib/story';
 
 import StoryCreator from 'components/creator/StoryCreator';
@@ -31,8 +31,12 @@ const updateGameEventsReducer = (currGameEvents: GameEvent[], action: GameEvents
 function App() {
   const [story, setStory] = useState(makeStory({creator: 'me!'} as StoryProps));
   const [game, setGame] = useState({} as Game);
-  const initialGameEvents = [] as GameEvent[];
-  const [gameEvents, updateGameEvents] = useReducer(updateGameEventsReducer, initialGameEvents);
+  const [gameEvents, updateGameEvents] = useReducer(updateGameEventsReducer, [] as GameEvent[]);
+
+  // check if story can be previewed
+  useEffect(() => {
+    setStory({...story, canBePreviewed: !!gameEvents.filter((gameEvent: GameEvent) => { return gameEvent.isSelected; }).length});
+  }, [gameEvents]);
 
   return (
     <div className="App text-white text-xl max-w-4xl mx-auto py-10">
@@ -42,6 +46,8 @@ function App() {
           setGame={setGame}
           gameEvents={gameEvents}
           updateGameEvents={updateGameEvents}
+          canSaveStory={story.canBeSaved}
+          canPreviewStory={story.canBePreviewed}
         />
         {/* <StoryPlayer /> */}
       </QueryClientProvider>

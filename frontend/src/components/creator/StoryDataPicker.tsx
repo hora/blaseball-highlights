@@ -10,13 +10,15 @@ interface StoryDataPickerProps {
   game: Game;
   gameEvents: GameEvent[];
   updateGameEvents: (action: GameEventsUpdateProps) => void;
+  canSaveStory: boolean;
+  canPreviewStory: boolean;
 }
 
 interface InterestingEvents {
   [index: string]: boolean;
 }
 
-function StoryDataPicker({ game, gameEvents, updateGameEvents } : StoryDataPickerProps) {
+function StoryDataPicker({ game, gameEvents, updateGameEvents, canSaveStory, canPreviewStory } : StoryDataPickerProps) {
   const [checkAll, setCheckAll] = useState(false);
   const [interestingEvents, setInterestingEvents] = useState({
     'halfInning': true,
@@ -54,7 +56,13 @@ function StoryDataPicker({ game, gameEvents, updateGameEvents } : StoryDataPicke
           <Emoji emojiCode={game.homeTeam.emoji}/> {game.homePitcher.name}
         </h4>
 
-        <StoryDataPickerToolbox interestingEvents={interestingEvents} checkAll={checkAll} toggleCheckAll={toggleCheckAll} />
+        <StoryDataPickerToolbox
+            interestingEvents={interestingEvents}
+            checkAll={checkAll}
+            toggleCheckAll={toggleCheckAll}
+            canSaveStory={canSaveStory}
+            canPreviewStory={canPreviewStory}
+          />
         <StoryDataPickerTable
             game={game}
             gameEvents={gameEvents}
