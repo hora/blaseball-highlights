@@ -27,7 +27,8 @@ export interface Season {
 }
 
 export interface GameEvent {
-  uuid: string;
+  id: string;
+  gameID: string;
   displayText: string;
   homeScore: number;
   awayScore: number;
@@ -37,6 +38,7 @@ export interface GameEvent {
   inning: number;
   baserunners: Baserunners;
   mlustard: MlustardAnalysis;
+  isSelected: boolean;
 }
 
 export interface GameEventProps {
@@ -47,6 +49,18 @@ export interface GameEventProps {
   balls: number;
   outs: number;
   inning: number;
+}
+
+export interface GenericGameEventsUpdateProps {
+  type: string;
+}
+
+export interface GameEventsUpdateProps extends GenericGameEventsUpdateProps {
+  gameEvents: GameEvent[];
+}
+
+export interface GameEventUpdateProps extends GenericGameEventsUpdateProps {
+  gameEvent: GameEvent;
 }
 
 export interface Game {
@@ -62,6 +76,36 @@ export interface Game {
   day: number;
   weather: string;
 
-  gameEvents: GameEvent[];
+  // gameEvents: GameEvent[];
+}
+
+export interface Slide {
+  id: string;
+  visual: string;
+  text: string;
+  gameEvent: GameEvent;
+}
+
+export interface SlideProps {
+  visual?: string;
+  text?: string;
+  gameEvent: GameEvent;
+}
+
+export interface Story {
+  id: string;
+  creator: string;
+  canBeSaved: boolean;
+  canBePreviewed: boolean;
+  // game: Game | undefined;
+  // slides: Slide[];
+}
+
+export interface StoryProps {
+  id?: string;
+  creator?: string;
+  // game?: Game;
+  // slides?: Slide[];
+  // gameEvents?: GameEvent[];
 }
 

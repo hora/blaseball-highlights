@@ -19,6 +19,7 @@ function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll } 
   const [isSaving, setIsSaving] = useState(false);
   const [hasSaved, setHasSaved] = useState(false);
 
+  // make toolbox stick if scrolled beyond it
   useEffect(() => {
     const toolbox = document.getElementsByClassName('StoryDataPickerToolbox')[0] as HTMLDivElement;
     const toolboxTop = toolbox.offsetTop;

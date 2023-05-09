@@ -1,6 +1,6 @@
 import React  from 'react';
 
-import { Game, GameEvent } from 'lib/models';
+import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Emoji from 'components/elements/Emoji';
@@ -12,20 +12,22 @@ interface InterestingEvents {
 
 interface StoryDataPickerTableProps {
   game: Game;
+  gameEvents: GameEvent[];
+  updateGameEvents: (action: GameEventsUpdateProps) => void;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
   checkAll: boolean;
 }
 
-function StoryDataPickerTable({ game, updateInterestingEvents, checkAll } : StoryDataPickerTableProps) {
-  function hasDisplayText(gameEvent: GameEvent) : boolean {
+function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateInterestingEvents, checkAll } : StoryDataPickerTableProps) {
+  const hasDisplayText = (gameEvent: GameEvent) : boolean => {
     return !!gameEvent.displayText
-  }
+  };
 
-  function isStartOrEnd(gameEvent: GameEvent) : boolean {
+  const isStartOrEnd = (gameEvent: GameEvent) : boolean => {
     return gameEvent.mlustard.gameStatus === 'beforeFirstPitch' || gameEvent.mlustard.gameStatus === 'gameEnd'
-  }
+  };
 
-  function isInteresting(gameEvent: GameEvent) : boolean {
+  const isInteresting = (gameEvent: GameEvent) : boolean => {
     // don't care about events that don't have display text
     if (!hasDisplayText(gameEvent)) return false;
 
@@ -42,12 +44,21 @@ function StoryDataPickerTable({ game, updateInterestingEvents, checkAll } : Stor
     }
 
     return false;
-  }
+  };
 
-  function isHighlight(gameEvent: GameEvent) : boolean {
+  const isHighlight = (gameEvent: GameEvent) : boolean => {
     return isInteresting(gameEvent) || isStartOrEnd(gameEvent);
-  }
+  };
 
+  // const updateGameEvent = (gameEvent: GameEvent) => {
+  //   setGame(game.gameEvents.map(gE => {
+  //     if (gE.uuid === gameEvent.uuid) {
+  //       return {...gE, isSelected: gameEvent.isSelected };
+  //     } else {
+  //       return gE;
+  //     }
+  //   }));
+  // };
 
   return (
     <table className="StoryDataPickerTable w-full text-lg border-separate">
@@ -75,7 +86,7 @@ function StoryDataPickerTable({ game, updateInterestingEvents, checkAll } : Stor
         </td>
         </tr>
 
-        {game.gameEvents.filter(hasDisplayText).map((gameEvent, i) => {
+        {gameEvents.filter(hasDisplayText).map((gameEvent:GameEvent, i:number) => {
           let inningHeader;
           let tOrB = '';
           let fielderEmoji = '';
@@ -120,7 +131,14 @@ function StoryDataPickerTable({ game, updateInterestingEvents, checkAll } : Stor
 
             { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
 
-            <GameEventRow key={i} gameEvent={gameEvent} game={game} updateInterestingEvents={updateInterestingEvents} checkAll={checkAll} />
+            <GameEventRow
+                key={i}
+                gameEvent={gameEvent}
+                game={game}
+                updateInterestingEvents={updateInterestingEvents}
+                updateGameEvents={updateGameEvents}
+                checkAll={checkAll}
+              />
 
             { gameEvent.mlustard.gameStatus === 'firstHalfInningEnd' && inningHeader}
             { gameEvent.mlustard.gameStatus === 'secondHalfInningEnd' && inningHeader}

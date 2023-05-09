@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 
-import { Game } from 'lib/game';
+import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
 
 import StoryDataLoader from 'components/creator/StoryDataLoader';
 import StoryDataPicker from 'components/creator/StoryDataPicker';
 
-function StoryCreator() {
-  const [game, setGame] = useState({} as Game);
+interface StoryCreatorProps {
+  game: Game;
+  gameEvents: GameEvent[];
+  setGame: (game: Game) => void;
+  updateGameEvents: (action: GameEventsUpdateProps) => void;
+}
 
+function StoryCreator({ game, setGame, gameEvents, updateGameEvents } : StoryCreatorProps) {
   return (
     <div className="StoryCreator">
-      <StoryDataLoader setGame={setGame} />
-      <StoryDataPicker game={game} />
+      <StoryDataLoader setGame={setGame} updateGameEvents={updateGameEvents} />
+      <StoryDataPicker game={game} gameEvents={gameEvents} updateGameEvents={updateGameEvents} />
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent }  from 'react';
 
-import { Game, GameEvent } from 'lib/models';
+import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Scoreboard from 'components/common/Scoreboard';
@@ -13,11 +13,12 @@ interface GameEventProps {
   gameEvent: GameEvent;
   game: Game;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
+  updateGameEvents: (action: GameEventsUpdateProps) => void;
   checkAll: boolean;
 }
 
-function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : GameEventProps) {
-  const [isChecked, setIsChecked] = useState(false);
+function GameEventRow({ gameEvent, game, updateInterestingEvents, updateGameEvents, checkAll } : GameEventProps) {
+  // const [isChecked, setIsChecked] = useState(gameEvent.isSelected);
   const [eventText, setEventText] = useState(gameEvent.displayText);
   const [visual, setVisual] = useState(gameEvent.mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond');
   const [interestingEvents, setInterestingEvents] = useState({
@@ -30,12 +31,12 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : G
   } as InterestingEvents);
 
   const onCheck = () => {
-    setIsChecked(!isChecked);
+    updateGameEvents({type: 'modifyOne', gameEvents: [{...gameEvent, isSelected: !gameEvent.isSelected}]});
   }
 
   // force state change when check all is (un)checked
   useEffect(() => {
-    setIsChecked(checkAll);
+    updateGameEvents({type: 'modifyOne', gameEvents: [{...gameEvent, isSelected: checkAll}]});
   }, [checkAll]);
 
   const getRowClasses = () : string => {
@@ -101,7 +102,7 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : G
   return (
     <tr className={getRowClasses()}>
       <td className="p-2.5 align-top">
-        <Input type="checkbox" classes="" checked={isChecked} onChange={onCheck} />
+        <Input type="checkbox" classes="" checked={gameEvent.isSelected} onChange={onCheck} />
       </td>
       <td className="p-2.5 align-top">
         <textarea className="text-black p-[5px]" defaultValue={eventText} onChange={updateEventText} />
@@ -127,7 +128,7 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, checkAll } : G
         />
       </td>
       <td className="p-2.5 align-top">
-        <a className={isChecked ? 'underline' : 'cursor-default text-white/50'} href="#">Preview</a>
+        <a className={gameEvent.isSelected ? 'underline' : 'cursor-default text-white/50'} href="#">Preview</a>
       </td>
     </tr>
   );
