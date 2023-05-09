@@ -75,8 +75,6 @@ export interface Game {
   dayRaw: number;
   day: number;
   weather: string;
-
-  // gameEvents: GameEvent[];
 }
 
 export interface Slide {
@@ -102,15 +100,10 @@ export interface Story {
   creator: string;
   canBeSaved: boolean;
   canBePreviewed: boolean;
-  // game: Game | undefined;
-  // slides: Slide[];
 }
 
 export interface StoryProps {
   id?: string;
   creator?: string;
-  // game?: Game;
-  // slides?: Slide[];
-  // gameEvents?: GameEvent[];
 }
 
