@@ -1,28 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
-
-import './index.css';
+import reportWebVitals from './reportWebVitals';
 import 'rc-tooltip/assets/bootstrap.css';
+import './index.css';
+
 import App from 'App';
 import ErrorPage from 'components/ErrorPage';
-import reportWebVitals from './reportWebVitals';
+import StoryPlayer from 'components/player/StoryPlayer';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <App />,
-    errorElement: <ErrorPage />,
-  },
-]);
-
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <App />
   </React.StrictMode>
 );
 

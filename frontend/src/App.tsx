@@ -1,5 +1,6 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { BrowserRouter, Outlet, Routes, Route } from 'react-router-dom';
 
 import 'tailwind.css';
 
@@ -8,6 +9,7 @@ import { makeStory } from 'lib/story';
 
 import StoryCreator from 'components/creator/StoryCreator';
 import StoryPlayer from 'components/player/StoryPlayer';
+import ErrorPage from 'components/ErrorPage';
 
 const queryClient = new QueryClient();
 
@@ -38,20 +40,47 @@ function App() {
     setStory({...story, canBePreviewed: !!gameEvents.filter((gameEvent: GameEvent) => { return gameEvent.isSelected; }).length});
   }, [gameEvents]);
 
+  const getRootElement = () => {
+    // eventually this should be a layout component
+    return (
+      <div><Outlet /></div>
+    );
+  };
+
+  const getStoryCreatorElement = () => {
+    return (
+      <StoryCreator
+         game={game}
+         setGame={setGame}
+         gameEvents={gameEvents}
+         updateGameEvents={updateGameEvents}
+         canSaveStory={story.canBeSaved}
+         canPreviewStory={story.canBePreviewed}
+      />
+    );
+  };
+
+  const getPreviewElement = () => {
+    return (
+      <StoryPlayer />
+    );
+  };
+
   return (
-    <div className="App text-white text-xl max-w-4xl mx-auto py-10">
-      <QueryClientProvider client={queryClient}>
-        <StoryCreator
-          game={game}
-          setGame={setGame}
-          gameEvents={gameEvents}
-          updateGameEvents={updateGameEvents}
-          canSaveStory={story.canBeSaved}
-          canPreviewStory={story.canBePreviewed}
-        />
-        {/* <StoryPlayer /> */}
-      </QueryClientProvider>
-    </div>
+    <BrowserRouter>
+      <div className="App text-white text-xl max-w-4xl mx-auto py-10">
+        <QueryClientProvider client={queryClient}>
+          <Routes>
+            <Route path='/' element={getRootElement()} errorElement={<ErrorPage />}>
+
+              <Route index element={getStoryCreatorElement()}/>
+              <Route path='/preview' element={getPreviewElement()}/>
+
+            </Route>
+          </Routes>
+        </QueryClientProvider>
+      </div>
+    </BrowserRouter>
   );
 }
 
