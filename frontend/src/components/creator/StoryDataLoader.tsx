@@ -26,10 +26,11 @@ const getRandomGame = () : string => {
   return games[Math.floor(Math.random() * (games.length))];
 }
 
+const reblasePlaceholder = getRandomGame();
+
 function StoryDataLoader({ setGame, updateGameEvents } : StoryDataLoaderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [gameID, setGameID] = useState('');
-  const reblasePlaceholder = getRandomGame();
 
   const loadGameEvents = async (evt: FormEvent) => {
     evt.preventDefault();
