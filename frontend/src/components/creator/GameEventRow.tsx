@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ChangeEvent }  from 'react';
 
-import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
+import { Game, Slide, SlidesUpdateProps } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Scoreboard from 'components/common/Scoreboard';
@@ -10,17 +10,17 @@ interface InterestingEvents {
 }
 
 interface GameEventProps {
-  gameEvent: GameEvent;
+  slide: Slide;
   game: Game;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
-  updateGameEvents: (action: GameEventsUpdateProps) => void;
+  updateSlides: (action: SlidesUpdateProps) => void;
   checkAll: boolean;
 }
 
-function GameEventRow({ gameEvent, game, updateInterestingEvents, updateGameEvents, checkAll } : GameEventProps) {
-  // const [isChecked, setIsChecked] = useState(gameEvent.isSelected);
-  const [eventText, setEventText] = useState(gameEvent.displayText);
-  const [visual, setVisual] = useState(gameEvent.mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond');
+function GameEventRow({ slide, game, updateInterestingEvents, updateSlides, checkAll } : GameEventProps) {
+  // const [isChecked, setIsChecked] = useState(slide.isSelected);
+  // const [eventText, setEventText] = useState(slide.displayText);
+  // const [visual, setVisual] = useState(slide.mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond');
   const [interestingEvents, setInterestingEvents] = useState({
     'halfInning': true,
     'strike': false,
@@ -31,38 +31,47 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, updateGameEven
   } as InterestingEvents);
 
   const onCheck = () => {
-    updateGameEvents({type: 'modifyOne', gameEvents: [{...gameEvent, isSelected: !gameEvent.isSelected}]});
+    updateSlides({type: 'modifyOne', slides: [{...slide, isSelected: !slide.isSelected}]});
   }
 
   // force state change when check all is (un)checked
   useEffect(() => {
-    updateGameEvents({type: 'modifyOne', gameEvents: [{...gameEvent, isSelected: checkAll}]});
+    updateSlides({type: 'modifyOne', slides: [{...slide, isSelected: checkAll}]});
   }, [checkAll]);
+
+  const updateSlideText = (evt: ChangeEvent<HTMLTextAreaElement>) => {
+    updateSlides({type: 'modifyOne', slides: [{...slide, text: evt.target.value}]});
+  }
+
+  const updateVisual = (evt: ChangeEvent<HTMLSelectElement>) => {
+    updateSlides({type: 'modifyOne', slides: [{...slide, visual: evt.target.value}]});
+  }
+
 
   const getRowClasses = () : string => {
     let rowClasses = 'GameEventRow';
 
-    if (gameEvent.mlustard.out && gameEvent.mlustard.outMeta.kind === 'strike') {
+    if (slide.mlustard.out && slide.mlustard.outMeta.kind === 'strike') {
       rowClasses += ' strike';
       !interestingEvents.strike && setInterestingEvents(prevState => {return {...prevState, 'strike': true }});
     }
 
-    if (gameEvent.mlustard.hit) {
+    if (slide.mlustard.hit) {
       rowClasses += ' hit';
       !interestingEvents.hit && setInterestingEvents(prevState => {return {...prevState, 'hit': true }});
     }
 
-    if (gameEvent.mlustard.steal && gameEvent.mlustard.stealMeta.success) {
+    if (slide.mlustard.steal && slide.mlustard.stealMeta.success) {
       rowClasses += ' steal';
       !interestingEvents.steal && setInterestingEvents(prevState => {return {...prevState, 'steal': true }});
     }
 
-    if (gameEvent.mlustard.special) {
+    if (slide.mlustard.special) {
       rowClasses += ' special';
       !interestingEvents.special && setInterestingEvents(prevState => {return {...prevState, 'special': true }});
     }
 
-    if (gameEvent.mlustard.score) {
+    if (slide.mlustard.score) {
       rowClasses +=  ' score';
       !interestingEvents.score && setInterestingEvents(prevState => {return {...prevState, 'score': true }});
     }
@@ -91,25 +100,17 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, updateGameEven
     updateInterestingEvents(updated);
   }, [interestingEvents]);
 
-  const updateEventText = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-    setEventText(evt.target.value);
-  }
-
-  const updateVisual = (evt: ChangeEvent<HTMLSelectElement>) => {
-    setVisual(evt.target.value);
-  }
-
   return (
     <tr className={getRowClasses()}>
       <td className="p-2.5 align-top">
-        <Input type="checkbox" classes="" checked={gameEvent.isSelected} onChange={onCheck} />
+        <Input type="checkbox" classes="" checked={slide.isSelected} onChange={onCheck} />
       </td>
       <td className="p-2.5 align-top">
-        <textarea className="text-black p-[5px]" defaultValue={eventText} onChange={updateEventText} />
+        <textarea className="text-black p-[5px]" defaultValue={slide.text} onChange={updateSlideText} />
       </td>
       <td className="p-2.5 align-top">
         <label>Choose a visual for this event:</label>
-        <select className="text-black block mt-1" name="visual" value={visual} onChange={updateVisual} >
+        <select className="text-black block mt-1" name="visual" value={slide.visual} onChange={updateVisual} >
           <option value="diamond">Diamond</option>
           <option value="matchup">Matchup</option>
           <option value="custom">Custom</option>
@@ -119,16 +120,16 @@ function GameEventRow({ gameEvent, game, updateInterestingEvents, updateGameEven
         <Scoreboard
           homeTeam={game.homeTeam}
           awayTeam={game.awayTeam}
-          homeScore={gameEvent.homeScore}
-          awayScore={gameEvent.awayScore}
-          baserunners={gameEvent.baserunners}
-          balls={gameEvent.balls}
-          strikes={gameEvent.strikes}
-          outs={gameEvent.outs}
+          homeScore={slide.homeScore}
+          awayScore={slide.awayScore}
+          baserunners={slide.baserunners}
+          balls={slide.balls}
+          strikes={slide.strikes}
+          outs={slide.outs}
         />
       </td>
       <td className="p-2.5 align-top">
-        <a className={gameEvent.isSelected ? 'underline' : 'cursor-default text-white/50'} href="#">Preview</a>
+        <a className={slide.isSelected ? 'underline' : 'cursor-default text-white/50'} href="#">Preview</a>
       </td>
     </tr>
   );

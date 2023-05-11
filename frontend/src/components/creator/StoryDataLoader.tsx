@@ -1,9 +1,9 @@
 import React, { useState, FormEvent, ChangeEvent } from 'react';
 import { QueryClient } from 'react-query';
 
-import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
+import { Game, SlidesUpdateProps } from 'lib/models';
 import { makeGame } from 'lib/game';
-import { makeGameEvents } from 'lib/game-event';
+import { makeSlides } from 'lib/slide';
 
 import Button from 'components/elements/Button';
 import Input from 'components/elements/Input';
@@ -13,7 +13,7 @@ const CHRONICLER_BASE_URL = 'https://api2.sibr.dev/chronicler/v0';
 
 interface StoryDataLoaderProps {
   setGame: (game: Game) => void;
-  updateGameEvents: (action: GameEventsUpdateProps) => void;
+  updateSlides: (action: SlidesUpdateProps) => void;
 }
 
 const getRandomGame = () : string => {
@@ -28,7 +28,7 @@ const getRandomGame = () : string => {
 
 const reblasePlaceholder = getRandomGame();
 
-function StoryDataLoader({ setGame, updateGameEvents } : StoryDataLoaderProps) {
+function StoryDataLoader({ setGame, updateSlides } : StoryDataLoaderProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [gameID, setGameID] = useState('');
 
@@ -44,8 +44,8 @@ function StoryDataLoader({ setGame, updateGameEvents } : StoryDataLoaderProps) {
 
     const game = makeGame(gameData?.items[0]);
     setGame(game);
-    const gameEvents = makeGameEvents(gameEventsData);
-    updateGameEvents({type: 'set', gameEvents});
+    const slides = makeSlides(gameEventsData);
+    updateSlides({type: 'set', slides});
   };
 
   const updateInput = (evt: ChangeEvent<HTMLInputElement>) => {

@@ -4,7 +4,7 @@ import { BrowserRouter, Outlet, Routes, Route } from 'react-router-dom';
 
 import 'tailwind.css';
 
-import { StoryProps, Game, GameEvent, GameEventUpdateProps, GameEventsUpdateProps, Slide, SlideUpdateProps } from 'lib/models';
+import { StoryProps, Game, Slide, SlidesUpdateProps } from 'lib/models';
 import { makeStory } from 'lib/story';
 
 import StoryCreator from 'components/creator/StoryCreator';
@@ -13,32 +13,32 @@ import ErrorPage from 'components/ErrorPage';
 
 const queryClient = new QueryClient();
 
-const updateGameEventsReducer = (currGameEvents: GameEvent[], action: GameEventsUpdateProps) => {
+const updateSlidesReducer = (currSlides: Slide[], action: SlidesUpdateProps) => {
   switch(action.type) {
     case 'set':
-      return action.gameEvents;
+      return action.slides;
     case 'modifyOne':
-      return currGameEvents.map((gameEvent: GameEvent) => {
-        if (action.gameEvents[0].id === gameEvent.id) {
-          return action.gameEvents[0];
+      return currSlides.map((slide: Slide) => {
+        if (action.slides[0].id === slide.id) {
+          return action.slides[0];
         } else {
-          return gameEvent;
+          return slide;
         }
       });
     default:
-      return currGameEvents;
+      return currSlides;
   }
 };
 
 function App() {
   const [story, setStory] = useState(makeStory({creator: 'me!'} as StoryProps));
+  const [slides, updateSlides] = useReducer(updateSlidesReducer, [] as Slide[]);
   const [game, setGame] = useState({} as Game);
-  const [gameEvents, updateGameEvents] = useReducer(updateGameEventsReducer, [] as GameEvent[]);
 
   // check if story can be previewed
   useEffect(() => {
-    setStory({...story, canBePreviewed: !!gameEvents.filter((gameEvent: GameEvent) => { return gameEvent.isSelected; }).length});
-  }, [gameEvents]);
+    setStory({...story, canBePreviewed: !!slides.filter((slide: Slide) => { return slide.isSelected; }).length});
+  }, [slides]);
 
   const getRootElement = () => {
     // eventually this should be a layout component
@@ -47,22 +47,21 @@ function App() {
     );
   };
 
+  const previewStory = () => {
+    // updateSlides({type: 'create', gameEvents});
+  };
+
   const getStoryCreatorElement = () => {
     return (
       <StoryCreator
-         game={game}
-         setGame={setGame}
-         gameEvents={gameEvents}
-         updateGameEvents={updateGameEvents}
-         canSaveStory={story.canBeSaved}
-         canPreviewStory={story.canBePreviewed}
+        game={game}
+        setGame={setGame}
+        slides={slides}
+        updateSlides={updateSlides}
+        canSaveStory={story.canBeSaved}
+        canPreviewStory={story.canBePreviewed}
+        previewStory={previewStory}
       />
-    );
-  };
-
-  const getPreviewElement = () => {
-    return (
-      <StoryPlayer />
     );
   };
 
@@ -74,7 +73,6 @@ function App() {
             <Route path='/' element={getRootElement()} errorElement={<ErrorPage />}>
 
               <Route index element={getStoryCreatorElement()}/>
-              <Route path='/preview' element={getPreviewElement()}/>
 
             </Route>
           </Routes>

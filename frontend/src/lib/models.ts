@@ -38,7 +38,6 @@ export interface GameEvent {
   inning: number;
   baserunners: Baserunners;
   mlustard: MlustardAnalysis;
-  isSelected: boolean;
 }
 
 export interface GameEventProps {
@@ -77,20 +76,18 @@ export interface Game {
   weather: string;
 }
 
-export interface Slide {
-  id: string;
+export interface Slide extends GameEvent {
+  isSelected: boolean;
   visual: string;
   text: string;
-  gameEvent: GameEvent;
 }
 
 export interface SlideProps {
   visual?: string;
   text?: string;
-  gameEvent: GameEvent;
 }
 
-export interface SlideUpdateProps {
+export interface SlidesUpdateProps {
   type: string;
   slides: Slide[];
 }

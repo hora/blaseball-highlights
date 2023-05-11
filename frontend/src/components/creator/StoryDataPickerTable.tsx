@@ -1,6 +1,6 @@
 import React  from 'react';
 
-import { Game, GameEvent, GameEventsUpdateProps } from 'lib/models';
+import { Game, Slide, SlidesUpdateProps } from 'lib/models';
 
 import Input from 'components/elements/Input';
 import Emoji from 'components/elements/Emoji';
@@ -12,33 +12,33 @@ interface InterestingEvents {
 
 interface StoryDataPickerTableProps {
   game: Game;
-  gameEvents: GameEvent[];
-  updateGameEvents: (action: GameEventsUpdateProps) => void;
+  slides: Slide[];
+  updateSlides: (action: SlidesUpdateProps) => void;
   updateInterestingEvents: (newInterestingEventsState: InterestingEvents) => void;
   checkAll: boolean;
 }
 
-function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateInterestingEvents, checkAll } : StoryDataPickerTableProps) {
-  const hasDisplayText = (gameEvent: GameEvent) : boolean => {
-    return !!gameEvent.displayText
+function StoryDataPickerTable({ game, slides, updateSlides, updateInterestingEvents, checkAll } : StoryDataPickerTableProps) {
+  const hasDisplayText = (slide: Slide) : boolean => {
+    return !!slide.displayText
   };
 
-  const isStartOrEnd = (gameEvent: GameEvent) : boolean => {
-    return gameEvent.mlustard.gameStatus === 'beforeFirstPitch' || gameEvent.mlustard.gameStatus === 'gameEnd'
+  const isStartOrEnd = (slide: Slide) : boolean => {
+    return slide.mlustard.gameStatus === 'beforeFirstPitch' || slide.mlustard.gameStatus === 'gameEnd'
   };
 
-  const isInteresting = (gameEvent: GameEvent) : boolean => {
+  const isInteresting = (slide: Slide) : boolean => {
     // don't care about events that don't have display text
-    if (!hasDisplayText(gameEvent)) return false;
+    if (!hasDisplayText(slide)) return false;
 
     if (
-      //(gameEvent.mlustard.out && gameEvent.mlustard.outMeta.kind === 'strike') ||
-      //(gameEvent.mlustard.walk) ||
-      //(gameEvent.mlustard.hit) ||
-      //(gameEvent.mlustard.steal && gameEvent.mlustard.stealMeta.success) ||
-      //(gameEvent.mlustard.special) ||
-      //(gameEvent.mlustard.maximumBlaseball) ||
-      (gameEvent.mlustard.score)
+      //(slide.mlustard.out && slide.mlustard.outMeta.kind === 'strike') ||
+      //(slide.mlustard.walk) ||
+      //(slide.mlustard.hit) ||
+      //(slide.mlustard.steal && slide.mlustard.stealMeta.success) ||
+      //(slide.mlustard.special) ||
+      //(slide.mlustard.maximumBlaseball) ||
+      (slide.mlustard.score)
     ) {
       return true;
     }
@@ -46,14 +46,14 @@ function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateIntere
     return false;
   };
 
-  const isHighlight = (gameEvent: GameEvent) : boolean => {
-    return isInteresting(gameEvent) || isStartOrEnd(gameEvent);
+  const isHighlight = (slide: Slide) : boolean => {
+    return isInteresting(slide) || isStartOrEnd(slide);
   };
 
-  // const updateGameEvent = (gameEvent: GameEvent) => {
-  //   setGame(game.gameEvents.map(gE => {
-  //     if (gE.uuid === gameEvent.uuid) {
-  //       return {...gE, isSelected: gameEvent.isSelected };
+  // const updateGameEvent = (slide: GameEvent) => {
+  //   setGame(game.slides.map(gE => {
+  //     if (gE.uuid === slide.uuid) {
+  //       return {...gE, isSelected: slide.isSelected };
   //     } else {
   //       return gE;
   //     }
@@ -86,14 +86,14 @@ function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateIntere
         </td>
         </tr>
 
-        {gameEvents.filter(hasDisplayText).map((gameEvent:GameEvent, i:number) => {
+        {slides.filter(hasDisplayText).map((slide:Slide, i:number) => {
           let inningHeader;
           let tOrB = '';
           let fielderEmoji = '';
           let pitcher = '';
           let batterEmoji = '';
 
-          switch (gameEvent.mlustard.gameStatus) {
+          switch (slide.mlustard.gameStatus) {
             case 'beforeFirstPitch':
             case 'secondHalfInningEnd':
               tOrB = 'Top';
@@ -112,7 +112,7 @@ function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateIntere
           }
 
           inningHeader = (<React.Fragment>
-                <tr className="inning"><td className="p-2.5 align-top" colSpan={5}>{tOrB} of {gameEvent.inning + 1}</td></tr>
+                <tr className="inning"><td className="p-2.5 align-top" colSpan={5}>{tOrB} of {slide.inning + 1}</td></tr>
                 <tr className="">
                   <td colSpan={5} className="p-2.5 align-top">
                     <span>
@@ -129,19 +129,19 @@ function StoryDataPickerTable({ game, gameEvents, updateGameEvents, updateIntere
           return (
             <React.Fragment key={i}>
 
-            { gameEvent.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
+            { slide.mlustard.gameStatus === 'beforeFirstPitch' && inningHeader}
 
             <GameEventRow
                 key={i}
-                gameEvent={gameEvent}
+                slide={slide}
                 game={game}
                 updateInterestingEvents={updateInterestingEvents}
-                updateGameEvents={updateGameEvents}
+                updateSlides={updateSlides}
                 checkAll={checkAll}
               />
 
-            { gameEvent.mlustard.gameStatus === 'firstHalfInningEnd' && inningHeader}
-            { gameEvent.mlustard.gameStatus === 'secondHalfInningEnd' && inningHeader}
+            { slide.mlustard.gameStatus === 'firstHalfInningEnd' && inningHeader}
+            { slide.mlustard.gameStatus === 'secondHalfInningEnd' && inningHeader}
 
             </React.Fragment>
           );
