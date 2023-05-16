@@ -13,7 +13,7 @@ interface StoryDataPickerToolboxProps {
   checkAll: boolean;
   canSaveStory: boolean;
   canPreviewStory: boolean;
-  previewStory: () => void;
+  previewStory: (toggle: boolean) => void;
 }
 
 function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll, canSaveStory, canPreviewStory, previewStory } : StoryDataPickerToolboxProps) {
@@ -102,7 +102,7 @@ function StoryDataPickerToolbox({ interestingEvents, toggleCheckAll, checkAll, c
         {hasSaved &&
           <div><span>💾 Saved!</span></div>
         }
-        <Button text="Preview Story" btnType="submit" onClick={previewStory} disabled={!canPreviewStory} classes="mb-[7px]" />
+          <Button text="Preview Story" btnType="submit" onClick={() => {previewStory(true);}} disabled={!canPreviewStory} classes="mb-[7px]" />
       </div>
     </div>
     </div>

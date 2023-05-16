@@ -1,4 +1,4 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 
 import { Game, Slide, SlidesUpdateProps } from 'lib/models';
 
@@ -12,7 +12,7 @@ interface StoryDataPickerProps {
   updateSlides: (action: SlidesUpdateProps) => void;
   canSaveStory: boolean;
   canPreviewStory: boolean;
-  previewStory: () => void;
+  previewStory: (toggle: boolean) => void;
 }
 
 interface InterestingEvents {
@@ -39,6 +39,10 @@ function StoryDataPicker({ game, slides, updateSlides, canSaveStory, canPreviewS
   const toggleCheckAll = () => {
     setCheckAll(!checkAll);
   }
+
+  useEffect(() => {
+    console.log('story data picker use effect calling', checkAll);
+  });
 
   return (
     <div className="StoryDataPicker">
