@@ -45,6 +45,9 @@ function StoryCreator() {
         <StoryPlayer
           previewMode={true}
           previewStory={previewStory}
+          story={story}
+          slides={slides}
+          game={game}
         />
       }
 

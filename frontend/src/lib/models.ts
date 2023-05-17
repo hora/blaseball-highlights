@@ -104,3 +104,35 @@ export interface StoryProps {
   creator?: string;
 }
 
+export interface TeamColours {
+  official: string;
+  mound: string;
+  moundOutline: string;
+  bases: string;
+  basesOutline: string;
+  grass: string;
+  grassOutline: string;
+  dirt: string;
+  dirtOutline: string;
+  foulZone: string;
+  foulZoneOutline: string;
+}
+
+export interface TeamData {
+    shorthand: string;
+    colours: TeamColours;
+    homeLogoURL: string;
+    homeLogoCredit: string;
+    homeLogoCreditURL: string;
+    awayLogoURL: string;
+    awayLogoCredit: string;
+    awayLogoCreditURL: string;
+    stadiumLogoURL: string;
+    stadiumLogoCredit: string;
+    stadiumLogoCreditURL: string;
+    stadiumLogoOutline: boolean;
+}
+
+export interface TeamsData {
+  [index: string]: TeamData;
+}

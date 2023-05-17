@@ -1,4 +1,5 @@
 import { Team } from './models';
+import { teamsData } from './teams-data';
 
 const makeTeam = (data?: any) : Team => {
   return {
@@ -12,6 +13,36 @@ const makeTeam = (data?: any) : Team => {
   };
 }
 
+const getLogo = (team: Team, version: string) : string => {
+  let teamData = teamsData[team.id];
+
+  !teamData.awayLogoURL && (version = 'home');
+
+  switch(version) {
+    case 'away':
+      return `${teamData.awayLogoURL}`;
+    case 'home':
+    default:
+      return `${teamData.homeLogoURL}`;
+  }
+};
+
+const getLogoCreatorData = (team: Team, version: string) : [string, string] => {
+  let teamData = teamsData[team.id];
+
+  !teamData.awayLogoURL && (version = 'home');
+
+  switch(version) {
+    case 'away':
+      return [teamData.awayLogoCredit, teamData.awayLogoCreditURL];
+    case 'home':
+    default:
+      return [teamData.homeLogoCredit, teamData.homeLogoCreditURL];
+  }
+};
+
 export {
   makeTeam,
+  getLogo,
+  getLogoCreatorData,
 }

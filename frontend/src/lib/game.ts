@@ -19,6 +19,11 @@ const makeGame = (gameData: any) : Game => {
   }
 }
 
+const gameDay = (game: Game) : string => {
+  return `${game.season.era}, Season ${game.season.number}, Day ${game.day}`;
+};
+
 export {
   makeGame,
+  gameDay,
 }

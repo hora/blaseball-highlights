@@ -1,4 +1,4 @@
-import React, { useState, useEffect }  from 'react';
+import { useState }  from 'react';
 
 import { Game, Slide, SlidesUpdateProps } from 'lib/models';
 
@@ -39,10 +39,6 @@ function StoryDataPicker({ game, slides, updateSlides, canSaveStory, canPreviewS
   const toggleCheckAll = () => {
     setCheckAll(!checkAll);
   }
-
-  useEffect(() => {
-    console.log('story data picker use effect calling', checkAll);
-  });
 
   return (
     <div className="StoryDataPicker">

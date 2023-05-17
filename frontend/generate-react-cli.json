@@ -34,6 +34,16 @@
       "withTest": false,
       "withStory": false,
       "withLazy": false
+    },
+    "common": {
+      "customTemplates": {
+        "component": "templates/common/TemplateName.tsx"
+      },
+      "path": "src/components/common",
+      "withStyle": false,
+      "withTest": false,
+      "withStory": false,
+      "withLazy": false
     }
   }
 }
