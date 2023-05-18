@@ -20,9 +20,13 @@ function StoryPlayerVisual({ story, currentSlide, game } : StoryPlayerVisualProp
           />
         );
       case 'diamond':
-        return <Diamond />
       default:
-        return <Diamond />
+        return (
+          <Diamond
+            game={game}
+            slide={currentSlide}
+          />
+        );
     }
   };
 

@@ -23,7 +23,7 @@ function StoryPlayer({ previewMode, previewStory, story, slides, game } : StoryP
 
   return (
     <div className="StoryPlayer">
-      {previewMode && <Button btnType='button' text='Exit Preview' onClick={() => previewStory(false)}/>}
+      {previewMode && <Button classes='mb-3' btnType='button' text='Exit Preview' onClick={() => previewStory(false)}/>}
 
       <StoryPlayerVisual
         story={story}

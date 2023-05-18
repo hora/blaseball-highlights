@@ -46,7 +46,7 @@ function StoryCreator() {
           previewMode={true}
           previewStory={previewStory}
           story={story}
-          slides={slides}
+          slides={slides.filter((slide: Slide) => slide.isSelected)}
           game={game}
         />
       }

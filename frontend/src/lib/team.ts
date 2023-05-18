@@ -17,8 +17,11 @@ const getLogo = (team: Team, version: string) : string => {
   let teamData = teamsData[team.id];
 
   !teamData.awayLogoURL && (version = 'home');
+  !teamData.stadiumLogoURL && (version = 'home');
 
   switch(version) {
+    case 'stadium':
+      return `${teamData.stadiumLogoURL}`;
     case 'away':
       return `${teamData.awayLogoURL}`;
     case 'home':
@@ -31,8 +34,11 @@ const getLogoCreatorData = (team: Team, version: string) : [string, string] => {
   let teamData = teamsData[team.id];
 
   !teamData.awayLogoURL && (version = 'home');
+  !teamData.stadiumLogoURL && (version = 'home');
 
   switch(version) {
+    case 'stadium':
+      return [teamData.stadiumLogoCredit, teamData.stadiumLogoCredit];
     case 'away':
       return [teamData.awayLogoCredit, teamData.awayLogoCreditURL];
     case 'home':

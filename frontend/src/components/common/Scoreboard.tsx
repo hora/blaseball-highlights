@@ -1,8 +1,7 @@
-import React  from 'react';
-
-import { Player, Team, Baserunners } from 'lib/models';
+import { Team, Baserunners } from 'lib/models';
 
 import ScoreboardDiamond from 'components/common/ScoreboardDiamond';
+import { getInningHalfShort } from 'lib/slide';
 
 interface ScoreboardProps {
   homeTeam: Team;
@@ -13,9 +12,28 @@ interface ScoreboardProps {
   balls: number;
   strikes: number;
   outs: number;
+  inning: number;
+  atBat: string;
+  extra?: boolean;
 }
 
-function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, balls, strikes, outs } : ScoreboardProps) {
+function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, balls, strikes, outs, extra, inning, atBat } : ScoreboardProps) {
+
+  const inningText = (inning: number) : string => {
+    inning++;
+
+    switch(inning) {
+      case 1:
+        return `${inning}st`;
+      case 2:
+        return `${inning}nd`;
+      case 3:
+        return `${inning}rd`;
+      default:
+        return `${inning}th`;
+    }
+  };
+
   return (
     <ul className="Scoreboard border border-solid border-dark-blue rounded-md bg-white text-dark-blue flex items-center justify-between py-1 px-0 m-0 leading-4 text-base">
       <li className="ml-1 p-1 font-semibold">
@@ -41,6 +59,14 @@ function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, bal
           <span>{outs}</span> out
         </div>
       </li>
+      {extra &&
+        <li className='p-1 font-semibold'>
+          <div>
+            <span className='uppercase mr-1'>{getInningHalfShort(atBat)}</span>
+            <span>{inningText(inning)}</span>
+          </div>
+        </li>
+      }
     </ul>
   );
 }

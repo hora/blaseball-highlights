@@ -23,6 +23,7 @@ export interface Team {
 export interface Season {
   id: string;
   era: string;
+  eraShort: string;
   number: number;
 }
 
@@ -36,6 +37,7 @@ export interface GameEvent {
   balls: number;
   outs: number;
   inning: number;
+  atBat: string;
   baserunners: Baserunners;
   mlustard: MlustardAnalysis;
 }
@@ -48,6 +50,7 @@ export interface GameEventProps {
   balls: number;
   outs: number;
   inning: number;
+  atBat: string;
 }
 
 export interface GenericGameEventsUpdateProps {

@@ -15,6 +15,7 @@ const makeSlides = (gameEventsData: any[]) : Slide[] => {
     balls: 0,
     outs: 0,
     inning: 0,
+    atBat: 'AWAY',
   };
 
   let baserunners = [] as Player[];
@@ -33,6 +34,7 @@ const makeSlides = (gameEventsData: any[]) : Slide[] => {
       gameEventProps.balls = (newState.balls >= 0 ? newState.balls : gameEventProps.balls);
       gameEventProps.outs = (newState.outs >= 0 ? newState.outs : gameEventProps.outs);
       gameEventProps.inning = (newState.inning >= 0 ? newState.inning : gameEventProps.inning);
+      gameEventProps.atBat = (newState.teamAtBat ? newState.teamAtBat : gameEventProps.atBat);
     }
 
     gameEventProps.displayText = gameEvent?.data?.displayText;
@@ -73,6 +75,7 @@ const makeSlide = (raw: any, data: GameEventProps) : Slide => {
     balls: data.balls,
     outs: data.outs,
     inning: data.inning,
+    atBat: data.atBat,
     baserunners: {},
     mlustard: mlustard,
     isSelected: false,
@@ -81,6 +84,17 @@ const makeSlide = (raw: any, data: GameEventProps) : Slide => {
   };
 };
 
+const getInningHalfFull = (atBat: string) : string => {
+  return atBat === 'AWAY' ? 'top' : 'bottom';
+};
+
+const getInningHalfShort = (atBat: string) : string => {
+  return atBat === 'AWAY' ? 'top' : 'bot';
+};
+
+
 export {
   makeSlides,
+  getInningHalfFull,
+  getInningHalfShort,
 }

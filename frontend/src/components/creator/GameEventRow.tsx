@@ -126,6 +126,8 @@ function GameEventRow({ slide, game, updateInterestingEvents, updateSlides, chec
           balls={slide.balls}
           strikes={slide.strikes}
           outs={slide.outs}
+          inning={slide.inning}
+          atBat={slide.atBat}
         />
       </td>
       <td className="p-2.5 align-top">
