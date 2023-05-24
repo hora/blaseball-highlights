@@ -39,6 +39,7 @@ export interface GameEvent {
   inning: number;
   atBat: string;
   baserunners: Baserunners;
+  batter: Player | null;
   mlustard: MlustardAnalysis;
 }
 
@@ -51,6 +52,7 @@ export interface GameEventProps {
   outs: number;
   inning: number;
   atBat: string;
+  batter: Player | null;
 }
 
 export interface GenericGameEventsUpdateProps {

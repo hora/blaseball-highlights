@@ -16,6 +16,7 @@ const makeSlides = (gameEventsData: any[]) : Slide[] => {
     outs: 0,
     inning: 0,
     atBat: 'AWAY',
+    batter: null,
   };
 
   let baserunners = [] as Player[];
@@ -35,6 +36,12 @@ const makeSlides = (gameEventsData: any[]) : Slide[] => {
       gameEventProps.outs = (newState.outs >= 0 ? newState.outs : gameEventProps.outs);
       gameEventProps.inning = (newState.inning >= 0 ? newState.inning : gameEventProps.inning);
       gameEventProps.atBat = (newState.teamAtBat ? newState.teamAtBat : gameEventProps.atBat);
+
+      if (newState.batter === null) {
+        gameEventProps.batter = null;
+      } else {
+        gameEventProps.batter = (newState.batter ? makePlayer(newState.batter) : gameEventProps.batter);
+      }
     }
 
     gameEventProps.displayText = gameEvent?.data?.displayText;
@@ -77,6 +84,7 @@ const makeSlide = (raw: any, data: GameEventProps) : Slide => {
     inning: data.inning,
     atBat: data.atBat,
     baserunners: {},
+    batter: data.batter,
     mlustard: mlustard,
     isSelected: false,
     visual: mlustard.gameStatus === 'beforeFirstPitch' ? 'matchup' : 'diamond',

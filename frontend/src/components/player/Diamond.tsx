@@ -60,6 +60,8 @@ function Diamond({ game, slide } : DiamondProps) {
           <Emoji emojiCode={fieldingEmoji} />
           {pitcherName}
         </p>
+        {slide.batter && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[255px] left-[45px]'>
+          <Emoji emojiCode={battingEmoji } /> {slide.batter.name}</p>}
         {slide.baserunners[1] && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[400px] left-[330px]'>
           <Emoji emojiCode={battingEmoji } /> {slide.baserunners[1].name}</p>}
         {slide.baserunners[2] && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[255px] left-[430px]'>
