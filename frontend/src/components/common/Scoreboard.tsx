@@ -4,6 +4,7 @@ import ScoreboardDiamond from 'components/common/ScoreboardDiamond';
 import { getInningHalfShort } from 'lib/slide';
 
 interface ScoreboardProps {
+  classes?: string;
   homeTeam: Team;
   awayTeam: Team;
   homeScore: number;
@@ -17,7 +18,7 @@ interface ScoreboardProps {
   extra?: boolean;
 }
 
-function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, balls, strikes, outs, extra, inning, atBat } : ScoreboardProps) {
+function Scoreboard({ classes, homeTeam, awayTeam, homeScore, awayScore, baserunners, balls, strikes, outs, extra, inning, atBat } : ScoreboardProps) {
 
   const inningText = (inning: number) : string => {
     inning++;
@@ -35,7 +36,7 @@ function Scoreboard({ homeTeam, awayTeam, homeScore, awayScore, baserunners, bal
   };
 
   return (
-    <ul className="Scoreboard border border-solid border-dark-blue rounded-md bg-white text-dark-blue flex items-center justify-between py-1 px-0 m-0 leading-4 text-base">
+    <ul className={`Scoreboard ${classes} border border-solid border-dark-blue rounded-md bg-white text-dark-blue flex items-center justify-between py-1 px-0 leading-4 text-base`}>
       <li className="ml-1 p-1 font-semibold">
         <div className="flex justify-between">
           <span className="my-1">{awayTeam.shorthand}</span>

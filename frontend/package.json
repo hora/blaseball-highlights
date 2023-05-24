@@ -11,6 +11,7 @@
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
     "clsx": "^1.2.1",
+    "mini-svg-data-uri": "^1.4.4",
     "mlustard": "github:hora/mlustard#coronation-era-update",
     "rc-tooltip": "^6.0.1",
     "react": "^18.2.0",

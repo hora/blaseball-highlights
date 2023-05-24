@@ -1,4 +1,4 @@
-import { Team } from './models';
+import { Team, TeamColours } from './models';
 import { teamsData } from './teams-data';
 
 const makeTeam = (data?: any) : Team => {
@@ -47,8 +47,18 @@ const getLogoCreatorData = (team: Team, version: string) : [string, string] => {
   }
 };
 
+const getTeamColours = (team: Team) : TeamColours => {
+  return teamsData[team.id].colours;
+};
+
+const getTeamStadiumLogoOutline = (team: Team) : boolean => {
+  return teamsData[team.id].stadiumLogoOutline;
+};
+
 export {
   makeTeam,
   getLogo,
   getLogoCreatorData,
+  getTeamColours,
+  getTeamStadiumLogoOutline,
 }
