@@ -3,6 +3,7 @@ import { getLogo, getTeamStadiumLogoOutline } from 'lib/team';
 
 import DiamondSVG from './DiamondSVG';
 import Scoreboard from 'components/common/Scoreboard';
+import Emoji from 'components/elements/Emoji';
 
 interface DiamondProps {
   game: Game;
@@ -11,6 +12,22 @@ interface DiamondProps {
 
 function Diamond({ game, slide } : DiamondProps) {
   let outlineClasses = '';
+  let pitcherName = '';
+  let fieldingEmoji = '';
+  let battingEmoji = '';
+
+  switch (slide.atBat) {
+    case 'AWAY':
+      pitcherName = game.homePitcher.name;
+      fieldingEmoji = game.homeTeam.emoji;
+      battingEmoji = game.awayTeam.emoji;
+      break;
+    case 'HOME':
+      pitcherName = game.awayPitcher.name;
+      fieldingEmoji = game.awayTeam.emoji;
+      battingEmoji = game.homeTeam.emoji;
+      break;
+  }
 
   if (getTeamStadiumLogoOutline(game.homeTeam)) {
     outlineClasses = 'rounded-full border-solid border-black border-[1px] p-[1px]';
@@ -39,6 +56,16 @@ function Diamond({ game, slide } : DiamondProps) {
           extra={true}
         />
         <img className={`absolute top-[202px] left-[6px] h-[55px] rotate-90 ${outlineClasses}`} src={getLogo(game.homeTeam, 'stadium')} alt={`${game.homeTeam.name} logo`} />
+        <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[164px] left-[240px]'>
+          <Emoji emojiCode={fieldingEmoji} />
+          {pitcherName}
+        </p>
+        {slide.baserunners[1] && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[400px] left-[330px]'>
+          <Emoji emojiCode={battingEmoji } /> {slide.baserunners[1].name}</p>}
+        {slide.baserunners[2] && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[255px] left-[430px]'>
+          <Emoji emojiCode={battingEmoji } /> {slide.baserunners[2].name}</p>}
+        {slide.baserunners[3] && <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[72px] left-[240px]'>
+          <Emoji emojiCode={battingEmoji } /> {slide.baserunners[3].name}</p>}
       </DiamondSVG>
     </div>
   );
