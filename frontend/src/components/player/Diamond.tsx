@@ -54,6 +54,8 @@ function Diamond({ game, slide } : DiamondProps) {
           inning={slide.inning}
           atBat={slide.atBat}
           extra={true}
+          weatherName={game.weather.name}
+          weatherEmoji={game.weather.emoji}
         />
         <img className={`absolute top-[202px] left-[6px] h-[55px] rotate-90 ${outlineClasses}`} src={getLogo(game.homeTeam, 'stadium')} alt={`${game.homeTeam.name} logo`} />
         <p className='absolute px-[5px] m-0 text-dark-blue bg-white/80 text-lg rounded-sm font-semibold top-[164px] left-[240px]'>

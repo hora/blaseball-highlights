@@ -78,7 +78,7 @@ export interface Game {
   season: Season;
   dayRaw: number;
   day: number;
-  weather: string;
+  weather: Weather;
 }
 
 export interface Slide extends GameEvent {
@@ -140,4 +140,18 @@ export interface TeamData {
 
 export interface TeamsData {
   [index: string]: TeamData;
+}
+
+export interface WeatherDataInterface {
+  emoji: string;
+}
+
+export interface WeatherData {
+  [index: string]: WeatherDataInterface;
+}
+
+export interface Weather {
+  id: string;
+  name: string;
+  emoji: string;
 }

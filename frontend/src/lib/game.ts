@@ -2,6 +2,7 @@ import { Game } from './models';
 import { makePlayer } from './player';
 import { makeTeam } from './team';
 import { makeSeason } from './season';
+import { makeWeather } from './weather';
 
 const makeGame = (gameData: any) : Game => {
   const data = gameData?.data || {};
@@ -15,7 +16,7 @@ const makeGame = (gameData: any) : Game => {
     season: makeSeason(data?.seasonId),
     dayRaw: data?.day,
     day: data?.day + 1,
-    weather: data?.weather.name,
+    weather: makeWeather(data?.weather),
   }
 }
 
