@@ -17,8 +17,18 @@ interface StoryPlayerProps {
 function StoryPlayer({ previewMode, previewStory, story, slides, game } : StoryPlayerProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  const canGoSlide = (direction: string) => {
+    return (direction === 'prev') ? currentSlide > 0 : currentSlide < slides.length - 1;
+  };
+
   const getCurrentSlide = () : Slide => {
     return slides[currentSlide];
+  };
+
+  const changeSlide = (direction: string) => {
+    if (!canGoSlide(direction)) return;
+
+    setCurrentSlide(currentSlide => direction === 'prev' ? currentSlide - 1 : currentSlide + 1);
   };
 
   return (
@@ -32,6 +42,8 @@ function StoryPlayer({ previewMode, previewStory, story, slides, game } : StoryP
       />
       <StoryPlayerDialog
         currentSlide={getCurrentSlide()}
+        changeSlide={changeSlide}
+        canGoSlide={canGoSlide}
       />
     </div>
   );

@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import { Slide } from 'lib/models';
 import { makeDialogParts } from 'lib/slide';
-import { start } from 'repl';
 
 interface StoryPlayerDialogProps {
   currentSlide: Slide;
+  changeSlide: (direction: string) => void;
+  canGoSlide: (direction: string) => boolean;
 }
 
-function StoryPlayerDialog({ currentSlide } : StoryPlayerDialogProps) {
+function StoryPlayerDialog({ currentSlide, changeSlide, canGoSlide } : StoryPlayerDialogProps) {
   const [dialogIndex, setDialogIndex] = useState(0);
   const dialogParts = makeDialogParts(currentSlide.text);
   const [topIsAnimating, setTopIsAnimating] = useState(true);
@@ -27,15 +28,25 @@ function StoryPlayerDialog({ currentSlide } : StoryPlayerDialogProps) {
   const handleDialogGo = (direction: string) => {
     if (!canGo(direction)) return;
 
-    setDialogIndex(dialogIndex => direction === 'prev' ? dialogIndex - 1 : dialogIndex + 1);
-    startAnimations();
+    if (canScrollDialog(direction)) {
+      setDialogIndex(dialogIndex => direction === 'prev' ? dialogIndex - 1 : dialogIndex + 1);
+      startAnimations();
+    } else {
+      changeSlide(direction);
+      setDialogIndex(0);
+      startAnimations();
+    }
+  };
+
+  const canScrollDialog = (direction: string) : boolean => {
+    return (direction === 'prev') ? dialogIndex > 0 : dialogIndex < dialogParts.length - 1;
   };
 
   const canGo = (direction: string) : boolean => {
     if (direction === 'prev') {
-      return dialogIndex > 0;
+      return canGoSlide('prev') || canScrollDialog('prev');
     } else { // direction === 'next'
-      return dialogIndex < dialogParts.length - 1;
+      return canGoSlide('next') || canScrollDialog('next');
     }
   };
 
@@ -47,7 +58,7 @@ function StoryPlayerDialog({ currentSlide } : StoryPlayerDialogProps) {
     return dialogParts[dialogIndex][1];
   };
 
-  // how to remove the rendering delay between top animation end 
+  // how to remove the rendering delay between top animation end
   // and bottoms animation start?
   const handleAnimationEnd = () => {
     if (topIsAnimating) {
