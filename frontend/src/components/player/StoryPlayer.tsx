@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { Story, Slide, Game } from 'lib/models';
 
@@ -30,7 +30,9 @@ function StoryPlayer({ previewMode, previewStory, story, slides, game } : StoryP
         currentSlide={getCurrentSlide()}
         game={game}
       />
-      <StoryPlayerDialog />
+      <StoryPlayerDialog
+        currentSlide={getCurrentSlide()}
+      />
     </div>
   );
 }

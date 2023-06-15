@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       fontFamily: {
         'sans': ['"Open Sans"', '"Helvetica Neue"', 'Arial', 'sans-serif'],
+        'exo': ['"Exo"', 'sans-serif'],
       },
       colors: {
         'navy-blue': '#003049',
@@ -20,6 +21,15 @@ module.exports = {
       },
       lineHeight: {
         'extra-tight': '1.15',
+      },
+      keyframes: {
+        typing: {
+          '0%': { width: '0' },
+          '100%': { width: '100%' },
+        },
+      },
+      animation: {
+        typing: 'typing 1.5s steps(40, end)',
       },
     },
     data: {

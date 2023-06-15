@@ -100,9 +100,53 @@ const getInningHalfShort = (atBat: string) : string => {
   return atBat === 'AWAY' ? 'top' : 'bot';
 };
 
+const joinDialogParts = (first: Array<string>, second: Array<string>) : string[] => {
+  return [first.join(' '), second.join(' ')];
+};
+
+const makeDialogParts = (text: string) : string[][] => {
+  const MAX_SENTENCE_LENGTH = 35; // does not include spaces
+  let parts = [] as string[][];
+  let fillFirst = [] as string[];
+  let fillSecond = [] as string[];
+  let len = 0;
+  let first = true;
+
+  text.split(' ').forEach((word) => {
+    const wordLen = word.length;
+
+    if (len + wordLen <= MAX_SENTENCE_LENGTH) {
+
+      first && fillFirst.push(word);
+      !first && fillSecond.push(word);
+      len += wordLen;
+
+    } else {
+
+      if (!first) {
+        parts.push(joinDialogParts(fillFirst, fillSecond));
+        fillFirst = [word];
+        len = wordLen;
+        fillSecond = [];
+      } else {
+        fillSecond.push(word);
+        len = wordLen;
+      }
+
+      first = !first;
+    }
+
+  });
+
+  parts.push(joinDialogParts(fillFirst, fillSecond));
+
+  return parts;
+};
+
 
 export {
   makeSlides,
   getInningHalfFull,
   getInningHalfShort,
+  makeDialogParts,
 }
