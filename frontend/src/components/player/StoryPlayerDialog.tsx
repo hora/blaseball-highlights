@@ -7,9 +7,10 @@ interface StoryPlayerDialogProps {
   currentSlide: Slide;
   changeSlide: (direction: string) => void;
   canGoSlide: (direction: string) => boolean;
+  previewStory: (toggle: boolean) => void;
 }
 
-function StoryPlayerDialog({ currentSlide, changeSlide, canGoSlide } : StoryPlayerDialogProps) {
+function StoryPlayerDialog({ currentSlide, changeSlide, canGoSlide, previewStory } : StoryPlayerDialogProps) {
   const [dialogIndex, setDialogIndex] = useState(0);
   const dialogParts = makeDialogParts(currentSlide.text);
   const [topIsAnimating, setTopIsAnimating] = useState(true);
@@ -86,6 +87,9 @@ function StoryPlayerDialog({ currentSlide, changeSlide, canGoSlide } : StoryPlay
           break;
         case 'ArrowRight':
           rightRef.current && rightRef.current.click();
+          break;
+        case 'Escape':
+          previewStory(false);
           break;
       }
     };

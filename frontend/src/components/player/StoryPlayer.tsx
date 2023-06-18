@@ -44,6 +44,7 @@ function StoryPlayer({ previewMode, previewStory, story, slides, game } : StoryP
         currentSlide={getCurrentSlide()}
         changeSlide={changeSlide}
         canGoSlide={canGoSlide}
+        previewStory={previewStory}
       />
     </div>
   );
