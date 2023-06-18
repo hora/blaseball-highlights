@@ -106,7 +106,7 @@ function GameEventRow({ slide, game, updateInterestingEvents, updateSlides, chec
         <Input type="checkbox" classes="" checked={slide.isSelected} onChange={onCheck} />
       </td>
       <td className="p-2.5 align-top">
-        <textarea className="text-black p-[5px]" defaultValue={slide.text} onChange={updateSlideText} />
+        <textarea className="text-black p-[5px]" defaultValue={slide.text} onBlur={updateSlideText} />
       </td>
       <td className="p-2.5 align-top">
         <label>Choose a visual for this event:</label>
