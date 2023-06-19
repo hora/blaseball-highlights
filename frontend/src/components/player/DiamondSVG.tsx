@@ -40,7 +40,7 @@ function DiamondSvg({ children, team } : DiamondSvgProps) {
   let field = (<svg xmlns="http://www.w3.org/2000/svg"
           version="1.1"
           x="0px" y="0px" width="1149px" height="735px"
-          viewBox="0 0 1149 735" enableBackground="new 0 0 1149 735">
+    viewBox="0 0 1149 735" enableBackground="new 0 0 1149 735">
         <g>
           <polygon fill={`#${grass}`} stroke={`#${grassOutline}`} strokeWidth="15"
             points="12.219,725.594 1139.781,725.594 1139.781,8.408 12.219,8.592" />
@@ -91,7 +91,12 @@ function DiamondSvg({ children, team } : DiamondSvgProps) {
   const fieldData = svgToTinyDataUri(renderToStaticMarkup(field));
 
   return (
-    <div style={{backgroundImage: `url("${fieldData}")`}} className='w-[720px] h-[460px] bg-[720px_auto] relative'>
+    <div
+      style={{backgroundImage: `url("${fieldData}")`}}
+      className='w-[720px] h-[460px] bg-[720px_auto] relative'
+      role='image'
+      aria-label={`A top-down view of a blaseball diamond. Represented are home plate, three bases and a pitcher's mound. The ${team.name} logo is displayed next to home plate.`}
+    >
       {children}
     </div>
   );
